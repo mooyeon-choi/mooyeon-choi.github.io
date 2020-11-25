@@ -1,24 +1,23 @@
 import React, { Component } from 'react'
+import blackboardImg from '../../images/blackboard.svg';
 
-import profileImg from '../../images/profile.svg';
-
-export default class Profile extends Component {
+export default class blackboard extends Component {
 
   handleMouseOver = () => {
-    this.props.onMouseOver('profile');
+    this.props.onMouseOver('blackboard');
   }
 
   handleMouseLeave = () => {
-    this.props.onMouseLeave('profile');
+    this.props.onMouseLeave('blackboard');
   }
 
   render() {
     return (
       <img
-        className="profile"
-        src={profileImg} 
+        className="blackboard"
+        src={blackboardImg} 
         alt="myroom"
-        height="6.6667%"
+        height="18%"
         onMouseEnter={this.handleMouseOver}
         onMouseLeave={this.handleMouseLeave}
       />
