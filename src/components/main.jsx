@@ -5,8 +5,9 @@ import Room from './room/room';
 import Profile from './room/profile';
 import Game from './room/game';
 import Blackboard from './room/blackboard';
-
-
+import Computer from './room/computer';
+import Window from './room/window';
+import Bookshelf from './room/bookshelf';
 
 export default class Main extends Component {
 
@@ -20,6 +21,7 @@ export default class Main extends Component {
   render() {
     return (
       <div className="main">
+        <Sidebar />
         <Room />
         <Profile 
           onMouseOver={this.handleMouseOver}
@@ -33,7 +35,18 @@ export default class Main extends Component {
           onMouseOver={this.handleMouseOver}
           onMouseLeave={this.handleMouseLeave}
         />
-        <Sidebar />
+        <Computer 
+          onMouseOver={this.handleMouseOver}
+          onMouseLeave={this.handleMouseLeave}
+        />
+        <Bookshelf
+          onMouseOver={this.handleMouseOver}
+          onMouseLeave={this.handleMouseLeave}
+        />
+        <Window
+          onMouseOver={this.handleMouseOver}
+          onMouseLeave={this.handleMouseLeave}
+        />
       </div>
     )
   }

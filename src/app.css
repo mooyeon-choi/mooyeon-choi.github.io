@@ -10,6 +10,31 @@
   background-color: #404d60;
 }
 
+.sidebar {
+  position: fixed;
+  height: 100vh;
+  width: 20vw;
+  background-color: #000000;
+  opacity: 0.5;
+  margin: 0;
+  right: 0;
+}
+
+.contents {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 30vh;
+  width: 100%;
+  color: #ffffff;
+}
+
+.content {
+  margin-top: 3vh;
+  width: 100%;
+  color: #ffffff;
+  font-size: 20px;
+}
+
 .profile {
   position: absolute;
   z-index: 10;
@@ -28,5 +53,26 @@
   position: absolute;
   z-index: 10;
   top: 24%;
-  left: 29%;
+  left: 31%;
+}
+
+.computer {
+  position: absolute;
+  z-index: 10;
+  top: 35%;
+  left: 38%;
+}
+
+.bookshelf {
+  position: absolute;
+  z-index: 10;
+  top: 17%;
+  left: 41%;
+}
+
+.window {
+  position: absolute;
+  z-index: 10;
+  top: 18%;
+  left: 55%;
 }

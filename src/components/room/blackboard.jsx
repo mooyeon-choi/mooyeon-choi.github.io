@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import blackboardImg from '../../images/blackboard.svg';
 
-export default class blackboard extends Component {
+export default class Blackboard extends Component {
 
   handleMouseOver = () => {
     this.props.onMouseOver('blackboard');

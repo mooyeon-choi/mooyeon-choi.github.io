@@ -12,7 +12,7 @@ export default class Game extends Component {
 
   render() {
     return (
-      <img
+      <img 
         className="game"
         src={gameImg} 
         alt="myroom"

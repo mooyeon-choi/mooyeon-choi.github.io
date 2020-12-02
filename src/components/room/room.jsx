@@ -8,7 +8,7 @@ export default class Room extends Component {
       <img
         src={roomImg} 
         alt="myroom"
-        height="99%"
+        height="100%"
       />
     )
   }
