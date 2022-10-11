@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Change',
+  title: 'Final test',
   tagline: 'Dinosaurs are cool',
   url: 'https://mooyeon-choi.github.io',
   baseUrl: '/',
