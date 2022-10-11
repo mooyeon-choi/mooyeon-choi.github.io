@@ -18,6 +18,7 @@ const config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'mooyeon-choi', // Usually your GitHub org/user name.
   projectName: 'mooyeon-choi.github.io', // Usually your repo name.
+  deploymentBranch: 'gh-pages',
   trailingSlash: false,
 
   // Even if you don't use internalization, you can use this field to set useful
