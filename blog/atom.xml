@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mooyeon-choi.github.io/blog</id>
-    <title>My Site Blog</title>
+    <title>TEST Blog</title>
     <updated>2021-08-26T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mooyeon-choi.github.io/blog"/>
-    <subtitle>My Site Blog</subtitle>
+    <subtitle>TEST Blog</subtitle>
     <icon>https://mooyeon-choi.github.io/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
