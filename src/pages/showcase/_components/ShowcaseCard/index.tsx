@@ -22,8 +22,8 @@ import Tooltip from '../ShowcaseTooltip';
 import styles from './styles.module.css';
 
 const TagComp = React.forwardRef<HTMLLIElement, Tag>(
-  ({label, color, description}, ref) => (
-    <li ref={ref} className={styles.tag} title={description}>
+  ({label, color}, ref) => (
+    <li ref={ref} className={styles.tag}>
       <span className={styles.textLabel}>{label.toLowerCase()}</span>
       <span className={styles.colorLabel} style={{backgroundColor: color}} />
     </li>
@@ -44,13 +44,7 @@ function ShowcaseCardTag({tags}: {tags: TagType[]}) {
         const id = `showcase_card_tag_${tagObject.tag}`;
 
         return (
-          <Tooltip
-            key={index}
-            text={tagObject.description}
-            anchorEl="#__docusaurus"
-            id={id}>
-            <TagComp key={index} {...tagObject} />
-          </Tooltip>
+          <TagComp key={index} {...tagObject} />
         );
       })}
     </>
@@ -80,9 +74,6 @@ function ShowcaseCard({project}: {project: Project}) {
               {project.title}
             </Link>
           </h4>
-          {project.tags.includes('favorite') && (
-            <FavoriteIcon svgClass={styles.svgIconFavorite} size="small" />
-          )}
           {project.source && (
             <Link
               href={project.source}

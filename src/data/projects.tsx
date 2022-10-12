@@ -125,8 +125,6 @@ function sortProjects() {
   let result = Projects;
   // Sort by site name
   result = sortBy(result, (project) => project.title.toLowerCase());
-  // Sort by favorite tag, favorites first
-  result = sortBy(result, (project) => !project.tags.includes('favorite'));
   return result;
 }
 

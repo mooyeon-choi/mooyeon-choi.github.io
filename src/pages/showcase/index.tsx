@@ -134,32 +134,27 @@ function ShowcaseFilters() {
       </div>
       <ul className={clsx('clean-list', styles.checkboxList)}>
         {TagList.map((tag, i) => {
-          const {label, description, color} = Tags[tag];
+          const {label, color} = Tags[tag];
           const id = `showcase_checkbox_id_${tag}`;
 
           return (
             <li key={i} className={styles.checkboxListItem}>
-              <ShowcaseTooltip
+              <ShowcaseTagSelect
+                tag={tag}
                 id={id}
-                text={description}
-                anchorEl="#__docusaurus">
-                <ShowcaseTagSelect
-                  tag={tag}
-                  id={id}
-                  label={label}
-                  icon={
-                    <span
-                      style={{
-                        backgroundColor: color,
-                        width: 10,
-                        height: 10,
-                        borderRadius: '50%',
-                        marginLeft: 8,
-                      }}
-                    />
-                  }
-                />
-              </ShowcaseTooltip>
+                label={label}
+                icon={
+                  <span
+                    style={{
+                      backgroundColor: color,
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      marginLeft: 8,
+                    }}
+                  />
+                }
+              />
             </li>
           );
         })}
@@ -167,13 +162,6 @@ function ShowcaseFilters() {
     </section>
   );
 }
-
-const favoriteProjects = sortedProjects.filter((project) =>
-  project.tags.includes('favorite'),
-);
-const otherProjects = sortedProjects.filter(
-  (project) => !project.tags.includes('favorite'),
-);
 
 function SearchBar() {
   const history = useHistory();
@@ -227,59 +215,20 @@ function ShowcaseCards() {
 
   return (
     <section className="margin-top--lg margin-bottom--xl">
-      {filteredProjects.length === sortedProjects.length ? (
-        <>
-          <div className={styles.showcaseFavorite}>
-            <div className="container">
-              <div
-                className={clsx(
-                  'margin-bottom--md',
-                  styles.showcaseFavoriteHeader,
-                )}>
-                <h2>
-                    Our favorites
-                </h2>
-                <SearchBar />
-              </div>
-              <ul
-                className={clsx(
-                  'container',
-                  'clean-list',
-                  styles.showcaseList,
-                )}>
-                {favoriteProjects.map((project) => (
-                  <ShowcaseCard key={project.title} project={project} />
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="container margin-top--lg">
-            <h2 className={styles.showcaseHeader}>
-              All sites
-            </h2>
-            <ul className={clsx('clean-list', styles.showcaseList)}>
-              {otherProjects.map((project) => (
-                <ShowcaseCard key={project.title} project={project} />
-              ))}
-            </ul>
-          </div>
-        </>
-      ) : (
-        <div className="container">
-          <div
-            className={clsx(
-              'margin-bottom--md',
-              styles.showcaseFavoriteHeader,
-            )}>
-            <SearchBar />
-          </div>
-          <ul className={clsx('clean-list', styles.showcaseList)}>
-            {filteredProjects.map((project) => (
-              <ShowcaseCard key={project.title} project={project} />
-            ))}
-          </ul>
+      <div className="container">
+        <div
+          className={clsx(
+            'margin-bottom--md',
+            styles.showcaseFavoriteHeader,
+          )}>
+          <SearchBar />
         </div>
-      )}
+        <ul className={clsx('clean-list', styles.showcaseList)}>
+          {filteredProjects.map((project) => (
+            <ShowcaseCard key={project.title} project={project} />
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
