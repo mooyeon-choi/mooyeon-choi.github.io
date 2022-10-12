@@ -2,46 +2,76 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# TIL (Today I Learned)
 
-Let's discover **Docusaurus in less than 5 minutes**.
+공부한 내용들을 정리해둔 Repository 입니다.
 
-## Getting Started
+## 목록
 
-Get started by **creating a new site**.
+### 도움되는 자료들
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+개인적으로 공부하면서 찾아보다가 정리가 잘된📚
+깃헙, 유튜브, 블로그 자료들을 종류별로 모아둔 것들
 
-### What you'll need
+<hr/>
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+### Git 사용법
 
-## Generate a new site
+📝기본적인 깃 사용법
 
-Generate a new Docusaurus site using the **classic template**.
+<hr/>
 
-The classic template will automatically be added to your project after you run the command:
+### Markdown
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+PR (Pull Request)📋 설명을 작성할 때도 쓰이고
+많은 디지털 노트📔를 사용할 때도 간편하게 키보드💻로 작성할 수 있게 도와주는 markdown의 사용법을 알아보자
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+<hr/>
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+### 초기 세팅
 
-## Start your site
+Jira, Trello, Slack 연동하기 등 개발 초기에 필요한 환경 세팅 방법
 
-Run the development server:
+<hr/>
 
-```bash
-cd my-website
-npm run start
-```
+### Web
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+HTML, CSS, JavaScript 등 웹개발 기초지식부터🎓
+React Library, Vue.js Framework를 이용한 프론트엔드 개발,
+JavaScript canvas를 활용한 🎈Interactive한 화면,
+Java Spring, Django로 백앤드 서버개발,
+Oracle, MySQL을 이용한 DB관리까지
+Web 개발에 필요한 지식들
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+<hr/>
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+### Problem Solving
+
+📊Codeforces 사이트를 통한 PS Contest 참여,
+Baekjoon, Programmers ✒️문제풀이까지
+
+<hr/>
+
+### CS
+
+기본적인 Computer Science💻를 이해하기 위해
+Algorithm, DataStructure, Network, OS 등
+기본적인 동작 원리를 이해해보자
+
+<hr/>
+
+### Language
+
+JavaScript부터 Python, Java, C++까지 다양한 언어들의 사용법과 동작원리를 이해하자!
+
+<hr/>
+
+### Machine Learning
+
+TensorFlow를 활용한 Image Captioning, Pose Estimation을 실습해보고 책을 보며 공부한 내용
+
+<hr/>
+
+### Others
+
+📚 그 외에 추가적으로 공부한 잡다한 것들 모음
