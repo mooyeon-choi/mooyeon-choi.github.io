@@ -89,11 +89,3 @@
 .tag .textLabel {
   margin-left: 8px;
 }
-
-.tag .colorLabel {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  margin-left: 6px;
-  margin-right: 6px;
-}

@@ -22,10 +22,30 @@ import Tooltip from '../ShowcaseTooltip';
 import styles from './styles.module.css';
 
 const TagComp = React.forwardRef<HTMLLIElement, Tag>(
-  ({label, color}, ref) => (
+  ({label, image}, ref) => (
     <li ref={ref} className={styles.tag}>
       <span className={styles.textLabel}>{label.toLowerCase()}</span>
-      <span className={styles.colorLabel} style={{backgroundColor: color}} />
+      {image.charAt(0) == '#' ? 
+      <span 
+        style={{
+          backgroundColor: image,
+          width: 7,
+          height: 7,
+          borderRadius: '50%',
+          marginLeft: 6,
+          marginRight: 6,
+        }}
+      />
+      :<img 
+        src={image} 
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: '50%',
+          marginLeft: 6,
+          marginRight: 6,
+        }}
+      />}
     </li>
   ),
 );

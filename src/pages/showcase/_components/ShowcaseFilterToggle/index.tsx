@@ -9,7 +9,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import clsx from 'clsx';
 import {useHistory, useLocation} from '@docusaurus/router';
 
-import {prepareUserState} from '../../index';
+import {prepareProjectState} from '../../index';
 
 import styles from './styles.module.css';
 
@@ -40,7 +40,7 @@ export default function ShowcaseFilterToggle(): JSX.Element {
     history.push({
       ...location,
       search: searchParams.toString(),
-      state: prepareUserState(),
+      state: prepareProjectState(),
     });
   }, [operator, location, history]);
 

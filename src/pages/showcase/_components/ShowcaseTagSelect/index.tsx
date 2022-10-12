@@ -86,8 +86,8 @@ function ShowcaseTagSelect(
         {...rest}
       />
       <label ref={ref} htmlFor={id} className={styles.checkboxLabel}>
-        {label}
         {icon}
+        {label}
       </label>
     </>
   );

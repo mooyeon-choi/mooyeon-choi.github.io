@@ -134,7 +134,7 @@ function ShowcaseFilters() {
       </div>
       <ul className={clsx('clean-list', styles.checkboxList)}>
         {TagList.map((tag, i) => {
-          const {label, color} = Tags[tag];
+          const {label, image} = Tags[tag];
           const id = `showcase_checkbox_id_${tag}`;
 
           return (
@@ -144,13 +144,22 @@ function ShowcaseFilters() {
                 id={id}
                 label={label}
                 icon={
+                  image.charAt(0) == '#' ?
                   <span
                     style={{
-                      backgroundColor: color,
+                      backgroundColor: image,
                       width: 10,
                       height: 10,
                       borderRadius: '50%',
-                      marginLeft: 8,
+                      marginRight: 8,
+                    }}
+                  />
+                  : <img
+                    src={image}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      marginRight: 8,
                     }}
                   />
                 }

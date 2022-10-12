@@ -40,6 +40,9 @@ import {sortBy} from '@site/src/utils/jsUtils';
 export type TagType =
   // DO NOT USE THIS TAG: we choose sites to add to favorites
   | 'javascript'
+  | 'react'
+  | 'vuejs'
+  | 'canvas'
 
 // Add sites to this list
 // prettier-ignore
@@ -50,7 +53,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-1.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-1/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-1',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
   {
     title: 'kinetic-typography-2',
@@ -58,7 +61,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-2.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-2/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-2',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
   {
     title: 'kinetic-typography-3',
@@ -66,7 +69,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-3.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-3/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-3',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
   {
     title: 'kinetic-typography-4',
@@ -74,7 +77,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-4.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-4/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-4',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
   {
     title: 'kinetic-typography-6',
@@ -82,7 +85,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-6.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-6/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-6',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
   {
     title: 'kinetic-typography-7',
@@ -90,7 +93,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-7.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-7/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-7',
-    tags: ['javascript'],
+    tags: ['javascript', 'canvas'],
   },
 
   /*
@@ -110,13 +113,25 @@ export type Project = {
 
 export type Tag = {
   label: string;
-  color: string;
+  image: string;
 };
 
 export const Tags: {[type in TagType]: Tag} = {
   javascript: {
     label: 'JavaScript',
-    color: '#f0db4f',
+    image: 'https://icongr.am/devicon/javascript-original.svg?size=16&color=currentColor',
+  },
+  react: {
+    label: 'React',
+    image: 'https://icongr.am/devicon/react-original.svg?size=16&color=currentColor',
+  },
+  vuejs: {
+    label: 'Vuejs',
+    image: 'https://icongr.am/devicon/vuejs-original.svg?size=16&color=currentColor',
+  },
+  canvas: {
+    label: 'Canvas',
+    image: '#e9669e',
   },
 };
 
