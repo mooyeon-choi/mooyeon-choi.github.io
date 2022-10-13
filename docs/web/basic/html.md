@@ -155,7 +155,7 @@
 </body>
 ```
 
-![Tags Page](./images/tags_page.PNG)
+![Tags Page](./images/tags_page.png)
 
 
 
@@ -182,7 +182,7 @@
 </body>
 ```
 
-![Semantic Page](./images/semantic_page.PNG)
+![Semantic Page](./images/semantic_page.png)
 
 
 
@@ -261,7 +261,7 @@ width/height : 너비/높이
 <a href="https://google.com">구글로 가기</a>
 ```
 
-![more tags](./images/more_tags_page.PNG)
+![more tags](./images/more_tags_page.png)
 
 
 
@@ -313,7 +313,7 @@ width/height : 너비/높이
 </section>
 ```
 
-![Markup Page](./images/markup_page.PNG)
+![Markup Page](./images/markup_page.png)
 
 
 
@@ -351,7 +351,7 @@ width/height : 너비/높이
 </table>
 ```
 
-![Table Page](./images/table_page.PNG)
+![Table Page](./images/table_page.png)
 
 
 
@@ -404,4 +404,4 @@ selected, disabled를 사용할 수 있다.
 </form>
 ```
 
-![Form Page](./images/form_page.PNG)
+![Form Page](./images/form_page.png)
