@@ -196,7 +196,7 @@ h1, h2, h3, h4, h5, h6, .silver {
 >
 > em은 상위 요소의 배수!
 
-![remEm](./images/remEm.PNG)
+![remEm](./images/remEm.png)
 
 ```css
 ol, ol li {
