@@ -42,18 +42,83 @@ export type TagType =
   | 'javascript'
   | 'react'
   | 'vuejs'
-  | 'canvas'
+  | 'canvasTutorial'
+  | 'pixi'
 
 // Add sites to this list
 // prettier-ignore
 const Projects: Project[] = [
+  {
+    title: 'interactive-3d-cube',
+    description: '마우스로 움직일 수 있는 3D Cube',
+    preview: '/img/showcase/interactive-3d-cube.png',
+    website: 'https://mooyeon-choi.github.io/interactive-3d-cube/',
+    source: 'https://github.com/mooyeon-choi/interactive-3d-cube',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'aircap-wave',
+    description: '',
+    preview: '/img/showcase/aircap-wave.png',
+    website: 'https://mooyeon-choi.github.io/aircap-wave/',
+    source: 'https://github.com/mooyeon-choi/aircap-wave',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'bouncing-ball',
+    description: '화면 크기에 맞춰 통통 튀어다니는 공',
+    preview: '/img/showcase/bouncing-ball.png',
+    website: 'https://mooyeon-choi.github.io/bouncing-ball/',
+    source: 'https://github.com/mooyeon-choi/bouncing-ball',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'moving-waves',
+    description: '다양한 색상의 움직이는 파도',
+    preview: '/img/showcase/moving-waves.png',
+    website: 'https://mooyeon-choi.github.io/moving-waves/',
+    source: 'https://github.com/mooyeon-choi/moving-waves',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'rotating-polygon',
+    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    preview: '/img/showcase/rotating-polygon.png',
+    website: 'https://mooyeon-choi.github.io/rotating-polygon/',
+    source: 'https://github.com/mooyeon-choi/rotating-polygon',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'bounce-strings',
+    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    preview: '/img/showcase/bounce-strings.png',
+    website: 'https://mooyeon-choi.github.io/bounce-strings/',
+    source: 'https://github.com/mooyeon-choi/bounce-strings',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'rotating-globe',
+    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    preview: '/img/showcase/rotating-globe.png',
+    website: 'https://mooyeon-choi.github.io/rotating-globe/',
+    source: 'https://github.com/mooyeon-choi/rotating-globe',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'hanging-box',
+    description: '',
+    preview: '/img/showcase/hanging-box.png',
+    website: 'https://mooyeon-choi.github.io/hanging-box/',
+    source: 'https://github.com/mooyeon-choi/hanging-box',
+    tags: ['javascript', 'canvasTutorial'],
+  },
   {
     title: 'kinetic-typography-1',
     description: '',
     preview: '/img/showcase/kinetic-typography-1.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-1/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-1',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
   {
     title: 'kinetic-typography-2',
@@ -61,7 +126,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-2.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-2/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-2',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
   {
     title: 'kinetic-typography-3',
@@ -69,7 +134,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-3.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-3/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-3',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
   {
     title: 'kinetic-typography-4',
@@ -77,7 +142,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-4.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-4/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-4',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
   {
     title: 'kinetic-typography-6',
@@ -85,7 +150,7 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-6.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-6/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-6',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
   {
     title: 'kinetic-typography-7',
@@ -93,8 +158,42 @@ const Projects: Project[] = [
     preview: '/img/showcase/kinetic-typography-7.png',
     website: 'https://mooyeon-choi.github.io/kinetic-typography-7/',
     source: 'https://github.com/mooyeon-choi/kinetic-typography-7',
-    tags: ['javascript', 'canvas'],
+    tags: ['javascript', 'pixi'],
   },
+  {
+    title: 'ink-smear',
+    description: '',
+    preview: '/img/showcase/ink-smear.png',
+    website: 'https://mooyeon-choi.github.io/ink-smear/',
+    source: 'https://github.com/mooyeon-choi/ink-smear',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'react-habit-tracker',
+    description: '',
+    preview: '/img/showcase/react-habit-tracker.png',
+    website: 'https://mooyeon-choi.github.io/react-habit-tracker/',
+    source: 'https://github.com/mooyeon-choi/react-habit-tracker',
+    tags: ['react'],
+  },
+  {
+    title: 'vue-habit-tracker',
+    description: '',
+    preview: '/img/showcase/vue-habit-tracker.png',
+    website: 'https://mooyeon-choi.github.io/vue-habit-tracker/',
+    source: 'https://github.com/mooyeon-choi/vue-habit-tracker',
+    tags: ['vuejs'],
+  },
+  {
+    title: 'My to do list',
+    description: 'Trello Clone Coding',
+    preview: '/img/showcase/trello_clone_coding.png',
+    website: 'https://mooyeon-choi.github.io/trello_clone_coding/',
+    source: 'https://github.com/mooyeon-choi/trello_clone_coding',
+    tags: ['javascript', 'react'],
+  },
+
+
 
   /*
   Pro Tip: add your site in alphabetical order.
@@ -129,10 +228,14 @@ export const Tags: {[type in TagType]: Tag} = {
     label: 'Vuejs',
     image: 'https://icongr.am/devicon/vuejs-original.svg?size=16&color=currentColor',
   },
-  canvas: {
-    label: 'Canvas',
+  canvasTutorial: {
+    label: 'Canvas-tutorial',
     image: '#e9669e',
   },
+  pixi: {
+    label: 'PIXI',
+    image: '#39ca30'
+  }
 };
 
 export const TagList = Object.keys(Tags) as TagType[];
