@@ -21,3 +21,10 @@
   align-items: center;
   justify-content: center;
 }
+
+.gameWindow {
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - 3.75rem);
+  overflow: hidden;
+}
