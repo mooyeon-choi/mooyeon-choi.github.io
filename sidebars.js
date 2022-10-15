@@ -43,7 +43,41 @@ const sidebars = {
             'web/basic/css',
             'web/basic/javascript'
           ]
-        }
+        },
+        {
+          type: 'category',
+          label: 'Frontend',
+          link: {type: 'doc', id: 'web/frontend/intro'},
+          items: [
+            'web/frontend/angular_vs_react_vs_vue',
+            {
+              type: 'category',
+              label: 'Vanilla JS',
+              link: {type: 'doc', id: 'web/frontend/vanillaJs/intro'},
+              items: [
+                'web/frontend/vanillaJs/webadvanced',
+                'web/frontend/vanillaJs/webapi',
+                {
+                  type: 'category',
+                  label: 'Vanills JavaScript Basic',
+                  link: {type: 'doc', id: 'web/frontend/vanillaJs/vanillaJsBasic/intro'},
+                  items: []
+                },
+                'web/frontend/vanillaJs/webadvanced',
+                'web/frontend/vanillaJs/webapi',
+                'web/frontend/vanillaJs/makeComponents'
+              ]
+            },
+            {
+              type: 'category',
+              label: 'TypeScript',
+              link: {type: 'doc', id: 'web/frontend/typeScript/intro'},
+              items: [
+                'web/frontend/typeScript/tsIn5min'
+              ]
+            },
+          ]
+        },
       ],
     }
   ],
