@@ -63,8 +63,6 @@ const sidebars = {
                   link: {type: 'doc', id: 'web/frontend/vanillaJs/vanillaJsBasic/intro'},
                   items: []
                 },
-                'web/frontend/vanillaJs/webadvanced',
-                'web/frontend/vanillaJs/webapi',
                 'web/frontend/vanillaJs/makeComponents'
               ]
             },
