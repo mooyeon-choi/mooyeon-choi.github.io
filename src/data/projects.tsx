@@ -187,7 +187,7 @@ const Projects: Project[] = [
   {
     title: 'My to do list',
     description: 'Trello Clone Coding',
-    preview: '/img/showcase/trello_clone_coding.png',
+    preview: '/img/showcase/trello-clone-coding.png',
     website: 'https://mooyeon-choi.github.io/trello_clone_coding/',
     source: 'https://github.com/mooyeon-choi/trello_clone_coding',
     tags: ['javascript', 'react'],
