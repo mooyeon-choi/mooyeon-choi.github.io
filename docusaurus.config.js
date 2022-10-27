@@ -68,7 +68,7 @@ const config = {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'TIL',
+            label: '개발 공부',
           },
           {to: '/blog', label: '기록', position: 'left'},
           {to: 'showcase', label: 'Showcase', position: 'left'},

@@ -22,7 +22,6 @@ const sidebars = {
     {
       type: 'category',
       label: '개발 준비',
-      link: {type: 'doc', id: 'preparation/intro'},
       items: [
         'preparation/kanban_vs_scrum',
         'preparation/jira',
@@ -37,7 +36,6 @@ const sidebars = {
         {
           type: 'category',
           label: 'Web Basic',
-          link: {type: 'doc', id: 'web/basic/intro'},
           items: [
             'web/basic/html',
             'web/basic/css',
@@ -47,29 +45,21 @@ const sidebars = {
         {
           type: 'category',
           label: 'Frontend',
-          link: {type: 'doc', id: 'web/frontend/intro'},
           items: [
             'web/frontend/angular_vs_react_vs_vue',
             {
               type: 'category',
               label: 'Vanilla JS',
-              link: {type: 'doc', id: 'web/frontend/vanillaJs/intro'},
               items: [
                 'web/frontend/vanillaJs/webadvanced',
                 'web/frontend/vanillaJs/webapi',
-                {
-                  type: 'category',
-                  label: 'Vanills JavaScript Basic',
-                  link: {type: 'doc', id: 'web/frontend/vanillaJs/vanillaJsBasic/intro'},
-                  items: []
-                },
+                'web/frontend/vanillaJs/vanillaJSBasic',
                 'web/frontend/vanillaJs/makeComponents'
               ]
             },
             {
               type: 'category',
               label: 'TypeScript',
-              link: {type: 'doc', id: 'web/frontend/typeScript/intro'},
               items: [
                 'web/frontend/typeScript/tsIn5min'
               ]
@@ -79,19 +69,6 @@ const sidebars = {
       ],
     }
   ],
-
-  // But you can create a sidebar manually
-  /*
-  tutorialSidebar: [
-    'intro',
-    'hello',
-    {
-      type: 'category',
-      label: 'Tutorial',
-      items: ['tutorial-basics/create-a-document'],
-    },
-  ],
-   */
 };
 
 module.exports = sidebars;
