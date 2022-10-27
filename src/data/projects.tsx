@@ -90,7 +90,7 @@ const Projects: Project[] = [
   },
   {
     title: 'bounce-strings',
-    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    description: '움직이는 공에 의해 튕겨지는 줄',
     preview: '/img/showcase/bounce-strings.png',
     website: 'https://mooyeon-choi.github.io/bounce-strings/',
     source: 'https://github.com/mooyeon-choi/bounce-strings',
@@ -98,7 +98,7 @@ const Projects: Project[] = [
   },
   {
     title: 'rotating-globe',
-    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    description: '구 형태로 회전하는 점들',
     preview: '/img/showcase/rotating-globe.png',
     website: 'https://mooyeon-choi.github.io/rotating-globe/',
     source: 'https://github.com/mooyeon-choi/rotating-globe',
