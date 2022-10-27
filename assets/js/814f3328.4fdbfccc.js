@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[2535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Vue.js \uc2dc\uc791\ud558\uae30","permalink":"/blog/how to start vue.js"},{"title":"Vue.js Basic","permalink":"/blog/Vuejs basic"},{"title":"Welcome","permalink":"/blog/welcome"}]}')}}]);
