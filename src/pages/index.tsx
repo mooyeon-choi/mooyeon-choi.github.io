@@ -14,7 +14,7 @@ export default function Home(): JSX.Element {
     <Layout
       title={`Hello from ${siteConfig.title}`}>
       <main>
-        <iframe className={styles.gameWindow} src='https://mylog.site/htmlGame/' />
+        <iframe className={styles.gameWindow} src='https://mooyeon.com/htmlGame/' />
       </main>
     </Layout>
   );
