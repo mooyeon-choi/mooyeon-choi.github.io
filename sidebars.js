@@ -30,6 +30,27 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Languages',
+      items: [
+        {
+          type: 'category',
+          label: 'JavaScript',
+          items: [
+            'languages/javaScript/javascript_basic',
+            'languages/javaScript/data_type',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'TypeScript',
+          items: [
+            'languages/typeScript/tsIn5min',
+          ]
+        }
+      ]
+    },
+    {
+      type: 'category',
       label: 'Web',
       link: {type: 'doc', id: 'web/intro'},
       items: [
@@ -39,7 +60,6 @@ const sidebars = {
           items: [
             'web/basic/html',
             'web/basic/css',
-            'web/basic/javascript'
           ]
         },
         {
@@ -59,9 +79,11 @@ const sidebars = {
             },
             {
               type: 'category',
-              label: 'TypeScript',
+              label: 'React',
               items: [
-                'web/frontend/typeScript/tsIn5min'
+                'web/frontend/react/getting_started',
+                'web/frontend/react/react_basic',
+                'web/frontend/react/pure_component',
               ]
             },
           ]

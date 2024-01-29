@@ -1,4 +1,4 @@
-# JavaScript
+# JavaScript Basic
 
 페이지📄를 동적으로 만들어주기 위해 필요한 JavaScript!!
 그 사용법을 낱낱이 파해쳐보자!
