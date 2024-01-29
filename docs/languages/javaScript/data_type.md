@@ -62,7 +62,7 @@
 
 ### 1. 변수 선언
 
- 변수 선언에 관한 것은 [Web/basic](./../../../web/basic/javaScript) 에서 다루었다. 여기서는 방법이 아닌 동작 원리를 알아본다.
+ 변수 선언에 관한 것은 [Web/basic](/docs/languages/javaScript/javascript_basic) 에서 다루었다. 여기서는 방법이 아닌 동작 원리를 알아본다.
 
 ```js
 var a;
