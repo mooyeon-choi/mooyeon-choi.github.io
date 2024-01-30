@@ -36,8 +36,8 @@ const sidebars = {
           type: 'category',
           label: 'JavaScript',
           items: [
-            'languages/javaScript/javascript_basic',
-            'languages/javaScript/data_type',
+            'languages/javaScript/javascriptBasic',
+            'languages/javaScript/dataType',
           ]
         },
         {
@@ -66,7 +66,7 @@ const sidebars = {
           type: 'category',
           label: 'Frontend',
           items: [
-            'web/frontend/angular_vs_react_vs_vue',
+            'web/frontend/angularVsReactVsVue',
             {
               type: 'category',
               label: 'Vanilla JS',
@@ -81,9 +81,17 @@ const sidebars = {
               type: 'category',
               label: 'React',
               items: [
-                'web/frontend/react/getting_started',
-                'web/frontend/react/react_basic',
-                'web/frontend/react/pure_component',
+                'web/frontend/react/gettingStarted',
+                'web/frontend/react/reactBasic',
+                'web/frontend/react/pureComponent',
+              ]
+            },
+            {
+              type: 'category',
+              label: 'Vue',
+              items: [
+                'web/frontend/vue/gettingStarted',
+                'web/frontend/vue/vueBasic',
               ]
             },
           ]
