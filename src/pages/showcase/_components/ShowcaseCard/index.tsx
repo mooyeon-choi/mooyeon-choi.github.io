@@ -9,7 +9,6 @@ import React from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Translate from '@docusaurus/Translate';
-import FavoriteIcon from '@site/src/components/svgIcons/FavoriteIcon';
 import {
   Tags,
   TagList,
