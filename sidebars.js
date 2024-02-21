@@ -97,6 +97,26 @@ const sidebars = {
           ]
         },
       ],
+    },
+    {
+      type: 'category',
+      label: 'app',
+      items: [
+        {
+          type: 'category',
+          label: 'Flutter',
+          items: [
+            {
+              type: 'category',
+              label: 'Testing',
+              link: {type: 'doc', id: 'app/flutter/testing/intro'},
+              items: [
+                'app/flutter/testing/how-to-start-testing-flutter',
+              ]
+            }
+          ]
+        },
+      ]
     }
   ],
 };
