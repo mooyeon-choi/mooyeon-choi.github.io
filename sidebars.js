@@ -100,7 +100,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'app',
+      label: 'App',
       items: [
         {
           type: 'category',
