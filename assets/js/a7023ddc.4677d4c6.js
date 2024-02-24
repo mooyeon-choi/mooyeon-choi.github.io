@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[1713],{3457:e=>{e.exports=JSON.parse('[{"label":"Vuejs","permalink":"/blog/tags/vuejs","count":1},{"label":"frontend","permalink":"/blog/tags/frontend","count":1}]')}}]);

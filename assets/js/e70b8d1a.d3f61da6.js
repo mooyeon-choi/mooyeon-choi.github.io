@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[757],{2012:s=>{s.exports=JSON.parse('{"label":"Vuejs","permalink":"/blog/tags/vuejs","allTagsPath":"/blog/tags","count":2}')}}]);
