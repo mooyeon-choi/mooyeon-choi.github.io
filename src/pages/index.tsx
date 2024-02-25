@@ -1,20 +1,129 @@
 import React, {useEffect} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-
-import Room from '../utils/introRoom/room';
+import './index.module.css';
 
 export default function Home(): JSX.Element {
   const {siteConfig} = useDocusaurusContext();
+
   useEffect(() => {
-    Room();
+    const container = document.querySelector('#container');
   }, [])
 
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}>
       <main>
-        <canvas id='introCanvas' width={2000} height={1000}></canvas>
+        <div id='container'>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+          <div className='text'>T</div>
+          <div className='text'>E</div>
+          <div className='text'>S</div>
+          <div className='text'>T</div>
+        </div>
       </main>
     </Layout>
   );
