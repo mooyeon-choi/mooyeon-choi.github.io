@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[7472],{5513:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Evan You\uac00 \ub9d0\ud558\ub294 2024\ub144 Vue.js\uc758 \uc778\uc0ac\uc774\ud2b8 \ubc0f \ud2b8\ub80c\ub4dc","permalink":"/blog/Vue.js trend","unlisted":false}]}')}}]);
