@@ -1,7 +1,7 @@
 ---
 slug: Vue.js trend
 title: Evan You가 말하는 2024년 Vue.js의 인사이트 및 트렌드
-authors: mylog
+authors: mooyeon
 tags: [Vuejs, frontend]
 date: 2024-02-24T20:25
 ---
