@@ -2,7 +2,7 @@
 slug: import-attributes
 title: Import 속성 (attributes)
 authors: mooyeon
-tags: [V8 v12.3, frontend, JavaScript]
+tags: [V8, v12.3, frontend, JavaScript]
 date: 2024-02-25T20:01
 ---
 
@@ -39,7 +39,7 @@ V8은 v9.1에서 [import 어설션(assertions)](https://chromestatus.com/feature
 
 하지만 어설션 전용 시맨틱에는 치명적인 결함이 있었습니다. 웹에서는 요청되는 리소스 유형에 따라 HTTP 요청의 형태가 달라집니다. 예를 들어 [Accept 헤더](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept)는 응답의 MIME 유형에 영향을 미치고, [Sec-Fetch-Dest 메타데이터 헤더](https://web.dev/articles/fetch-metadata)는 웹 서버가 요청을 수락할지 거부할지에 영향을 줍니다. import 어설션은 모듈을 로드하는 방법에 영향을 줄 수 없으므로 HTTP 요청의 형태를 변경할 수 없습니다. 요청되는 리소스의 유형은 사용되는 [콘텐츠 보안 정책(CSP, Content Security Policies)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)에도 영향을 미치므로 import 어설션이 웹의 보안 모델에서 올바르게 작동하지 않을 수 있습니다.
 
-import 속성은 어설션 전용 시멘틱을 완화하여 속성이 모듈 로드 방식에 영향을 줄 수 있도록 합니다. 즉, import 속성은 적절한 **Accept** 및 **Sec-Fetch-Dest** 헤더를 포함하는 HTTP 요청을 생성할 수 있습니다. 구문을 새 시멘틱과 일치시키기 위해 이전 **assert** 키워드는 **with**으로 업데이트됩니다.
+`import` 속성은 어설션 전용 시멘틱을 완화하여 속성이 모듈 로드 방식에 영향을 줄 수 있도록 합니다. 즉, import 속성은 적절한 **Accept** 및 **Sec-Fetch-Dest** 헤더를 포함하는 HTTP 요청을 생성할 수 있습니다. 구문을 새 시멘틱과 일치시키기 위해 이전 **assert** 키워드는 **with**으로 업데이트됩니다.
 
 ```js
 // main.mjs
