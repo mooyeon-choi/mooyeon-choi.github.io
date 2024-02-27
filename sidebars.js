@@ -116,6 +116,14 @@ const sidebars = {
                 'app/flutter/testing/providerUnitTest',
                 'app/flutter/testing/widgetTest',
               ]
+            }, {
+              type: 'category',
+              label: 'Bloc',
+              link: {type: 'doc', id: 'app/flutter/bloc/intro'},
+              items: [
+                'app/flutter/bloc/howToStartBlocWithFlutter',
+                'app/flutter/bloc/coreConcepts',
+              ]
             }
           ]
         },
