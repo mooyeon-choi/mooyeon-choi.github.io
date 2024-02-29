@@ -122,7 +122,8 @@ const sidebars = {
               link: {type: 'doc', id: 'app/flutter/bloc/intro'},
               items: [
                 'app/flutter/bloc/howToStartBlocWithFlutter',
-                'app/flutter/bloc/coreConcepts',
+                'app/flutter/bloc/coreConceptsPackageBloc',
+                'app/flutter/bloc/coreConceptsPackageFlutterBloc',
               ]
             }
           ]
