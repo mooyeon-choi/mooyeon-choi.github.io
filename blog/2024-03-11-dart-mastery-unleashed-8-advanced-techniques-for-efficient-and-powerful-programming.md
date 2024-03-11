@@ -3,7 +3,7 @@ slug: monorepo
 title: Dart 완전 정복 - 효율적이고 강력한 프로그래밍을 위한 8가지 고급 테크닉
 authors: mooyeon
 tags: [dart, frontend]
-date: 2024-03-09T21:40
+date: 2024-03-11T21:50
 ---
 
 > Dart에 관한 도움이 될만한 자료들을 번역
