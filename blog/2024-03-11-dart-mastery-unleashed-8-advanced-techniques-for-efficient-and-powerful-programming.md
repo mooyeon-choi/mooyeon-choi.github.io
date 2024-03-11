@@ -1,5 +1,5 @@
 ---
-slug: monorepo
+slug: dart-mastery-unleashed-8-advanced-techniques-for-efficient-and-powerful-programming
 title: Dart 완전 정복 - 효율적이고 강력한 프로그래밍을 위한 8가지 고급 테크닉
 authors: mooyeon
 tags: [dart, frontend]
