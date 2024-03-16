@@ -36,7 +36,10 @@ import NonBlockingPaintingCodeSandBoxIframe from '@site/blog/components/2024-03-
 - useEffect에 대해 좀 더 자세히 알아보기
 
 4. Next.js의 useLayoutEffect와 기타 SSR 프레임워크들
-   :::
+
+:::
+
+<!--truncate-->
 
 DOM 측정값을 기반으로 요소를 변경하는 방법에 대해 살펴봅니다. useEffect의 문제는 무엇이며, 그 문제를 useLayoutEffect로 어떻게 해결하는지, 브라우저 페인팅이 무엇이며, 여기서 SSR은 어떤 역할을 하는지 알아보겠습니다.
 
