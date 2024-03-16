@@ -17,3 +17,5 @@ const NonFlickeringCodeSandBoxIframe = () => (
 );
 
 export default NonFlickeringCodeSandBoxIframe;
+
+// Path: blog/components/2024-03-16-nomore-flickering-ui/nonflickeringCodeSandBoxIframe.jsx
