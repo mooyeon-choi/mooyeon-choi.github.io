@@ -24,6 +24,7 @@
     "prism-react-renderer": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-twitter-embed": "^4.0.4",
     "three": "^0.161.0"
   },
   "devDependencies": {
