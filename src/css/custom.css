@@ -49,9 +49,9 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -webkit-flex-flow: row wrap;
-  -ms-flex-flow: row wrap;
-  flex-flow: row wrap;
+  -webkit-flex-flow: row;
+  -ms-flex-flow: row;
+  flex-flow: row;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
@@ -60,13 +60,13 @@
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 0 0 0 290px;
   margin: 0;
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden;
   background-color: #222831;
   z-index: 1;
   -webkit-perspective: 500px;
@@ -76,6 +76,8 @@
 }
 
 #text-object {
+  flex-shrink: 1;
+  min-width: 0;
   color: #EEEEEE;
   text-align: center;
   font: 10rem 'TeXGyreAdventorBold';
@@ -110,6 +112,8 @@
 }
 
 #dot-object {
+  flex-shrink: 1;
+  min-width: 0;
   background: #76ABAE;
   margin: 100px 20px 0 20px;
   width: 40px;
@@ -256,6 +260,8 @@
 }
 
 .text-swing {
+  flex-shrink: 1;
+  min-width: 0;
   margin-top: 25px;
   color: #76ABAE;
   text-align: center;
@@ -318,3 +324,42 @@
   }
 }
 
+
+@media (max-width: 600px) {
+  #text-object {
+    font: 3.5rem 'TeXGyreAdventorBold';
+  }
+  .text-swing {
+    margin-top: 0.6rem;
+    font: 3rem 'TeXGyreAdventorBold';
+  }
+  #dot-object {
+    margin: 1.9rem 0.5rem 0 0.5rem;
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  @-webkit-keyframes roll-out-right-and-back {
+    0%, 100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+    }
+    50% {
+      -webkit-transform: translateX(130px);
+              transform: translateX(130px);
+    }
+  }
+
+  @keyframes roll-out-right-and-back {
+    0%, 100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+    }
+    50% {
+      -webkit-transform: translateX(130px);
+              transform: translateX(130px);
+    }
+  }
+}
