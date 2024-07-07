@@ -327,16 +327,16 @@
 
 @media (max-width: 600px) {
   #text-object {
-    font: 3.5rem 'TeXGyreAdventorBold';
+    font: 3rem 'TeXGyreAdventorBold';
   }
   .text-swing {
     margin-top: 0.6rem;
-    font: 3rem 'TeXGyreAdventorBold';
+    font: 2.5rem 'TeXGyreAdventorBold';
   }
   #dot-object {
     margin: 1.9rem 0.5rem 0 0.5rem;
-    width: 1rem;
-    height: 1rem;
+    width: 0.8rem;
+    height: 0.8rem;
   }
 }
 
@@ -347,8 +347,8 @@
               transform: translateX(0);
     }
     50% {
-      -webkit-transform: translateX(130px);
-              transform: translateX(130px);
+      -webkit-transform: translateX(120px);
+              transform: translateX(120px);
     }
   }
 
@@ -358,8 +358,8 @@
               transform: translateX(0);
     }
     50% {
-      -webkit-transform: translateX(130px);
-              transform: translateX(130px);
+      -webkit-transform: translateX(120px);
+              transform: translateX(120px);
     }
   }
 }
