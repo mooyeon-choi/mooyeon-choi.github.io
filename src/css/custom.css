@@ -78,10 +78,14 @@
 #text-object {
   flex-shrink: 1;
   min-width: 0;
-  color: #EEEEEE;
   text-align: center;
   font: 10rem 'TeXGyreAdventorBold';
+  background-color: #222831;
   text-transform: none;
+}
+
+#text-object.initial {
+  color: #EEEEEE;
   -webkit-animation: tracking-in-expand 2s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
           animation: tracking-in-expand 2s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
 }
@@ -324,6 +328,90 @@
   }
 }
 
+#pacman {
+  width: 15rem;
+  height: 15rem;
+  border-radius: 50%;
+  background: transparent;
+  position: absolute;
+  margin-top: 20px;
+  animation: slide-left 5s linear;
+  animation-delay: 9s;
+}
+
+@keyframes slide-left {
+  from {
+    background: #F2D648;
+    transform: translateX(-800%);
+  }
+  to {
+    background: #F2D648;
+    transform: translateX(800%);
+  }
+}
+
+#mouth {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(100% 74%, 44% 48%, 100% 21%);
+  animation-name: eat;
+  animation-duration: 0.7s;
+  animation-iteration-count: 7;
+  animation-delay: 9s;
+}
+
+@keyframes eat {
+  0% {
+    background: #222831;
+    clip-path: polygon(100% 100%, 50% 50%, 100% 0%);
+  }
+  25% {
+    background: #222831;
+    clip-path: polygon(100% 60%, 50% 50%, 100% 40%);
+  }
+  
+  50% {
+    background: #222831;
+    clip-path: polygon(100% 50%, 50% 50%, 100% 50%);
+  }
+  
+  75% {
+    background: #222831;
+    clip-path: polygon(100% 59%, 50% 50%, 100% 35%);
+  }
+  100% {
+    background: #222831;
+    clip-path: polygon(100% 100%, 50% 50%, 100% 0%);
+  }
+}
+
+.wipe-out {
+  -webkit-animation: wipe-out-left 3.6s forwards;
+          animation: wipe-out-left 3.6s forwards;
+          
+  background-size: 100% 100%;
+  background: linear-gradient(90deg, rgba(34,40,49,1) 0%, rgba(238,238,238,1) 0%);
+  background-repeat: no-repeat;
+  
+  /* 텍스트에 배경 이미지 적용 */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes wipe-out-left {
+  from {
+    background-size: 1000% 100%;
+    background-position: left;
+  }
+  to {
+    background-size: 0% 100%;
+    background-position: right;
+  }
+}
+
+
 
 @media (max-width: 600px) {
   #text-object {
@@ -337,6 +425,10 @@
     margin: 1.9rem 0.5rem 0 0.5rem;
     width: 0.8rem;
     height: 0.8rem;
+  }
+  #pacman {
+    width: 4rem;
+    height: 4rem;
   }
 }
 
@@ -362,4 +454,9 @@
               transform: translateX(120px);
     }
   }
+}
+
+.invisible {
+  color: #222831;
+  background-color: #222831 !important;
 }
