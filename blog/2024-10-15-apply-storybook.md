@@ -468,6 +468,88 @@ export const FilledForm: Story = {
 
 ### Network Mocking
 
+네트워크 요청이 제대로 동작했을때와 에러가 발생했을 때 화면상에 어떻게 표시되는지 보여주는 것도 중요하다. 따라서 네트워크 요청을 대체하여 일정 시간 후 데이터를 입력해주거나 에러가 발생하는 경우도 적용해줄 필요가 있다.
+
+이를 위해 `msw` 라이브러리와 `msw` 애드온을 추가하여 데모를 작성할 수 있다.
+
+#### Install MSW
+
+##### Package 추가
+
+```bash title="Install MSW"
+yarn add msw msw-storybook-addon --save-dev
+```
+
+##### .storybook/main.ts 수정
+
+```tsx title=".storybook/main.ts"
+// Replace your-framework with the framework you are using (e.g., react-webpack5, vue3-vite)
+import type { StorybookConfig } from "@storybook/your-framework";
+
+const config: StorybookConfig = {
+  framework: "@storybook/your-framework",
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  staticDirs: ["../public", "../static"],
+};
+
+export default config;
+```
+
+##### .storybook/preview.ts 수정
+
+```tsx title=".storybook/preview.ts"
+// Replace your-renderer with the renderer you are using (e.g., react, vue, etc.)
+import { Preview } from "@storybook/your-renderer";
+
+import { initialize, mswLoader } from "msw-storybook-addon";
+
+/*
+ * Initializes MSW
+ * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
+ * to learn how to customize it
+ */
+initialize();
+
+const preview: Preview = {
+  // ... rest of preview configuration
+  loaders: [mswLoader], // 👈 Add the MSW loader to all stories
+};
+
+export default preview;
+```
+
+#### MSW Moking 적용
+
+```tsx title="SomeComponent.stories.tsx"
+//...
+import { http, type HttpHandler, HttpResponse } from "msw";
+
+import SomeComponent from "@/app/SomeComponent";
+
+// ...
+// ...
+
+export const MockingForm: Story = {
+  msw: {
+    handlers: [
+      http.get("API_url", () => {
+        return HttpResponse.json({ returnData });
+      }),
+    ],
+  },
+};
+```
+
 ## 아직 해결되지 않은 문제들
 
 ### SWR Cashing
+
+API 요청을 캐싱하고 API 요청과 관련된 상태를 캐싱하기 위해 현재 SWR을 이용하고 있다. 이로인해 몇가지 문제가 발생하였고 해결 방안을 모색중이다.
+
+1. 네트워크 재요청을 하지 않는 문제
+
+   SWR의 경우 API 요청시 `url`을 key값으로 사용해 브라우저 세션에 요청 정보를 캐싱해두고 동일한 키값으로 요청이 발생했을 때 캐싱된 데이터를 반환하는 방식으로 동작한다.
+
+   이로 인해 네트워크 응답상태별 데모를 생성하는데 있어 원하는대로 응답이 발생하지 않는 문제가 있다.
+
+   -> 글을 작성하며 생각해보니 swrConfig를 통해 각각의 컴포넌트별로 `Provider`를 따로 제공해준다면 해결 될 것 같다. 이 부분은 확인 후 수정할 예정
