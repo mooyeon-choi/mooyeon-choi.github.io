@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[505],{1747:l=>{l.exports=JSON.parse('{"label":"FFI","permalink":"/blog/tags/ffi","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
