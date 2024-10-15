@@ -3,7 +3,7 @@ slug: writing-css-with-accessibility-in-mind
 title: 접근성을 고려하여 CSS 작성하기
 authors: mooyeon
 tags: [CSS, frontend]
-date: 2024-02-26T21:55
+date: 2024-03-02T21:56
 ---
 
 > [Korean FE Article Team](https://kofearticle.substack.com/about?utm_source=substack&utm_medium=email) 에서 번역해주는 FrontEnd 소식을 아카이브 하였습니다.
@@ -45,8 +45,59 @@ CSS를 사용하여 웹사이트와 앱의 접근성을 향상시키는 데 도�
 
 접근성을 고려하여 CSS 작성하기
 
-CSS를 사용하여 문제를 해결하는 무한한 방법과 다양한 속성이 우리의 삶을 더 쉽게 만들어주지만, 동시에 사용자의 경험을 악화시킬 수도 있습니다. 사실, 단 세 줄의 CSS 만으로 웹사이트에 접근하기 어렵게 만들 수 있습니다.
+CSS를 사용하여 문제를 해결하는 무한한 방법과 다양한 속성이 우리의 삶을 더 쉽게 만들어주지만, 동시에 사용자의 경험을 악화시킬 수도 있습니다. 사실, [단 세 줄의 CSS](http://outlinenone.com/) 만으로 웹사이트에 접근하기 어렵게 만들 수 있습니다.
 
 이 글에서는 접근성 있는 CSS를 작성하는 데 도움이 될만한 기술과 고려 사항 그리고 접근방식을 모두 모았습니다. 이 컬렉션은 기본 개념과 잘 알려진 속성으로 시작하여, 끝에는 좀 더 새로운 것들을 다룹니다.
 
-예상했던 것보다 많은 내용을 담게 되어, 가장 관심 있는 섹션으로 바로 이동할 수 있도록 링크가 걸린 목차를 마련했습니다.
+## 가독성 있는 텍스트에서 읽기 쉬운 텍스트로
+
+이미지, 아이콘, 동영상은 오늘날 웹 디자인에서 빼놓을 수 없는 요소이지만, 여전히 거의 모든 웹사이트에서는 텍스트가 콘텐츠의 대부분을 차지합니다. 텍스트는 어떤 기기에서든 읽을 수 있어야 하기 때문에, 폰트 속성을 스타일링하고, 테스트하며, 미세 조정하는 데 상당한 시간을 할애하는 것이 중요합니다.
+
+### 글꼴 크기 확대
+
+![font_size_for_langth](./images/2024-03-02-writing-css-with-accessibility-in-mind/font_size_for_langth.png)
+
+사용자가 화면에서 떨어진 거리에 따라 글꼴 크기는 확대해야 합니다 ([출처: Marvel](https://blog.marvelapp.com/body-text-small/))
+
+한때 [12px 글꼴 크기가 본문(body) 텍스트의 표준이었지만](https://www.smashingmagazine.com/2011/10/16-pixels-body-copy-anything-less-costly-mistake/), 해상도가 높은 기기의 등장으로 평균 글꼴 크기는 한동안 15에서 18px 사이에 정착했습니다. 최근 몇 년간, 글꼴 크기는 다시 20px 이상으로 상승했으며, 이는 좋은 일입니다. 텍스트는 스마트폰에서 충분히 커야 하며, TV와 같은 큰 화면에서 멀리서도 읽을 수 있도록 화면 크기에 따라 확대해야 합니다.
+
+서체의 특성이 매우 다양하기 때문에 표준의 최소 크기를 정의하는 것은 의미가 없지만, 작은 화면 크기에 좋은 시작점은 아마도 18-20px일 것입니다.
+
+물론 글꼴 크기에 대해 더 많이 말할 수 있지만, 이 글에서 다루기에는 너무 많습니다. 자세한 내용은 [Christian Miller](https://twitter.com/xtianmiller)의 [당신의 Body 텍스트는 너무 작습니다](https://blog.marvelapp.com/body-text-small/)를 읽어보시길 권장합니다.
+
+### 라인 높이(line-height) 설정
+
+브라우저의 기본 라인 높이는 대략 **`1.2`**입니다. [웹 콘텐츠 접근성 지침](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#visual-audio-contrast-visual-presentation)에 따르면, 텍스트 블록 내의 문단에서는 최소 **`1.5`**여야 합니다.
+
+![line-height](./images/2024-03-02-writing-css-with-accessibility-in-mind/line-height.png)
+
+_`line-height`가 1.2인 문단과 1.5인 문단 비교_
+
+문단 내 라인 높이가 조정된 텍스트는 가독성이 향상될 뿐만 아니라, 시각적으로도 꽤 더 매력적입니다.
+
+### 텍스트를 왼쪽 또는 오른쪽으로 정렬
+
+![text align](./images/2024-03-02-writing-css-with-accessibility-in-mind/text-align.png)
+
+양쪽 정렬된 텍스트의 불규칙한 단어 간격
+
+양쪽 정렬이 왼쪽 또는 오른쪽 정렬된 텍스트보다 보기 좋다고 생각하는 사람들도 있지만, 이는 나쁜 관행으로 간주됩니다. `text-align: justify`는 같은 길이의 줄을 만들기 위해 단어 간격을 조정합니다. 이러한 불균일한 공백은 가독성을 해칠 수 있으며 매우 산만해질 수 있습니다. 필요한 경우 단어를 구분하는 것도 해결책이 될 수 있지만, [CSS 하이픈](https://developer.mozilla.org/en-US/docs/Web/CSS/hyphens?redirectlocale=en-US&redirectslug=CSS%2Fhyphens#Languages_support_notes)은 잘 지원되지 않고 예상대로 작동하지 않을 수 있습니다.
+
+### 문단 너비 정의
+
+여러 출처에 따르면 디자이너들은 [줄당 45에서 85자](https://www.smashingmagazine.com/2014/09/balancing-line-length-font-size-responsive-web-design/#line-length-measure-and-reading)를 유지해야 한다고 합니다. 이상적인 문단 너비는 65자라고 여겨집니다.
+
+텍스트 블록의 너비를 정의할 때 ch 단위가 유용할 수 있습니다. `1ch`는 숫자 0을 나타내는 문자의 너비와 동일합니다. 또한, `font-family` 또는 `font-size`가 변경되면 이에 따라 변경됩니다.
+
+```css
+p {
+  /* 최대 너비 65자 */
+  max-width: 65ch;
+}
+```
+
+어떠한 종류의 반응형 타이포그래피 기술을 사용한다면, 매우 큰 화면에서 사이트를 테스트해야 합니다. 글꼴 크기에 제한이 없다면, 특정 뷰포트 크기에서 텍스트가 읽기 어려워질 수 있습니다. 제한을 설정하는 방법이나 반응형 타이포그래피에 익숙하지 않다면, [Mike Riethmullers](https://twitter.com/MikeRiethmuller)의 글 [반응형 타이포그래피에 대한 정밀한 제어](https://madebymike.com.au/writing/precise-control-responsive-typography/)를 읽어보시기 바랍니다.
+
+## 가상 요소에 콘텐츠 신중하게 사용하기
+
+우리는 `::before`와 `::after`라는 가상 요소를 사용하여 요소의 맨 처음이나 맨 끝에 CSS를 추가할 수 있습니다. 이것은 디자인 요소를 우리 컴포넌트에 추가하는 매우 일반적이고 편리한 방법을 제공하지만, `content` 속성을 사용하여 내용을 추가하는 것도 가능합니다. 관심사의 분리의 관점에서 보면, 우리는 이렇게 하지 않아야 합니다.
