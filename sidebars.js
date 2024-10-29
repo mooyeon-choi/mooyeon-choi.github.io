@@ -125,7 +125,8 @@ const sidebars = {
                 'app/flutter/bloc/coreConceptsPackageBloc',
                 'app/flutter/bloc/coreConceptsPackageFlutterBloc',
               ]
-            }
+            },
+            'app/flutter/navigator/intro',
           ]
         },
       ]
