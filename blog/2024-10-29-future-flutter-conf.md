@@ -451,7 +451,131 @@ Flutter Seoul의 오거나이저로 활동 중이신 에이든님의 발표로 �
 
 ### 랜더링 과정
 
+#### Widget
 
+위젯은 플러터를 시작할 때 가장 먼저 접하는 클래스이자, 개발 과정에서 가장 자주 사용하는 클래스이다. 플러터 개발자에게 있어 위젯은 앱 개발의 가장 핵심적인 요소라고 할 수 있을 것이다.
+
+플러터 공식 문서를 보면 **Widget**은 `"Describes the configuration for an Element"` "Widget은 Element의 구성을 표현하는 객체" 라고 설명한다. 하지만 플러터 개발자들 사이에 위젯에 대한 설명으로 이보다 더 널리 알려진 설명이 있는데 바로 `"In Flutter, almost everything is a widget"`이다. 여기서 흥미로운 점은 `'almost everything'` '거의 모든 것'이라는 표현인데 위젯을 **'거의 모든 것'**이라 설명하는 이유는 무엇일까? 또 그렇다면 거의 모든 것에 포함되지 않는 것들은 어떤 것들이 있을까
+
+**'Almost everything'**인 Widget 너머, 화면을 그리는 자세한 과정을 살펴보며 이를 알아보자
+
+#### ColoredBox
+
+화면에 색을 칠하는 간단한 프로젝트를 구현하려 한다. 색을 칠하는데 흔히 사용되는 `Container`가 아닌 `ColoredBox`위젯을 사용하여 이를 구현해보자.
+
+아래는 `ColoredBox` 위젯을 이용해 사각형의 Box 공간을 녹색으로 칠하는 간단한 코드이다. 렌더링 과정을 살펴보기 위해 `MaterialApp`이나 `Scafford`를 사용하지 않고 위젯트리를 간단히 구성하였다.
+
+```dart title=ColoredBox
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    const ColoredBox(
+      color: Colors.green,
+    ),
+  );
+}
+```
+
+![ColoredBox](./images/2024-10-29-future-flutter/flutter_rendering_1.png)
+
+ColoredBox 위젯의 생성자로 녹색을 전달했기 때문에 실행하면 녹색으로 가득찬 화면을 볼 수 있을 것이다.
+
+widget에 대한 설명을 다시 한번 떠올려보자 `"Describes the configuration for an Element"`, Widget은 Element의 구성을 표현하는 객체일 뿐이다.
+
+다음으로 Widget인 ColoredBox가 Element를 어떻게 구성하는지, ColoredBox를 뜯어보며 확인해보자
+
+```dart title=ColoredBox
+class ColoredBox extends SingleChildrenderObjectWidget {
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderColoredBox(color: color);
+}
+
+abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
+  @override
+  SingleChildRenderObjectElement createElement() => SingleChildRenderObjectElement(this);
+}
+
+abstract class RenderObjectWidget extends Widget {
+}
+```
+
+위 코드를 통해 `ColoredBox` 위젯을 확인해보면 `ColoredBox` 위젯은 `SingleChildRenderObjectWidget`을 확장하고 있다. 또 `SingleChildRenderObjectWidget`은 `RenderObjectWidget`을 확장하고 있고, `RenderObjectWidget`은 `Widget`을 확장하고 있다. 이러한 클래스 계층을 따라가보면 알 수 있듯 `ColoredBox`는 `Widget`의 구현체이다.
+
+이를 표로 그려보면 다음과 같이 표현할 수 있다.
+
+![ColoredBox Diagram](./images/2024-10-29-future-flutter/flutter_rendering_2.png)
+
+`ColoredBox`가 렌더링되는 자세한 과정을 살펴보려면 `RenderObject`를 반환하는 `createRenderObject`와 `SingleChildRenderObjectElement`를 반환하는 `createElement`를 살펴봐야한다.
+
+아직은 두 메소드가 어떻게 호출되는지 알기 어렵겠지만, 이 내용을 모두 본 후에는 두 메소드가 렌더링에 어떻게 관여하는지 모두 알게될테니 지금은 `createRenderObject`와 `createElement`를 `Widget`에서 오버라이드하고 있다는 사실만 기억한체 넘어가자.
+
+#### Element
+
+이번에는 `SingleChildRenderObjectWidget`이 오버라이드하고 있는 `createElement`가 생성하는 `Element`에 대해 살펴보자.
+
+플러터 공식문서를 보면 `Element` 클래스에 대해 이렇게 설명한다. `"an instantiation of Widget at a particular location in the tree"`, `Element`는 트리의 특정 위치에 있는 위젯을 인스턴스이다.
+
+`Element`의 동작을 확인하기 위해 `SingleChildRenderObjectWidget`의 클래스 계층 구조를 살펴보자.
+
+```dart title=SingleChildRenderObjectWidget
+abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
+  @override
+  SingleChildRenderObjectElement createElement() => SingleChildRenderObjectElement(this);
+}
+class SingleChildRenderObjectElement extends RenderObjectElement {
+}
+abstract class RenderObjectElement extends Element {
+  RenderObject? _renderObject;
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    super.mount(parent, newSlot);
+    _renderObject = (widget as RenderObjectWidget).createRenderObject(this);
+    attachRenderObject(newSlot);
+    super.performRebuilde();
+  }
+}
+abstract class Element extends DiagnosticableTree implements BuildContext {
+  Widget? _widget;
+}
+```
+
+앞서 `ColoredBox` Widget이 확장한 `SingleChildRenderObjectWidget`은 `createElement` 메소드를 통해서 `SingleChildRenderObjectElement`를 생성하는걸 살펴보았다. `SingleChildRenderObjectElement`는 `RenderObjectElement`를 확장하고 있고, `RenderObjectElement`는 `Element`를 확장하고 있다.
+
+`Element`는 `BuildContext`를 구현한 추상클래스로 `Widget`을 프로퍼티로 들고, 필요한 시점에 `build` 메소드를 호출하게 된다. 이를 표에 추가하면 다음과 같이 표현할 수 있다.
+
+![Widget Diagram](./images/2024-10-29-future-flutter/flutter_rendering_3.png)
+
+`Element` 클래스의 계층 중 렌더링과 관련해서 주의깊게 살펴볼 부분은 `RenderObjectElement` 클래스의 `RenderObject` 프로퍼티와 `mount` 메소드이다.
+
+`mount`가 호출되면 `Widget`의 `createRenderObject` 메소드를 호출해 화면을 그리는데 직접적으로 사용될 `RenderObject`를 생성한다. 생성된 `RenderObject`는 `attachRenderObject`에 전달해 렌더오브젝트의 트리를 구성한다. 그렇다면 이 `mount` 메소드는 어떻게 호출되는 걸까?
+
+#### runApp
+
+`mount`가 호출되는 과정을 살펴보려면 먼저, Widget 만큼 익숙한 `runApp` 함수를 살펴봐야한다. 플러터 프로젝트를 생성하면 `main` 함수에서 `runApp` 함수를 호출하는 코드가 생성되는데, 이 `runApp`을 따라가면 `mount`에 다다를 수 있다.
+
+플러터 공식 문서에서는 `runApp` 함수에 대해 이렇게 이야기한다. `"Inflate the given widget and attach it to the view"` `runApp` 함수는 함수의 인자로 전달한 위젯을 `inflate`하고 `view`에 추가한다. 그렇다면 `Widget`을 어떻게 `inflate`하고, `view`에 추가하는지 `runApp` 함수의 내부 동작을 뜯어보며 확인해보자.
+
+```dart title=runApp
+void runApp(Widget app) {
+  final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
+  _runWidget(binding.wrapWithDefaultView(app), binding, 'runApp');
+}
+
+mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding,
+  GestureBinding, RendererBinding, SemanticsBinding {
+  //...
+  //...
+  Widget wrapWithDefaultView(Widget rootWidget) {
+    return View(
+      view: platformDispatcher.implicitView!,
+      deprecatedDoNotUseWillBeRemovedWithoutNoticePipelineOwner: pipelineOwner,
+      deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderViw: renderView,
+      child: rootWidget,
+    );
+  }
+}
+```
 
 ## Flutter web을 활용하여 제품 개발 환경 개선하기
 
