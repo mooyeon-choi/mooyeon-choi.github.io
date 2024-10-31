@@ -1,13 +1,15 @@
-import React, {useRef, useState, useEffect} from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import './index.module.css';
-import BrowserOnly from '@docusaurus/BrowserOnly';
+// ignore typescript error
+// @ts-nocheck
+
+import React, { useRef, useState, useEffect } from "react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import Layout from "@theme/Layout";
+import "./index.module.css";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 import particle from "./particle.png";
 
-
 export default function Home(): JSX.Element {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * 5) + 1;
@@ -26,7 +28,11 @@ export default function Home(): JSX.Element {
                 fontactive: () => {
                   this.visual = new Visual();
 
-                  window.addEventListener("resize", this.resize.bind(this), false);
+                  window.addEventListener(
+                    "resize",
+                    this.resize.bind(this),
+                    false
+                  );
                   this.resize();
 
                   requestAnimationFrame(this.animate.bind(this));
@@ -45,8 +51,10 @@ export default function Home(): JSX.Element {
                 powerPreference: "high-performance",
                 backgroundColor: 0x000000,
               });
-              
-              document.getElementById("container").appendChild(this.renderer.view);
+
+              document
+                .getElementById("container")
+                .appendChild(this.renderer.view);
 
               this.stage = new PIXI.Container();
 
@@ -80,14 +88,20 @@ export default function Home(): JSX.Element {
                 mb: 255.0 / 255.0,
               };
 
-              const thresholdFilter = new PIXI.Filter(null, fragSource, uniformsData);
+              const thresholdFilter = new PIXI.Filter(
+                null,
+                fragSource,
+                uniformsData
+              );
               this.stage.filters = [blurFilter, thresholdFilter];
               this.stage.filterArea = this.renderer.screen;
             }
 
             resize() {
-              this.stageWidth = document.getElementById("container").clientWidth;
-              this.stageHeight = document.getElementById("container").clientHeight;
+              this.stageWidth =
+                document.getElementById("container").clientWidth;
+              this.stageHeight =
+                document.getElementById("container").clientHeight;
 
               this.renderer.resize(this.stageWidth, this.stageHeight);
 
@@ -154,7 +168,10 @@ export default function Home(): JSX.Element {
 
               const myText = str;
               const fontWidth = 700;
-              const fontSize = stageHeight / stageWidth < 1300/2100 ? stageHeight / 4 : stageHeight / 3;
+              const fontSize =
+                stageHeight / stageWidth < 1300 / 2100
+                  ? stageHeight / 4
+                  : stageHeight / 3;
               const fontName = "Hind";
 
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
@@ -174,7 +191,12 @@ export default function Home(): JSX.Element {
             }
 
             dotPos(density, stageWidth, stageHeight) {
-              const imageData = this.ctx.getImageData(0, 0, stageWidth, stageHeight).data;
+              const imageData = this.ctx.getImageData(
+                0,
+                0,
+                stageWidth,
+                stageHeight
+              ).data;
 
               const particles = [];
               let i = 0;
@@ -223,8 +245,16 @@ export default function Home(): JSX.Element {
                 radius: 100,
               };
 
-              document.addEventListener("pointermove", this.onMove.bind(this), false);
-              document.addEventListener("touchend", this.onTouchEnd.bind(this), false);
+              document.addEventListener(
+                "pointermove",
+                this.onMove.bind(this),
+                false
+              );
+              document.addEventListener(
+                "touchend",
+                this.onTouchEnd.bind(this),
+                false
+              );
             }
 
             show(stageWidth, stageHeight, stage) {
@@ -232,9 +262,14 @@ export default function Home(): JSX.Element {
                 stage.removeChild(this.container);
               }
 
-
-
-              this.pos = this.text.setText(stageHeight / stageWidth < 1300/2100 ? "Hi this is Mylog" : "Hi", 2, stageWidth, stageHeight);
+              this.pos = this.text.setText(
+                stageHeight / stageWidth < 1300 / 2100
+                  ? "Hi this is Mylog"
+                  : "Hi",
+                2,
+                stageWidth,
+                stageHeight
+              );
 
               this.container = new PIXI.ParticleContainer(this.pos.length, {
                 vertices: false,
@@ -303,7 +338,11 @@ export default function Home(): JSX.Element {
                 fontactive: () => {
                   this.visual = new Visual();
 
-                  window.addEventListener("resize", this.resize.bind(this), false);
+                  window.addEventListener(
+                    "resize",
+                    this.resize.bind(this),
+                    false
+                  );
                   this.resize();
 
                   requestAnimationFrame(this.animate.bind(this));
@@ -322,14 +361,18 @@ export default function Home(): JSX.Element {
                 powerPreference: "high-performance",
                 backgroundColor: 0xffffff,
               });
-              document.getElementById("container").appendChild(this.renderer.view);
+              document
+                .getElementById("container")
+                .appendChild(this.renderer.view);
 
               this.stage = new PIXI.Container();
             }
 
             resize() {
-              this.stageWidth = document.getElementById("container").clientWidth;
-              this.stageHeight = document.getElementById("container").clientHeight;
+              this.stageWidth =
+                document.getElementById("container").clientWidth;
+              this.stageHeight =
+                document.getElementById("container").clientHeight;
 
               this.renderer.resize(this.stageWidth, this.stageHeight);
 
@@ -392,19 +435,22 @@ export default function Home(): JSX.Element {
               //this.canvas.style.left = "0";
               //this.canvas.style.top = "0";
               //document.body.appendChild(this.canvas);
-          
+
               this.ctx = this.canvas.getContext("2d");
             }
-          
+
             setText(str, density, stageWidth, stageHeight) {
               this.canvas.width = stageWidth;
               this.canvas.height = stageHeight;
-          
+
               const myText = str;
               const fontWidth = stageHeight / 1.4;
-              const fontSize = stageHeight / stageWidth < 1300/2100 ? stageHeight / 4 : stageHeight / 3;
+              const fontSize =
+                stageHeight / stageWidth < 1300 / 2100
+                  ? stageHeight / 4
+                  : stageHeight / 3;
               const fontName = "Hind";
-          
+
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
               this.ctx.font = `${fontWidth} ${fontSize}px ${fontName}`;
               this.ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
@@ -417,18 +463,23 @@ export default function Home(): JSX.Element {
                   fontPos.actualBoundingBoxDescent +
                   (stageHeight - fontSize) / 2
               );
-          
+
               return this.dotPos(density, stageWidth, stageHeight);
             }
-          
+
             dotPos(density, stageWidth, stageHeight) {
-              const imageData = this.ctx.getImageData(0, 0, stageWidth, stageHeight).data;
-          
+              const imageData = this.ctx.getImageData(
+                0,
+                0,
+                stageWidth,
+                stageHeight
+              ).data;
+
               const particles = [];
               let i = 0;
               let width = 0;
               let pixel;
-          
+
               for (let height = 0; height < stageHeight; height += density) {
                 ++i;
                 const slide = i % 2 === 0;
@@ -436,7 +487,7 @@ export default function Home(): JSX.Element {
                 if (slide === 1) {
                   width += 6;
                 }
-          
+
                 for (width; width < stageWidth; width += density) {
                   pixel = imageData[(width + height * stageWidth) * 4 - 1];
                   if (
@@ -453,7 +504,7 @@ export default function Home(): JSX.Element {
                   }
                 }
               }
-          
+
               return particles;
             }
           }
@@ -471,8 +522,16 @@ export default function Home(): JSX.Element {
                 radius: 100,
               };
 
-              document.addEventListener("pointermove", this.onMove.bind(this), false);
-              document.addEventListener("touchend", this.onTouchEnd.bind(this), false);
+              document.addEventListener(
+                "pointermove",
+                this.onMove.bind(this),
+                false
+              );
+              document.addEventListener(
+                "touchend",
+                this.onTouchEnd.bind(this),
+                false
+              );
             }
 
             show(stageWidth, stageHeight, stage) {
@@ -480,7 +539,14 @@ export default function Home(): JSX.Element {
                 stage.removeChild(this.container);
               }
 
-              this.pos = this.text.setText(stageHeight / stageWidth < 1300/2100 ? "Hi this is Mylog" : "Hi", 2, stageWidth, stageHeight);
+              this.pos = this.text.setText(
+                stageHeight / stageWidth < 1300 / 2100
+                  ? "Hi this is Mylog"
+                  : "Hi",
+                2,
+                stageWidth,
+                stageHeight
+              );
 
               this.container = new PIXI.ParticleContainer(this.pos.length, {
                 vertices: false,
@@ -557,7 +623,11 @@ export default function Home(): JSX.Element {
                 fontactive: () => {
                   this.visual = new Visual();
 
-                  window.addEventListener("resize", this.resize.bind(this), false);
+                  window.addEventListener(
+                    "resize",
+                    this.resize.bind(this),
+                    false
+                  );
                   this.resize();
 
                   requestAnimationFrame(this.animate.bind(this));
@@ -566,8 +636,10 @@ export default function Home(): JSX.Element {
             }
 
             resize() {
-              this.stageWidth = document.getElementById("container").clientWidth;
-              this.stageHeight = document.getElementById("container").clientHeight;
+              this.stageWidth =
+                document.getElementById("container").clientWidth;
+              this.stageHeight =
+                document.getElementById("container").clientHeight;
 
               this.canvas.width = this.stageWidth * this.pixelRatio;
               this.canvas.height = this.stageHeight * this.pixelRatio;
@@ -680,7 +752,10 @@ export default function Home(): JSX.Element {
 
               const myText = str;
               const fontWidth = stageWidth > 700 ? 700 : 330;
-              const fontSize = stageHeight / stageWidth < 1300/2100 ? stageHeight / 4 : stageHeight / 30;
+              const fontSize =
+                stageHeight / stageWidth < 1300 / 2100
+                  ? stageHeight / 4
+                  : stageHeight / 30;
               const fontName = "Hind";
 
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
@@ -700,7 +775,12 @@ export default function Home(): JSX.Element {
             }
 
             dotPos(density, stageWidth, stageHeight) {
-              const imageData = this.ctx.getImageData(0, 0, stageWidth, stageHeight).data;
+              const imageData = this.ctx.getImageData(
+                0,
+                0,
+                stageWidth,
+                stageHeight
+              ).data;
 
               const particles = [];
               let i = 0;
@@ -750,15 +830,30 @@ export default function Home(): JSX.Element {
                 radius: 100,
               };
 
-              document.addEventListener("pointermove", this.onMove.bind(this), false);
-              document.addEventListener("touchmove", this.onTouchMove.bind(this), false);
+              document.addEventListener(
+                "pointermove",
+                this.onMove.bind(this),
+                false
+              );
+              document.addEventListener(
+                "touchmove",
+                this.onTouchMove.bind(this),
+                false
+              );
             }
 
             show(stageWidth, stageHeight) {
               const fontSize = stageWidth > 700 ? 14 : 10;
               const fontWidth = stageWidth > 700 ? 26 : 19;
 
-              this.pos = this.text.setText(stageHeight / stageWidth < 1300/2100 ? "Hi this is Mylog" : "Hi", fontWidth, stageWidth, stageHeight);
+              this.pos = this.text.setText(
+                stageHeight / stageWidth < 1300 / 2100
+                  ? "Hi this is Mylog"
+                  : "Hi",
+                fontWidth,
+                stageWidth,
+                stageHeight
+              );
 
               this.particles = [];
               for (let i = 0; i < this.pos.length; i++) {
@@ -820,9 +915,15 @@ export default function Home(): JSX.Element {
                   families: ["Hind:700"],
                 },
                 fontactive: () => {
-                  this.visual = new Visual(document.getElementById("container").clientWidth);
+                  this.visual = new Visual(
+                    document.getElementById("container").clientWidth
+                  );
 
-                  window.addEventListener("resize", this.resize.bind(this), false);
+                  window.addEventListener(
+                    "resize",
+                    this.resize.bind(this),
+                    false
+                  );
                   this.resize();
 
                   requestAnimationFrame(this.animate.bind(this));
@@ -831,8 +932,10 @@ export default function Home(): JSX.Element {
             }
 
             resize() {
-              this.stageWidth = document.getElementById("container").clientWidth;
-              this.stageHeight = document.getElementById("container").clientHeight;
+              this.stageWidth =
+                document.getElementById("container").clientWidth;
+              this.stageHeight =
+                document.getElementById("container").clientHeight;
 
               this.canvas.width = this.stageWidth * this.pixelRatio;
               this.canvas.height = this.stageHeight * this.pixelRatio;
@@ -868,7 +971,7 @@ export default function Home(): JSX.Element {
               this.vx = 0;
               this.vy = 0;
 
-              this.fps = size === 5 ? 15 : 20;
+              this.fps = 30;
               this.fpsTime = 1000 / this.fps;
             }
 
@@ -929,8 +1032,12 @@ export default function Home(): JSX.Element {
               this.canvas.height = stageHeight;
 
               const myText = str;
-              const fontWidth = stageWidth > 400 ? stageHeight / 1.4 : stageWidth / 1.2;
-              const fontSize = stageHeight / stageWidth < 1300/2100 ? stageHeight / 4 : stageWidth / 2;
+              const fontWidth =
+                stageWidth > 400 ? stageHeight / 1.4 : stageWidth / 1.2;
+              const fontSize =
+                stageHeight / stageWidth < 1300 / 2100
+                  ? stageHeight / 4
+                  : stageWidth / 1.5;
               const fontName = "Hind";
 
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
@@ -950,7 +1057,12 @@ export default function Home(): JSX.Element {
             }
 
             dotPos(density, stageWidth, stageHeight) {
-              const imageData = this.ctx.getImageData(0, 0, stageWidth, stageHeight).data;
+              const imageData = this.ctx.getImageData(
+                0,
+                0,
+                stageWidth,
+                stageHeight
+              ).data;
 
               const particles = [];
               let i = 0;
@@ -1023,11 +1135,13 @@ export default function Home(): JSX.Element {
               blue = x;
             }
 
-            red = red + m;
-            green = green + m;
-            blue = blue + m;
+            red = red * m;
+            green = green * m;
+            blue = blue * m;
 
-            return `rgb(${(red * 255) | 0}, ${(green * 255) | 0}, ${(blue * 255) | 0})`;
+            return `rgb(${(red * 255) | 0}, ${(green * 255) | 0}, ${
+              (blue * 255) | 0
+            })`;
           }
 
           class Visual {
@@ -1044,13 +1158,28 @@ export default function Home(): JSX.Element {
                 radius: 100,
               };
 
-              document.addEventListener("pointermove", this.onMove.bind(this), false);
-              document.addEventListener("touchend", this.onTouchEnd.bind(this), false);
+              document.addEventListener(
+                "pointermove",
+                this.onMove.bind(this),
+                false
+              );
+              document.addEventListener(
+                "touchend",
+                this.onTouchEnd.bind(this),
+                false
+              );
             }
 
             show(stageWidth, stageHeight) {
               this.stageWidth = stageWidth;
-              this.pos = this.text.setText(stageHeight / stageWidth < 1300/2100 ? "Hi this is Mylog" : "Hi", stageHeight / stageWidth < 1300/2100 ? 10 : 5, stageWidth, stageHeight);
+              this.pos = this.text.setText(
+                stageHeight / stageWidth < 1300 / 2100
+                  ? "Hi this is Mylog"
+                  : "Hi",
+                stageHeight / stageWidth < 1300 / 2100 ? 10 : 20,
+                stageWidth,
+                stageHeight
+              );
               this.posTotal = this.pos.length - 1;
             }
 
@@ -1127,7 +1256,11 @@ export default function Home(): JSX.Element {
                 fontactive: () => {
                   this.visual = new Visual();
 
-                  window.addEventListener("resize", this.resize.bind(this), false);
+                  window.addEventListener(
+                    "resize",
+                    this.resize.bind(this),
+                    false
+                  );
                   this.resize();
 
                   requestAnimationFrame(this.animate.bind(this));
@@ -1146,14 +1279,18 @@ export default function Home(): JSX.Element {
                 powerPreference: "high-performance",
                 backgroundColor: 0xffffff,
               });
-              document.getElementById("container").appendChild(this.renderer.view);
+              document
+                .getElementById("container")
+                .appendChild(this.renderer.view);
 
               this.stage = new PIXI.Container();
             }
 
             resize() {
-              this.stageWidth = document.getElementById("container").clientWidth;
-              this.stageHeight = document.getElementById("container").clientHeight;
+              this.stageWidth =
+                document.getElementById("container").clientWidth;
+              this.stageHeight =
+                document.getElementById("container").clientHeight;
 
               this.renderer.resize(this.stageWidth, this.stageHeight);
 
@@ -1174,7 +1311,12 @@ export default function Home(): JSX.Element {
               this.particles = [];
 
               for (let i = 0; i < lineTotal; i++) {
-                const item = new Particle(pos, groupRatio, i / lineTotal, texture);
+                const item = new Particle(
+                  pos,
+                  groupRatio,
+                  i / lineTotal,
+                  texture
+                );
                 this.particles.push(item);
               }
             }
@@ -1285,7 +1427,10 @@ export default function Home(): JSX.Element {
 
               const myText = str;
               const fontWidth = 700;
-              const fontSize = stageHeight / stageWidth < 1300/2100 ? stageHeight / 4 : stageWidth / 2;
+              const fontSize =
+                stageHeight / stageWidth < 1300 / 2100
+                  ? stageHeight / 4
+                  : stageWidth / 2;
               const fontName = "Hind";
 
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
@@ -1305,7 +1450,12 @@ export default function Home(): JSX.Element {
             }
 
             dotPos(density, stageWidth, stageHeight) {
-              const imageData = this.ctx.getImageData(0, 0, stageWidth, stageHeight).data;
+              const imageData = this.ctx.getImageData(
+                0,
+                0,
+                stageWidth,
+                stageHeight
+              ).data;
 
               const particles = [];
               let i = 0;
@@ -1396,7 +1546,9 @@ export default function Home(): JSX.Element {
             green = green + m;
             blue = blue + m;
 
-            return ((red * 255) << 16) + ((green * 255) << 8) + ((blue * 255) | 0);
+            return (
+              ((red * 255) << 16) + ((green * 255) << 8) + ((blue * 255) | 0)
+            );
           }
 
           class Visual {
@@ -1413,8 +1565,16 @@ export default function Home(): JSX.Element {
                 radius: 10,
               };
 
-              document.addEventListener("pointermove", this.onMove.bind(this), false);
-              document.addEventListener("touchend", this.onEnd.bind(this), false);
+              document.addEventListener(
+                "pointermove",
+                this.onMove.bind(this),
+                false
+              );
+              document.addEventListener(
+                "touchend",
+                this.onEnd.bind(this),
+                false
+              );
             }
 
             show(stageWidth, stageHeight, stage) {
@@ -1422,16 +1582,26 @@ export default function Home(): JSX.Element {
                 stage.removeChild(this.container);
               }
 
-              this.pos = this.text.setText(stageHeight / stageWidth < 1300/2100 ? "Hi this is Mylog" : "Hi", 10, stageWidth, stageHeight);
+              this.pos = this.text.setText(
+                stageHeight / stageWidth < 1300 / 2100
+                  ? "Hi this is Mylog"
+                  : "Hi",
+                10,
+                stageWidth,
+                stageHeight
+              );
 
-              this.container = new PIXI.ParticleContainer(this.pos.length * LINE_TOTAL, {
-                vertices: false,
-                position: true,
-                rotation: false,
-                scale: false,
-                uvs: false,
-                tint: true,
-              });
+              this.container = new PIXI.ParticleContainer(
+                this.pos.length * LINE_TOTAL,
+                {
+                  vertices: false,
+                  position: true,
+                  rotation: false,
+                  scale: false,
+                  uvs: false,
+                  tint: true,
+                }
+              );
 
               stage.addChild(this.container);
 
@@ -1454,7 +1624,9 @@ export default function Home(): JSX.Element {
 
             addChild(index) {
               for (let i = 0; i < this.particleGroups.length; i++) {
-                this.container.addChild(this.particleGroups[i].particles[index].sprite);
+                this.container.addChild(
+                  this.particleGroups[i].particles[index].sprite
+                );
               }
             }
 
@@ -1476,10 +1648,9 @@ export default function Home(): JSX.Element {
             }
           }
           new App();
-
         }
       } catch (error) {
-        console.error('Error loading module:', error);
+        console.error("Error loading module:", error);
       }
     };
 
@@ -1487,15 +1658,12 @@ export default function Home(): JSX.Element {
   }, []);
 
   return (
-    <Layout
-      title={`Hello from ${siteConfig.title}`}>
-        <main>
+    <Layout title={`Hello from ${siteConfig.title}`}>
+      <main>
         <BrowserOnly>
-        {() => {
-          return (
-            <div id='container' />
-              )}
-        }
+          {() => {
+            return <div id="container" />;
+          }}
         </BrowserOnly>
       </main>
     </Layout>
