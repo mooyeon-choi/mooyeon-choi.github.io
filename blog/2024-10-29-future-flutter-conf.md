@@ -198,6 +198,199 @@ final NativeLibrary _bindings = NativeLibrary(_dylib);
 
 ## Flutter WebRTC
 
+Flutter에서 WebRTC를 어떻게 다루는지에 대한 내용을 기대하였지만, 기대했던 내용과는 달리 단순히 WebRTC에 대한 설명만 진행하였다. WebRTC에 대해 잘 알지 못하여 이 내용 또한 유익한 시간이었다.
+
+### 서론
+
+발표자분께서 현재 회사에 영상통화 솔루션을 개발하며 얻은 Flutter WebRTC 지식을 공유해주셨다. WebRTC에 대한 기본 개념과 Flutter 환경에서 WebRTC로 화상 통화를 어떻게 구현하였는지를 공유해주셨다. 
+
+### WebRTC의 주요 개념
+
+WebRTC의 **RTC**는 **Real-Time Communication**의 약자이다. 웹 애플리케이션과 사이트가 **중간자 없이** 브라우저간에 **오디오/비디오 스트리밍** 및 데이터 교환을 가능하도록 하는 기술이다.
+
+웹에서 실시간 미디어 스트리밍을 하기위한 **유일한 표준**으로 2010년 Google에 의해 오픈소스화 되었다. 이후 Chrome 등 **모든 브라우저**에 탑재 되었다. (물론 IE에서는 제외 되었지만, IE는 이제 보내주도록 하자 😭) Flutter에서 사용하는 WebRTC도 당연히 동일한 원리로 실행된다.
+
+클라이언트 간의 **직접 연결**로 구현 가능하지만, 클라이언트들이 완전히 같은 네트워크에 있는게 아닌 이상 직접 연결하는 것은 어렵다. 따라서 **시그널링 서버**와 **릴레이 서버** 같은 기술들이 생겨난다.
+
+#### 시그널링(Signaling) 서버
+
+![webRTC Signaling server](./images/2024-10-29-future-flutter/webrtc_signaling_server.png)
+
+각각의 기기가 **서버의 도움 없이 연결**하는 것을 도와주는 서버로, 뒤에서 다룰 **SDP(Session Description Protocol)** 교환에 관련된 서버이다. 실제 데이터가 시그널링 서버를 통해서 오가는 것이 아니라는 점을 유의하자.
+
+#### 릴레이(Relay) 서버
+
+![Relay server](./images/2024-10-29-future-flutter/webrtc_turn_server.png)
+
+**TURN 서버**라고도 부른다. 방화벽이나 여러 제약으로 인해 **P2P** 연결이 불가능한 상황에서 **클라이언트 간 중계**를 해주는 서버이다. 구글은 개발자들을 위해 **TURN 서버 코드**를 제공하고 있다. TURN 서버를 구현해 놓으면 서로 다른 네트워크에 있어도 P2P처럼 통신이 가능하다.
+
+#### STUN 서버
+
+**STUN 서버**는 **TURN 서버**와 혼동하기 쉽다. **STUN 서버** 는 **Session Traversal Utilities for NAT**의 약자로 통신을 위해 **자기 자신의 정보**를 알아내기 위한 서버이다. 예를 들어, 공유기를 사용하는 환경에서 외부IP를 알아내기 위해 사용된다. 자기 자신을 비추는 거울로 생각하면 된다.
+
+#### RTCPeerConnection 객체
+
+WebRTC를 위해 제공되는 Web API 객체이다. 웹 브라우저 또는 네이티브 앱에서 직접적인 통신 연결을 생성 및 관리하고, 데이터 스트림을 교환하는 역할을 수행한다. 이를 잘 이해하고 활용한다면 WebRTC 구현을 위해 개발자가 할 일이 크게 줄어들 것이다.
+
+**RTCPeerConnection**이 하는 역할은 다음과 같다
+
+- offer, answer, ice-candidate 등 WebRTC를 위한 **신호처리**
+- STUN 및 TURN 서버를 사용한 **NAT 및 방화벽 통과**
+- 사용자의 디바이스(카메라, 마이크)에서 오는 **미디어 스트림 관리**
+- 클라이언트 간 데이터를 직접 교환하기 위한 **데이터 채널 생성**
+- 통신 세션이 초기화 되거나 변경될 때 **세션 협상** 및 **재협상**
+- 모든 통신을 자동으로 암호화하여 **중간자 공격**으로부터 보호
+- 통계 및 네트워크 정보 제공
+
+WebRTC의 경우 Flutter만을 위한 자료가 거의 없으므로 [MDN 사이트](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection)를 통해 확인하는 것이 좋다.
+
+#### SDP (Session Description Protocol)
+
+발신자와 수신자는 모두 **클라이언트**이므로 통신 환경이 다른 경우가 대부분이다. 따라서 SDP를 통해 서로의 **미디어 능력** 및 **연결 정보**를 공유해야 한다.
+
+SDP에는 오디오 및 비디오 코덱, 미디어 스트림의 방향, RTP(Real-time Transport Protocol) 엔드포인트 정보가 포함된다.
+
+#### ICE (Interactive Connectivity Establishment)
+
+일반적으로 발신자와 수신자는 **서로 다른 네트워크**를 사용하게 된다. 하지만 발신자에서 수신자로, 수신자에서 발신자로 가는 네트워크 경로는 다양하므로 다른 네트워크에 속한 클라이언트 간 통신 구현은 어렵다. ICE는 발신자 또는 수신자 입장에서 **내게 오는 길**을 알려준다.
+
+ICE Candidate는 다음 내용을 포함한다. IP 주소, 포트 번호, 프로토콜(UDP 또는 TCP), Candidate 유형(host, srflx, prflx, relay 등 포함)
+
+각 피어는 **자신의 모든 후보를 수집**한 후 이를 다른 피어와 교환한다. 양쪽 피어는 **가능한 모든 후보 조합**에 대해 연결성 검사를 수행하며 **가장 높은 우선순위**를 가진 후보 조합이 선택되어 미디어 통신에 사용된다.
+
+#### WebSocket
+
+WebRTC에서 WebSocket이 반드시 필요하지는 않지만, **실시간 양방향 통신**에서의 이점 때문에 많이 활용된다.
+
+### WebRTC 관련 Flutter 패키지
+
+#### flutter_webrtc
+
+Flutter에서 WebRTC 기능을 이용하기 위한 패키지로 기본적으로는 iOS, Android 등 다양한 플랫폼을 위해 제공되는 WebRTC 공식 **네이티브 패키지**를 **메서드 채널**로 묶어 놓은 구조이다.
+
+#### web_socket_channel
+
+Dart/Flutter에서 WebSocket 관련 기능을 제공한다. Web API에 비해 아직은 일부 기능을 지원하지 못하는 등 조금 미흡하다.
+
+#### flutter_callkeep
+
+Flutter에서 전화 수신 및 발신 UI를 처리하는 기능을 제공해준다. iOS는 CallKit을 사용하며, Android는 자체 UI를 띄워준다. iOS CallKit 구현을 위해서는 별도로 VoIP Push 구현이 필요하다
+
+### WebRTC & WebSocket 동작흐름
+
+![WebRTC and WebSocket flow](./images/2024-10-29-future-flutter/webrtc_and_websocket_1.png)
+
+![WebRTC and WebSocket flow 2](./images/2024-10-29-future-flutter/webrtc_and_websocket_2.png)
+
+WebSocket이 연결되면 WebSocket을 통해 connect 데이터가 전송된다. (발신자, 수신자 모두)
+
+```json
+{
+  "type": "connect",
+  "callId": "string"
+}
+```
+
+connect 수신 시 발신자와 수신자는 다음 동작을 수행한다.
+
+1. RTCPeerConnection 객체 초기화
+2. onIceCandidate 이벤트 리스너 추가(ice-candidate 전송)
+3. onAddStream 이벤트 리스너 추가(Remote Stream 초기화, Remote Renderer를 Remote Stream과 연결, Local Renderer를 Local Stream 과 연결)
+4. Local Stream 초기화
+5. 수신자는 offer 생성 및 발신
+
+offer와 answer는 **SDP**를 교환하기 위해 이루어진다. 
+
+#### offer
+
+수신자는 connect를 받으면 offer를 보낸다.
+
+```json
+{
+  "type": "offer",
+  "sdp": "string",
+  "callID": "string",
+  "restart": "boolean"
+}
+```
+
+#### answer
+
+발신자는 offer를 받았을 때 answer를 보낸다.
+
+```json
+{
+  "type": "answer",
+  "sdp": "string",
+  "callId": "string"
+}
+```
+
+* 수신자의 offer 발신 동작
+  1. offer 생성
+  2. RTCPearConnection 객체를 다음과 같이 설정 - Local Description: offer
+  3. 발신자에게 offer 전송
+
+* 발신자의 offer 수신 & answer 발신 동작
+  1. RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: offer
+  2. sdp 기반 answer 생성
+  3. RTCPeerConnection 객체를 다음과 같이 설정 - Local Description: answer
+  4. 수신자에게 answer 전송
+  5. 통화 시작을 위한 UI 처리
+
+* 수신자의 answer 수신 동작
+  1. RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: answer
+  2. 통화 시작을 위한 UI 처리
+
+
+#### ice-candidate
+
+ICE Candidate를 수신하고 RTCPeerConnection 객체에 ICE Candidate를 **모두 추가**
+
+```json
+{
+  "type": "ice-candidate",
+  "candidate": {
+    "candidate": "string",
+    "sdpMid": "string",
+    "sdpMLineIndex": "int"
+  },
+  "callId": "string"
+}
+```
+
+offer-answer 교환이 끝나기 전에 ICE Candidate 교환이 먼저 일어나는 경우도 있다. 이때는 **별도의 리스트**에 ICE Candidate를 모두 저장해 뒀다가 offer-answer가 발생 했을 때 **Peer Connection**에 ICE Candidate를 추가해주면 된다.
+
+#### leave
+
+통화를 종료하기 위해 이루어진다. 수신자와 발신자 중 어느 한 쪽이 leaave를 전송하면 즉시 **통화 종료** 된다.(서로 leave를 교환할 필요가 없다.)
+
+```json
+{
+  "type": "leave",
+  "callId": "string"
+}
+```
+
+### Flutter WebRTC를 위한 팁
+
+#### 수신자의 응답 이전 발신자의 통화 종료
+
+서버에서 수신자에게 `"HUNGUP"` Push 알림을 보내 전화 수신 화면, 소리, 진동이 뜨지 않도록 해야한다.
+
+#### 수신자의 통화 거절
+
+서버에서 발신자에게 `"REJECTED"` Push 알림을 보내 video 화면에서 빠져나오도록 한다.
+
+#### 수신자가 여러 기기 중 하나의 기기에서 응답
+
+서버에서 수신자의 다른 기기들에 `"RESPONDED"` Push 알림을 보내 전화 수신 화면, 소리, 진동이 뜨지 않도록 해야한다.
+
+#### 통화 종료
+
+통화 종료 시에는, 한쪽이 `"leave"` 메시지를 상대편에 보내면 둘다 종료된다.
+하지만 여러가지 이유로 이 동작이 정상적으로 진행되지 못하는 경우가 있는데, 이때는 signaling 서버에서 `"leave"` 메시지를 디바이스에 보내서 종료하도록 한다.
+
 ## ShoreBird 작동 방식
 
 멀티 플랫폼 모바일 애플리케이션 개발을 위해 많이 사용되는 프레임워크 하면 ReactNative, Flutter 와 같은 프레임워크들이 생각날 것이다. RN(ReactNative) 하면 여러 기능중 단연 **Code Push** 를 먼저 떠올릴 수 있는데, `Flutter` 에서 `Code push` 를 적용하기 위해 만들어진 서비스인 `Shorebird`에 대해 알아보자.
