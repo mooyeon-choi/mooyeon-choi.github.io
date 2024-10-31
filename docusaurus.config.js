@@ -85,6 +85,11 @@ const config = {
         additionalLanguages: ['dart'],
       },
     }),
+
+  scripts: [
+    'https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js',
+  ],
 };
 
 module.exports = config;
