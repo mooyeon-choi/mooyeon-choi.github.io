@@ -227,6 +227,114 @@ ex)</p>]]></content>
 <li>메모리 공유나 비동기 처리등의 고급 사용예제</li>
 </ul></div></div>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="flutter-webrtc">Flutter WebRTC<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter-webrtc" class="hash-link" aria-label="Flutter WebRTC에 대한 직접 링크" title="Flutter WebRTC에 대한 직접 링크">​</a></h2>
+<p>Flutter에서 WebRTC를 어떻게 다루는지에 대한 내용을 기대하였지만, 기대했던 내용과는 달리 단순히 WebRTC에 대한 설명만 진행하였다. WebRTC에 대해 잘 알지 못하여 이 내용 또한 유익한 시간이었다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="서론">서론<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%84%9C%EB%A1%A0" class="hash-link" aria-label="서론에 대한 직접 링크" title="서론에 대한 직접 링크">​</a></h3>
+<p>발표자분께서 현재 회사에 영상통화 솔루션을 개발하며 얻은 Flutter WebRTC 지식을 공유해주셨다. WebRTC에 대한 기본 개념과 Flutter 환경에서 WebRTC로 화상 통화를 어떻게 구현하였는지를 공유해주셨다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="webrtc의-주요-개념">WebRTC의 주요 개념<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#webrtc%EC%9D%98-%EC%A3%BC%EC%9A%94-%EA%B0%9C%EB%85%90" class="hash-link" aria-label="WebRTC의 주요 개념에 대한 직접 링크" title="WebRTC의 주요 개념에 대한 직접 링크">​</a></h3>
+<p>WebRTC의 <strong>RTC</strong>는 <strong>Real-Time Communication</strong>의 약자이다. 웹 애플리케이션과 사이트가 <strong>중간자 없이</strong> 브라우저간에 <strong>오디오/비디오 스트리밍</strong> 및 데이터 교환을 가능하도록 하는 기술이다.</p>
+<p>웹에서 실시간 미디어 스트리밍을 하기위한 <strong>유일한 표준</strong>으로 2010년 Google에 의해 오픈소스화 되었다. 이후 Chrome 등 <strong>모든 브라우저</strong>에 탑재 되었다. (물론 IE에서는 제외 되었지만, IE는 이제 보내주도록 하자 😭) Flutter에서 사용하는 WebRTC도 당연히 동일한 원리로 실행된다.</p>
+<p>클라이언트 간의 <strong>직접 연결</strong>로 구현 가능하지만, 클라이언트들이 완전히 같은 네트워크에 있는게 아닌 이상 직접 연결하는 것은 어렵다. 따라서 <strong>시그널링 서버</strong>와 <strong>릴레이 서버</strong> 같은 기술들이 생겨난다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="시그널링signaling-서버">시그널링(Signaling) 서버<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%8B%9C%EA%B7%B8%EB%84%90%EB%A7%81signaling-%EC%84%9C%EB%B2%84" class="hash-link" aria-label="시그널링(Signaling) 서버에 대한 직접 링크" title="시그널링(Signaling) 서버에 대한 직접 링크">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="webRTC Signaling server" src="https://mooyeon-choi.github.io/assets/images/webrtc_signaling_server-676d437f552d2b8a1632e9401f7087a4.png" width="582" height="402" class="img_ev3q"></p>
+<p>각각의 기기가 <strong>서버의 도움 없이 연결</strong>하는 것을 도와주는 서버로, 뒤에서 다룰 <strong>SDP(Session Description Protocol)</strong> 교환에 관련된 서버이다. 실제 데이터가 시그널링 서버를 통해서 오가는 것이 아니라는 점을 유의하자.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="릴레이relay-서버">릴레이(Relay) 서버<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EB%A6%B4%EB%A0%88%EC%9D%B4relay-%EC%84%9C%EB%B2%84" class="hash-link" aria-label="릴레이(Relay) 서버에 대한 직접 링크" title="릴레이(Relay) 서버에 대한 직접 링크">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="Relay server" src="https://mooyeon-choi.github.io/assets/images/webrtc_turn_server-fbc97609513ecd67a20566107682a090.png" width="891" height="279" class="img_ev3q"></p>
+<p><strong>TURN 서버</strong>라고도 부른다. 방화벽이나 여러 제약으로 인해 <strong>P2P</strong> 연결이 불가능한 상황에서 <strong>클라이언트 간 중계</strong>를 해주는 서버이다. 구글은 개발자들을 위해 <strong>TURN 서버 코드</strong>를 제공하고 있다. TURN 서버를 구현해 놓으면 서로 다른 네트워크에 있어도 P2P처럼 통신이 가능하다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="stun-서버">STUN 서버<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#stun-%EC%84%9C%EB%B2%84" class="hash-link" aria-label="STUN 서버에 대한 직접 링크" title="STUN 서버에 대한 직접 링크">​</a></h4>
+<p><strong>STUN 서버</strong>는 <strong>TURN 서버</strong>와 혼동하기 쉽다. <strong>STUN 서버</strong> 는 <strong>Session Traversal Utilities for NAT</strong>의 약자로 통신을 위해 <strong>자기 자신의 정보</strong>를 알아내기 위한 서버이다. 예를 들어, 공유기를 사용하는 환경에서 외부IP를 알아내기 위해 사용된다. 자기 자신을 비추는 거울로 생각하면 된다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="rtcpeerconnection-객체">RTCPeerConnection 객체<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#rtcpeerconnection-%EA%B0%9D%EC%B2%B4" class="hash-link" aria-label="RTCPeerConnection 객체에 대한 직접 링크" title="RTCPeerConnection 객체에 대한 직접 링크">​</a></h4>
+<p>WebRTC를 위해 제공되는 Web API 객체이다. 웹 브라우저 또는 네이티브 앱에서 직접적인 통신 연결을 생성 및 관리하고, 데이터 스트림을 교환하는 역할을 수행한다. 이를 잘 이해하고 활용한다면 WebRTC 구현을 위해 개발자가 할 일이 크게 줄어들 것이다.</p>
+<p><strong>RTCPeerConnection</strong>이 하는 역할은 다음과 같다</p>
+<ul>
+<li>offer, answer, ice-candidate 등 WebRTC를 위한 <strong>신호처리</strong></li>
+<li>STUN 및 TURN 서버를 사용한 <strong>NAT 및 방화벽 통과</strong></li>
+<li>사용자의 디바이스(카메라, 마이크)에서 오는 <strong>미디어 스트림 관리</strong></li>
+<li>클라이언트 간 데이터를 직접 교환하기 위한 <strong>데이터 채널 생성</strong></li>
+<li>통신 세션이 초기화 되거나 변경될 때 <strong>세션 협상</strong> 및 <strong>재협상</strong></li>
+<li>모든 통신을 자동으로 암호화하여 <strong>중간자 공격</strong>으로부터 보호</li>
+<li>통계 및 네트워크 정보 제공</li>
+</ul>
+<p>WebRTC의 경우 Flutter만을 위한 자료가 거의 없으므로 <a href="https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection" target="_blank" rel="noopener noreferrer">MDN 사이트</a>를 통해 확인하는 것이 좋다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="sdp-session-description-protocol">SDP (Session Description Protocol)<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#sdp-session-description-protocol" class="hash-link" aria-label="SDP (Session Description Protocol)에 대한 직접 링크" title="SDP (Session Description Protocol)에 대한 직접 링크">​</a></h4>
+<p>발신자와 수신자는 모두 <strong>클라이언트</strong>이므로 통신 환경이 다른 경우가 대부분이다. 따라서 SDP를 통해 서로의 <strong>미디어 능력</strong> 및 <strong>연결 정보</strong>를 공유해야 한다.</p>
+<p>SDP에는 오디오 및 비디오 코덱, 미디어 스트림의 방향, RTP(Real-time Transport Protocol) 엔드포인트 정보가 포함된다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="ice-interactive-connectivity-establishment">ICE (Interactive Connectivity Establishment)<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#ice-interactive-connectivity-establishment" class="hash-link" aria-label="ICE (Interactive Connectivity Establishment)에 대한 직접 링크" title="ICE (Interactive Connectivity Establishment)에 대한 직접 링크">​</a></h4>
+<p>일반적으로 발신자와 수신자는 <strong>서로 다른 네트워크</strong>를 사용하게 된다. 하지만 발신자에서 수신자로, 수신자에서 발신자로 가는 네트워크 경로는 다양하므로 다른 네트워크에 속한 클라이언트 간 통신 구현은 어렵다. ICE는 발신자 또는 수신자 입장에서 <strong>내게 오는 길</strong>을 알려준다.</p>
+<p>ICE Candidate는 다음 내용을 포함한다. IP 주소, 포트 번호, 프로토콜(UDP 또는 TCP), Candidate 유형(host, srflx, prflx, relay 등 포함)</p>
+<p>각 피어는 <strong>자신의 모든 후보를 수집</strong>한 후 이를 다른 피어와 교환한다. 양쪽 피어는 <strong>가능한 모든 후보 조합</strong>에 대해 연결성 검사를 수행하며 <strong>가장 높은 우선순위</strong>를 가진 후보 조합이 선택되어 미디어 통신에 사용된다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="websocket">WebSocket<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#websocket" class="hash-link" aria-label="WebSocket에 대한 직접 링크" title="WebSocket에 대한 직접 링크">​</a></h4>
+<p>WebRTC에서 WebSocket이 반드시 필요하지는 않지만, <strong>실시간 양방향 통신</strong>에서의 이점 때문에 많이 활용된다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="webrtc-관련-flutter-패키지">WebRTC 관련 Flutter 패키지<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#webrtc-%EA%B4%80%EB%A0%A8-flutter-%ED%8C%A8%ED%82%A4%EC%A7%80" class="hash-link" aria-label="WebRTC 관련 Flutter 패키지에 대한 직접 링크" title="WebRTC 관련 Flutter 패키지에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="flutter_webrtc">flutter_webrtc<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter_webrtc" class="hash-link" aria-label="flutter_webrtc에 대한 직접 링크" title="flutter_webrtc에 대한 직접 링크">​</a></h4>
+<p>Flutter에서 WebRTC 기능을 이용하기 위한 패키지로 기본적으로는 iOS, Android 등 다양한 플랫폼을 위해 제공되는 WebRTC 공식 <strong>네이티브 패키지</strong>를 <strong>메서드 채널</strong>로 묶어 놓은 구조이다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="web_socket_channel">web_socket_channel<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#web_socket_channel" class="hash-link" aria-label="web_socket_channel에 대한 직접 링크" title="web_socket_channel에 대한 직접 링크">​</a></h4>
+<p>Dart/Flutter에서 WebSocket 관련 기능을 제공한다. Web API에 비해 아직은 일부 기능을 지원하지 못하는 등 조금 미흡하다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="flutter_callkeep">flutter_callkeep<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter_callkeep" class="hash-link" aria-label="flutter_callkeep에 대한 직접 링크" title="flutter_callkeep에 대한 직접 링크">​</a></h4>
+<p>Flutter에서 전화 수신 및 발신 UI를 처리하는 기능을 제공해준다. iOS는 CallKit을 사용하며, Android는 자체 UI를 띄워준다. iOS CallKit 구현을 위해서는 별도로 VoIP Push 구현이 필요하다</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="webrtc--websocket-동작흐름">WebRTC &amp; WebSocket 동작흐름<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#webrtc--websocket-%EB%8F%99%EC%9E%91%ED%9D%90%EB%A6%84" class="hash-link" aria-label="WebRTC &amp; WebSocket 동작흐름에 대한 직접 링크" title="WebRTC &amp; WebSocket 동작흐름에 대한 직접 링크">​</a></h3>
+<p><img decoding="async" loading="lazy" alt="WebRTC and WebSocket flow" src="https://mooyeon-choi.github.io/assets/images/webrtc_and_websocket_1-08dc88c139152196fe4bb30c60967e60.png" width="924" height="471" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="WebRTC and WebSocket flow 2" src="https://mooyeon-choi.github.io/assets/images/webrtc_and_websocket_2-9926859faf23275c41cd51017e986b1e.png" width="907" height="429" class="img_ev3q"></p>
+<p>WebSocket이 연결되면 WebSocket을 통해 connect 데이터가 전송된다. (발신자, 수신자 모두)</p>
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "type": "connect",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "callId": "string"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>connect 수신 시 발신자와 수신자는 다음 동작을 수행한다.</p>
+<ol>
+<li>RTCPeerConnection 객체 초기화</li>
+<li>onIceCandidate 이벤트 리스너 추가(ice-candidate 전송)</li>
+<li>onAddStream 이벤트 리스너 추가(Remote Stream 초기화, Remote Renderer를 Remote Stream과 연결, Local Renderer를 Local Stream 과 연결)</li>
+<li>Local Stream 초기화</li>
+<li>수신자는 offer 생성 및 발신</li>
+</ol>
+<p>offer와 answer는 <strong>SDP</strong>를 교환하기 위해 이루어진다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="offer">offer<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#offer" class="hash-link" aria-label="offer에 대한 직접 링크" title="offer에 대한 직접 링크">​</a></h4>
+<p>수신자는 connect를 받으면 offer를 보낸다.</p>
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "type": "offer",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "sdp": "string",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "callID": "string",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "restart": "boolean"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="answer">answer<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#answer" class="hash-link" aria-label="answer에 대한 직접 링크" title="answer에 대한 직접 링크">​</a></h4>
+<p>발신자는 offer를 받았을 때 answer를 보낸다.</p>
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "type": "answer",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "sdp": "string",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "callId": "string"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>
+<p>수신자의 offer 발신 동작</p>
+<ol>
+<li>offer 생성</li>
+<li>RTCPearConnection 객체를 다음과 같이 설정 - Local Description: offer</li>
+<li>발신자에게 offer 전송</li>
+</ol>
+</li>
+<li>
+<p>발신자의 offer 수신 &amp; answer 발신 동작</p>
+<ol>
+<li>RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: offer</li>
+<li>sdp 기반 answer 생성</li>
+<li>RTCPeerConnection 객체를 다음과 같이 설정 - Local Description: answer</li>
+<li>수신자에게 answer 전송</li>
+<li>통화 시작을 위한 UI 처리</li>
+</ol>
+</li>
+<li>
+<p>수신자의 answer 수신 동작</p>
+<ol>
+<li>RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: answer</li>
+<li>통화 시작을 위한 UI 처리</li>
+</ol>
+</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="ice-candidate">ice-candidate<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#ice-candidate" class="hash-link" aria-label="ice-candidate에 대한 직접 링크" title="ice-candidate에 대한 �직접 링크">​</a></h4>
+<p>ICE Candidate를 수신하고 RTCPeerConnection 객체에 ICE Candidate를 <strong>모두 추가</strong></p>
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "type": "ice-candidate",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "candidate": {</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    "candidate": "string",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    "sdpMid": "string",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    "sdpMLineIndex": "int"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  },</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "callId": "string"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>offer-answer 교환이 끝나기 전에 ICE Candidate 교환이 먼저 일어나는 경우도 있다. 이때는 <strong>별도의 리스트</strong>에 ICE Candidate를 모두 저장해 뒀다가 offer-answer가 발생 했을 때 <strong>Peer Connection</strong>에 ICE Candidate를 추가해주면 된다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="leave">leave<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#leave" class="hash-link" aria-label="leave에 대한 직접 링크" title="leave에 대한 직접 링크">​</a></h4>
+<p>통화를 종료하기 위해 이루어진다. 수신자와 발신자 중 어느 한 쪽이 leaave를 전송하면 즉시 <strong>통화 종료</strong> 된다.(서로 leave를 교환할 필요가 없다.)</p>
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">{</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "type": "leave",</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  "callId": "string"</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="flutter-webrtc를-위한-팁">Flutter WebRTC를 위한 팁<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter-webrtc%EB%A5%BC-%EC%9C%84%ED%95%9C-%ED%8C%81" class="hash-link" aria-label="Flutter WebRTC를 위한 팁에 대한 직접 링크" title="Flutter WebRTC를 위한 팁에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="수신자의-응답-이전-발신자의-통화-종료">수신자의 응답 이전 발신자의 통화 종료<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%88%98%EC%8B%A0%EC%9E%90%EC%9D%98-%EC%9D%91%EB%8B%B5-%EC%9D%B4%EC%A0%84-%EB%B0%9C%EC%8B%A0%EC%9E%90%EC%9D%98-%ED%86%B5%ED%99%94-%EC%A2%85%EB%A3%8C" class="hash-link" aria-label="수신자의 응답 이전 발신자의 통화 종료에 대한 직접 링크" title="수신자의 응답 이전 발신자의 통화 종료에 대한 직접 링크">​</a></h4>
+<p>서버에서 수신자에게 <code>"HUNGUP"</code> Push 알림을 보내 전화 수신 화면, 소리, 진동이 뜨지 않도록 해야한다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="수신자의-통화-거절">수신자의 통화 거절<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%88%98%EC%8B%A0%EC%9E%90%EC%9D%98-%ED%86%B5%ED%99%94-%EA%B1%B0%EC%A0%88" class="hash-link" aria-label="수신자의 통화 거절에 대한 직접 링크" title="수신자의 통화 거절에 대한 직접 링크">​</a></h4>
+<p>서버에서 발신자에게 <code>"REJECTED"</code> Push 알림을 보내 video 화면에서 빠져나오도록 한다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="수신자가-여러-기기-중-하나의-기기에서-응답">수신자가 여러 기기 중 하나의 기기에서 응답<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%88%98%EC%8B%A0%EC%9E%90%EA%B0%80-%EC%97%AC%EB%9F%AC-%EA%B8%B0%EA%B8%B0-%EC%A4%91-%ED%95%98%EB%82%98%EC%9D%98-%EA%B8%B0%EA%B8%B0%EC%97%90%EC%84%9C-%EC%9D%91%EB%8B%B5" class="hash-link" aria-label="수신자가 여러 기기 중 하나의 기기에서 응답에 대한 직접 링크" title="수신자가 여러 기기 중 하나의 기기에서 응답에 대한 직접 링크">​</a></h4>
+<p>서버에서 수신자의 다른 기기들에 <code>"RESPONDED"</code> Push 알림을 보내 전화 수신 화면, 소리, 진동이 뜨지 않도록 해야한다.</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="통화-종료">통화 종료<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%ED%86%B5%ED%99%94-%EC%A2%85%EB%A3%8C" class="hash-link" aria-label="통화 종료에 대한 직접 링크" title="통화 종료에 대한 직접 링크">​</a></h4>
+<p>통화 종료 시에는, 한쪽이 <code>"leave"</code> 메시지를 상대편에 보내면 둘다 종료된다.
+하지만 여러가지 이유로 이 동작이 정상적으로 진행되지 못하는 경우가 있는데, 이때는 signaling 서버에서 <code>"leave"</code> 메시지를 디바이스에 보내서 종료하도록 한다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="shorebird-작동-방식">ShoreBird 작동 방식<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#shorebird-%EC%9E%91%EB%8F%99-%EB%B0%A9%EC%8B%9D" class="hash-link" aria-label="ShoreBird 작동 방식에 대한 직접 링크" title="ShoreBird 작동 방식에 대한 직접 링크">​</a></h2>
 <p>멀티 플랫폼 모바일 애플리케이션 개발을 위해 많이 사용되는 프레임워크 하면 ReactNative, Flutter 와 같은 프레임워크들이 생각날 것이다. RN(ReactNative) 하면 여러 기능중 단연 <strong>Code Push</strong> 를 먼저 떠올릴 수 있는데, <code>Flutter</code> 에서 <code>Code push</code> 를 적용하기 위해 만들어진 서비스인 <code>Shorebird</code>에 대해 알아보자.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="code-push란">Code push란?<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#code-push%EB%9E%80" class="hash-link" aria-label="Code push란?에 대한 직접 링크" title="Code push란?에 대한 직접 링크">​</a></h3>
@@ -271,12 +379,12 @@ ex)</p>]]></content>
 <li>선택이 필요할 때는 가능한 옵션을 먼저 제공하기</li>
 <li>디자이너의 의도와 동일하게 구현하기 위해 최선을 다하기</li>
 </ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="플러터-렌더링-해부학">플러터 렌더링 해부학<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%ED%94%8C%EB%9F%AC%ED%84%B0-%EB%A0%8C%EB%8D%94%EB%A7%81-%ED%95%B4%EB%B6%80%ED%95%99" class="hash-link" aria-label="플러터 렌��더링 해부학에 대한 직접 링크" title="플러터 렌더링 해부학에 대한 직접 링크">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="플러터-렌더링-해부학">플러터 렌더링 해부학<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%ED%94%8C%EB%9F%AC%ED%84%B0-%EB%A0%8C%EB%8D%94%EB%A7%81-%ED%95%B4%EB%B6%80%ED%95%99" class="hash-link" aria-label="플러터 렌더링 해부학에 대한 직접 링크" title="플러터 렌더링 해부학에 대한 직접 링크">​</a></h2>
 <p>Flutter Seoul의 오거나이저로 활동 중이신 에이든님의 발표로 플로터 위젯이 화면에 표시될 때 어떠한 방식으로 렌더링이 되는지, Dart 코드를 뜯어보며 확인해보도록 자료를 준비해주셨다. 에이든님의 경우 Flutter 월간 세미나에서도 Flutter Web의 Image 렌더링에 대한 발표를 들었었는데, 두 내용 모두 찾아보기 귀찮고 생각만해도 피곤한 내용들을 꼼꼼히 잘 설명해주셔서 많은 도움이 되었다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="랜더링-과정">랜더링 과정<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EB%9E%9C%EB%8D%94%EB%A7%81-%EA%B3%BC%EC%A0%95" class="hash-link" aria-label="랜더링 과정에 대한 직접 링크" title="랜더링 과정에 대한 직접 링크">​</a></h3>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="flutter-web을-활용하여-제품-개발-환경-개선하기">Flutter web을 활용하여 제품 개발 환경 개선하기<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter-web%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%A0%9C%ED%92%88-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EA%B0%9C%EC%84%A0%ED%95%98%EA%B8%B0" class="hash-link" aria-label="Flutter web을 활용하여 제품 개발 환경 개선하기에 대한 직접 링크" title="Flutter web을 활용하여 제품 개발 환경 개선하기에 대한 직접 링크">​</a></h2>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="어느날-갑자기-앱이-터졌을-때">어느날 갑자기 앱이 터졌을 때<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#%EC%96%B4%EB%8A%90%EB%82%A0-%EA%B0%91%EC%9E%90%EA%B8%B0-%EC%95%B1%EC%9D%B4-%ED%84%B0%EC%A1%8C%EC%9D%84-%EB%95%8C" class="hash-link" aria-label="어느날 갑자기 앱이 터졌을 때에 대한 직접 링크" title="어느날 갑자기 앱이 터졌을 때에 대한 직접 링크">​</a></h2>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="flutter-bloc을-제품-개발에-야무지게-적용하기">Flutter Bloc을 제품 개발에 야무지게 적용하기<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter-bloc%EC%9D%84-%EC%A0%9C%ED%92%88-%EA%B0%9C%EB%B0%9C%EC%97%90-%EC%95%BC%EB%AC%B4%EC%A7%80%EA%B2%8C-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0" class="hash-link" aria-label="Flutter Bloc을 제품 개발에 야무지게 적용하�기에 대한 직접 링크" title="Flutter Bloc을 제품 개발에 야무지게 적용하기에 대한 직접 링크">​</a></h2>]]></content>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="flutter-bloc을-제품-개발에-야무지게-적용하기">Flutter Bloc을 제품 개발에 야무지게 적용하기<a href="https://mooyeon-choi.github.io/blog/future-flutter-conf#flutter-bloc%EC%9D%84-%EC%A0%9C%ED%92%88-%EA%B0%9C%EB%B0%9C%EC%97%90-%EC%95%BC%EB%AC%B4%EC%A7%80%EA%B2%8C-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0" class="hash-link" aria-label="Flutter Bloc을 제품 개발에 야무지게 적용하기에 대한 직접 링크" title="Flutter Bloc을 제품 개발�에 야무지게 적용하기에 대한 직접 링크">​</a></h2>]]></content>
         <author>
             <name>Mooyeon Choi</name>
             <uri>https://github.com/mooyeon-choi</uri>
