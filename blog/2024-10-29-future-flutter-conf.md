@@ -80,23 +80,25 @@ flutter create --platforms=android,ios,macos,windows,linux --template=plugin ffi
 ##### 고언어 코드 작성
 
 1. `src`폴더 안에 `go.mod` 파일 생성
-    > **`go.mod` 파일이란?** 모듈 이름, 버전, 의존성 등을 정의하는 파일
+
+   > **`go.mod` 파일이란?** 모듈 이름, 버전, 의존성 등을 정의하는 파일
 
 2. `sum.go` 파일을 생성하고 고언어 코드를 작성
-    ```go
-    // sum.go file
-    package main
 
-    import "C"          // cgo 문법으로 
-                        // export <함수명> 주석을 이용해서 sum이라는 함수를 C로 export
+   ```go
+   // sum.go file
+   package main
 
-    // export sum
-    func sum(a C.int, b C.int) C.int {      // C에서 사용해야하기 때문에 Go의
-        return a + b                        // 타입이 아닌 C 타입으로 C.int 를 사용
-    }
+   import "C"          // cgo 문법으로
+                       // export <함수명> 주석을 이용해서 sum이라는 함수를 C로 export
 
-    func main() {}
-    ```
+   // export sum
+   func sum(a C.int, b C.int) C.int {      // C에서 사용해야하기 때문에 Go의
+       return a + b                        // 타입이 아닌 C 타입으로 C.int 를 사용
+   }
+
+   func main() {}
+   ```
 
 #### 고언어 라이브러리를 안드로이드용으로 컴파일
 
@@ -126,10 +128,10 @@ go build -buildmode=c-shared -o $ANDROID_OUT/arm64-v8a/libsum.so
 
 기본적인 컨셉은 안드로이드용 빌드와 동일하나 약간의 추가과정이 필요함
 
-* IOS는 static 라이브러리로 컴파일 해야함
-* 시뮬레이터용 `arm64`와 *`arm64` 빌드*와 *아이폰용 `arm64` 빌드*, 총 세개의 라이브러리로 컴파일
-* 시뮬레이터용 라이브러리 두개를 통합하기 위해 lipo라는 도구를 사용
-* 빌드된 모든 라이브러리를 `xframework`패키지로 통합
+- IOS는 static 라이브러리로 컴파일 해야함
+- 시뮬레이터용 `arm64`와 *`arm64` 빌드*와 _아이폰용 `arm64` 빌드_, 총 세개의 라이브러리로 컴파일
+- 시뮬레이터용 라이브러리 두개를 통합하기 위해 lipo라는 도구를 사용
+- 빌드된 모든 라이브러리를 `xframework`패키지로 통합
 
 ### 플러터에서 사용하기
 
@@ -184,17 +186,17 @@ final NativeLibrary _bindings = NativeLibrary(_dylib);
 
 ### 정리
 
-* `C` 인터페이스를 제공하는 언어라면 `Dart`에서 **FFI**를 통해 사용 가능함
-* `ffigen`을 이용하면 `.h`를 읽어 자동으로 바인딩 코드를 생성해줌
-* `Go` 언어의 크로스 컴파일러를 이용해 쉽게 크로스 플랫폼 라이브러리 생성 가능
+- `C` 인터페이스를 제공하는 언어라면 `Dart`에서 **FFI**를 통해 사용 가능함
+- `ffigen`을 이용하면 `.h`를 읽어 자동으로 바인딩 코드를 생성해줌
+- `Go` 언어의 크로스 컴파일러를 이용해 쉽게 크로스 플랫폼 라이브러리 생성 가능
 
 :::info title=Next Step
 
-* IOS / macOS / Windows / Linux 등 안드로이드 외 다른 플랫폼 빌드
-  * 예시는 Android / IOS / macOS 까지만 동작
-* 웹에서도 동작하도록 빌드 (힌트: WebAssembly)
-* 메모리 공유나 비동기 처리등의 고급 사용예제
-:::
+- IOS / macOS / Windows / Linux 등 안드로이드 외 다른 플랫폼 빌드
+  - 예시는 Android / IOS / macOS 까지만 동작
+- 웹에서도 동작하도록 빌드 (힌트: WebAssembly)
+- 메모리 공유나 비동기 처리등의 고급 사용예제
+  :::
 
 ## Flutter WebRTC
 
@@ -202,7 +204,7 @@ Flutter에서 WebRTC를 어떻게 다루는지에 대한 내용을 기대하였�
 
 ### 서론
 
-발표자분께서 현재 회사에 영상통화 솔루션을 개발하며 얻은 Flutter WebRTC 지식을 공유해주셨다. WebRTC에 대한 기본 개념과 Flutter 환경에서 WebRTC로 화상 통화를 어떻게 구현하였는지를 공유해주셨다. 
+발표자분께서 현재 회사에 영상통화 솔루션을 개발하며 얻은 Flutter WebRTC 지식을 공유해주셨다. WebRTC에 대한 기본 개념과 Flutter 환경에서 WebRTC로 화상 통화를 어떻게 구현하였는지를 공유해주셨다.
 
 ### WebRTC의 주요 개념
 
@@ -299,7 +301,7 @@ connect 수신 시 발신자와 수신자는 다음 동작을 수행한다.
 4. Local Stream 초기화
 5. 수신자는 offer 생성 및 발신
 
-offer와 answer는 **SDP**를 교환하기 위해 이루어진다. 
+offer와 answer는 **SDP**를 교환하기 위해 이루어진다.
 
 #### offer
 
@@ -326,22 +328,23 @@ offer와 answer는 **SDP**를 교환하기 위해 이루어진다.
 }
 ```
 
-* 수신자의 offer 발신 동작
+- 수신자의 offer 발신 동작
+
   1. offer 생성
   2. RTCPearConnection 객체를 다음과 같이 설정 - Local Description: offer
   3. 발신자에게 offer 전송
 
-* 발신자의 offer 수신 & answer 발신 동작
+- 발신자의 offer 수신 & answer 발신 동작
+
   1. RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: offer
   2. sdp 기반 answer 생성
   3. RTCPeerConnection 객체를 다음과 같이 설정 - Local Description: answer
   4. 수신자에게 answer 전송
   5. 통화 시작을 위한 UI 처리
 
-* 수신자의 answer 수신 동작
+- 수신자의 answer 수신 동작
   1. RTCPeerConnection 객체를 다음과 같이 설정 - Remote Description: answer
   2. 통화 시작을 위한 UI 처리
-
 
 #### ice-candidate
 
@@ -397,14 +400,14 @@ offer-answer 교환이 끝나기 전에 ICE Candidate 교환이 먼저 일어나
 
 ### Code push란?
 
-* 코드 수정 시 디바이스에서 업데이트를 하지 않아도 지속적으로 사용자가 변경사항을 가져올 수 있다
-* 대부분의 큰 애플리케이션들은 `Code push`를 사용중이다.
-  * *Large install base = long store update time* 이므로
+- 코드 수정 시 디바이스에서 업데이트를 하지 않아도 지속적으로 사용자가 변경사항을 가져올 수 있다
+- 대부분의 큰 애플리케이션들은 `Code push`를 사용중이다.
 
-* 비즈니스에서 현실적인 문제들
-  * Downtime = lost revenue
-  * Code push = insurance you can fix things quickly if they go wrong
+  - _Large install base = long store update time_ 이므로
 
+- 비즈니스에서 현실적인 문제들
+  - Downtime = lost revenue
+  - Code push = insurance you can fix things quickly if they go wrong
 
 ## 풍성한 디자인 요청사항에 대응하기
 
@@ -440,10 +443,10 @@ LINE 2년차 주니어 개발자로 일하면서 플러터를 사용하여 여�
 
 디자이너분들과 메신저를 통해서 소통한 방법들과 내용들에 대해 공유해주셨다. 명확하게 의견을 주고받을 수 있도록 다양한 방법을 제공해주셨는데 해당 방법들은 다음과 같다.
 
-* 내가 이해한 바를 정확하게 공유하기
-* 질문할 때는 이해가 쉽게 시각 자료를 첨부하기
-* 선택이 필요할 때는 가능한 옵션을 먼저 제공하기
-* 디자이너의 의도와 동일하게 구현하기 위해 최선을 다하기
+- 내가 이해한 바를 정확하게 공유하기
+- 질문할 때는 이해가 쉽게 시각 자료를 첨부하기
+- 선택이 필요할 때는 가능한 옵션을 먼저 제공하기
+- 디자이너의 의도와 동일하게 구현하기 위해 최선을 다하기
 
 ## 플러터 렌더링 해부학
 
@@ -576,6 +579,68 @@ mixin WidgetsBinding on BindingBase, ServicesBinding, SchedulerBinding,
   }
 }
 ```
+
+`runApp` 함수의 내부에서는 `WidgetsFlutterBinding`의 `ensureInitialized`를 호출하여 플러터 어플리케이션 동작을 위한 초기화를 한다. `ensureInitialized`가 반환한 `WidgetsBinding`객체의 `wrapWithDefaultView` 메소드를 호출하면 `runApp` 함수에 전달된 위젯이 `View`의 `child`로 추가되는데 이를 통해 `wrapWithDefaultView`가 view에 위젯을 추가하는 역하를 하는 것을 알 수 있다.
+
+```dart
+void _runWidget(Widget app, WidgetsBinding binding, String debugEntryPoint) {
+  binding
+    ..scheduleAttachRootWidget(app)
+    //...
+}
+```
+
+이번에는 `"Inflate the ginen widget"`를 확인해보자 `runApp` 함수는 `private` 함수인 `_runWidget` 함수의 `scheduleAttachRootWidget`을 호출하며
+`wrapWithDefaultView`가 생성한 view를 전달한다.
+
+```dart
+mixin WidgetsBinding on BindingBase, ServicesBinding, ScheduleBinding, GestureBinding,
+  RendererBinding, SementicsBinding {
+    @protect
+    void scheduleAttachRootWidget(Widget rootWidget) {
+      Timer.run(() => attachRootWidget(rootWidget));
+    }
+    //...
+  }
+```
+
+`scheduleAttachRootWidget`은 `attachRootWidget`을 호출하고,
+
+```dart
+mixin WidgetsBinding on BindingBase, ServicesBinding, ScheduleBinding, GestureBinding,
+  RendererBinding, SementicsBinding {
+  //...
+  void attachRootWidget(Widget rootWidget) {
+    attachToBuildOwner(RootWidget(
+      debugShortDescription: '[root]',
+      child: rootWidget,
+    ));
+  }
+  void attachToBuildOwner(RootWidget widget) {
+    //...
+    _rootElement = widget.attach(buildOwner!, rootElement as RootElement?);
+  }
+```
+
+`attachRootWidget`은 `RootWidget`을 생성해 `attachToBuildOwner`에 전달한다. `attachToBuildOwner` 메소드에서는 인자로 전달된 `RootWidget`의 `attach`를 호출하는데, `attach`의 두 번째 인자에는 `rootElement`가 `null`인 상태로 호출된다.
+
+```dart
+class RootWidget extends Widget {
+  RootElement attach(BuildOwner owner, [ RootElement? element ]) {
+    if (element == null) {
+      owner.lockState(() {
+        element = createElement();
+        element!.assignOwner(owner);
+      });
+      owner.buildScope(element!, () {
+        element!.mount(/* parent */ null, /* slot */ null);
+      });
+    } //...
+  }
+}
+```
+
+`RootWidget`의 `attach`에서는 `createElement`를 호출해 `RootElement`를 생성하고, 생성된 `RootElement`의 `mount`를 호출한다.
 
 ## Flutter web을 활용하여 제품 개발 환경 개선하기
 
