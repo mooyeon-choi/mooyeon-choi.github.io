@@ -642,6 +642,285 @@ class RootWidget extends Widget {
 
 `RootWidget`의 `attach`에서는 `createElement`를 호출해 `RootElement`를 생성하고, 생성된 `RootElement`의 `mount`를 호출한다.
 
+```dart
+class RootElement extends Element with RootElementMixin {
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    //...
+    _rebuild();
+  }
+  void _rebuild() {
+    //...
+    _child = updateChild(_child, (widget as RootWidget).child, /* slot */ null);
+  }
+}
+
+abstract class Element extends DiagnosticableTree implements BuildContext {
+  Element? updateChild(Element? child, Widget? newWidget, Object? newSlot) {
+    //...
+    final Element newChild = inflateWidget(newWidget, newSlot);
+    return newChild;
+  }
+}
+```
+
+`RootElement`의 `mount`는 `_rebuild`, `updateChild`를 거쳐 `inflateWidget`을 호출하는데 `runApp` 함수가 위젯을 `inflate`하는 역할을 `RootElement`에서 수행한다.
+
+정리하자면 `runApp` 함수는 `RootWidget`, `RootElement`를 생성해 위젯트리와 엘리먼트 트리의 루트를 생성하고, `widget`의 `build` 메소드를 계층적으로 호출하기 위한 트리를 구성하는 역할을 한다.
+
+```dart
+abstract class RenderObjectElement extends Element {
+  RenderObject? _renderObject;
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    super.mount(parent, newSlot);
+    _renderObject = (widget as RenderObjectWidget).createRenderObject(this);
+    attachRenderObject(newSlot);
+    super.performRebuild();
+  }
+}
+```
+
+위젯이 계층적으로 생성되는 과정에서 렌더링에 관여하는 `RenderObjectElement`의 `mount`가 호출되는데 이때 렌더링에 사용되는 `RenderObject` 객체가 생성되고, 렌더트리에 추가되는 것이다.
+
+#### RenderObject
+
+렌더링에 직접적으로 관여하는 `RenderObject`에 도달하기까지 기나긴 여정이었다. 실제 렌더링은 비교적 단순하다. `RenderObject`는 공식 문서에서 **렌더트리**를 구성하는 오브젝트라 설명한다. 렌더트리를 구성하는 다양한 `RenderObject`가 렌더링을 처리하는 것이다. `RenderObject`는 직접적인 페인팅 외에도 레이아웃과 유저 입력에 대한 영역 검사, 접근성 등을 처리하는데, 이번 시간에는 `RenderObject`의 다양한 역할 중 페인팅에 대해 자세히 알아보자.
+
+
+```dart
+class ColoredBox extends SingleChildrenderObjectWidget {
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderColoredBox(color: color);
+}
+class _RenderColoredBox extends RenderProxyBoxWithHitTestBehavior {
+  _RenderColoredBox({ required Color color }) :
+    _color = color, super(behavior: HitTestBehavior.opaque);
+
+  //...
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    if (size > Size.zero) {
+      context.canvas.drawRect(offset & size, Paint()..color = color);
+    }
+    if (child != null) {
+      context.paintChild(child!, offset);
+    }
+  }
+}
+```
+
+다시 `ColoredBox` 위젯을 확인하자 `ColoredBox` 위젯의 `createRenderObject`에서는 `_RenderColoredBox`를 생성한다. `_RenderColoredBox` 클래스의 계층을 정리하면 `RenderProxyBoxWithHitTestBehavior`를 확장하고 있는걸 볼 수 있는데, `RenderProxyBox`, `RenderBox`를 거쳐 `RenderObject` 계층을 구성하는 것을 볼 수 있다.
+
+![RenderObject diagram](./images/2024-10-29-future-flutter/flutter_rendering_4.png)
+
+이로써 드디어 `Widget`, `Element`, `RenderObject`의 계층과 의존 관계가 완성되었다.
+
+`Widget`, `Element`, `RenderObject`를 거치는 과정을 통해 최종적으로 페인팅 될 때는 `RenderObject`의 `paint` 메소드가 호출된다. `paint` 메소드가 호출되면 메소드의 인자로 전달된 `PaintingContext`의 `canvas`로 `drawRect` 메소드를 호출한다.
+
+```dart
+base class _NativeCanvas extends NativeFieldWrapperClass1 implements Canvas {
+  @override
+  void drawRect(Rect rect, Paint paint) {
+    //...
+    _drawRect(rect.left, rect.top, rect.right, rect.bottom, paint._objects, paint._data);
+  }
+
+  @Native<Void Function(Pointer<Void>, Double, Double, Double, Double, Handle, Handle)>
+    (symbol: 'Canvass::drawRect')
+  external void _drawRect(
+    double left, double top, double right, double bottom,
+    List<Object?>? paintObjects, ByteData paintData
+  );
+}
+```
+
+`canvas`는 `_NativeCanvas`의 객체로 `drawRect`를 따라가면 `c++`로 구현된 플러터 렌더일 엔진이 최종적으로 페인팅을 하며 길고 긴 렌더링 여정을 마치게 된다.
+
+### 위젯 커스터마이징과 쉐이더를 활용한 렌더링
+
+이번에는 `ColoredBox`가 아닌 위젯을 커스터마이징과 쉐이더 2가지 방식을 활용해 화면을 녹색으로 칠하도록 만들며 앞서 살펴본 플러터 렌더링 과정을 되새겨보자.
+
+#### Widget과 RenderObject 커스터마이징
+
+자식 위젯을 가질 수 없는 간단한 위젯을 `Widget`과 `RenderObject`의 커스터마이징을 통해 구현해보자
+
+먼저 `drawRect`로 주어진 영역과 색으로 화면을 칠하는 `RenderObject`를 구현해보자
+
+```dart
+class RenderNoChildColoredBox extends RenderBox {
+  final Paint _paint = Paint();
+  Color _color;
+
+  RenderNoChildColoredBox({required Color color}) : _color = color;
+
+  set color(Color newColor) {
+    if (_color != newColor) {
+      _color = newColor;
+      markNeedsPaint();
+    }
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    context.canvas.drawRect(offset & size, _paint..color = _color);
+  }
+}
+```
+
+유저의 입력을 처리할 필요도 없고, 자식 위젯을 통해 자식 렌더오브젝트를 렌더링할 필요도 없기 때문에 단순히 자신의 위치와 크기만 계산해 렌더링하는 `RenderBox`를 확장해 `RenderNoChildColoredBox`라는 클래스를 선언하였다.
+
+`RenderNoChildColoredBox` 클래스는 색상을 생성자로 받아 프로퍼티를 초기화 한다. `color`에 대한 `setter`도 구현해 외부에서 전달된 `color` 값이 프로퍼디의 값과 같은지 검사한 후, 다른 경우에만 `repaint`를 위해 `markNeedsPaint` 메소드를 호출하도록 구현한다. 이는 플러터 렌더링 최적화의 핵심 매커니즘 중 하나이므로 `RenderObject`를 직접 확장할 때 `martNeedsPaint`가 불필요하게 호출되지 않도록 해야한다.
+
+`RenderNoChildColoredBox`가 위젯 트리에 `attach` 되거나 `markNeedsPaint`에 의해 `repaint`할 `render object`로 등록된다면 다음 프레임에 `paint` 메소드가 호출되는데, 앞서 살펴본 `ColoredBox`의 `paint`와 마찬가지로 `canvas`의 `drawRect` 메소드를 호출해 `offset`과 `size`, `color` 속성을 이용해 화면을 칠한다.
+
+이제 `RenderNoChildColoredBox`를 렌더링에 사용하는 커스텀 `NoChildColoredBox` 위젯도 구현해보자.
+
+```dart
+class NoChildColoredBox extends LeafRenderObjectWidget {
+  final Color color;
+  const NoChildColoredBox({super.key, required this.color});
+
+  @override
+  RenderNoChildColoredBox createRenderObject(BuildContext context) {
+    return RenderNoChildColoredBox(color: color);
+  }
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderNoChildColoredBox renderObject,
+  ) {
+    renderObject.color = color;
+  }
+}
+```
+
+자식 위젯을 사용하지 않는 위젯을 만들기 위해 `SingleChildRenderObjectWidget` 대신 `LeafRenderObjectWidget`을 확장한 후, 화면에 칠할 `Color` 속성을 생성자로 전달 받는다.
+
+`createRenderObject`를 오버라이드해 렌더링에 사용할 `RenderObject`인 `RenderNoChildColoredBox`를 생성해 반환한다.
+
+`updateRenderObject` 메소드를 오버라이드하며, `updateRenderObject`의 두 번째 인자는 렌더링에 사용할 `RenderNoChildColoredBox` 타입으로 선언한다. 플러터는 widget이 `rebuild` 되어도 `Element` 트리에 대한 변경이 없다면 `RenderObject`를 재사용한다.
+
+이렇게 만들어진 `NoChildcoloredBox` 위젯은 `ColoredBox` 위젯과 달리 자식 위젯에 레이아웃이나 유저 입력 처리를 위한 영역 검사 등을 할 필요가 없어 화면을 칠하는데 특화된 경량 위젯이 생성되는 것이다.
+
+#### CustomPaint와 CustomPainter 그리고 Fragment Shader
+
+다음으로 프래그먼트 쉐이더를 알아보자 프래그먼트 쉐이더는 **GPU**로 렌더링한다. 다음은 **Nvidia**가 2008년도에 **Nvision**이라는 행사에서 CPU와 GPU의 차이를 보여주기 위한 영상이다.
+
+|CPU|GPU|
+|-|-|
+|![cpu rendering](./images/2024-10-29-future-flutter/cpu_image_rendering.gif)|![gpu rendering](./images/2024-10-29-future-flutter/gpu_image_rendering.gif)
+
+영상에서 보는 방식을 프래그먼트 쉐이더의 동작방식을 잘 보여준다. 프래그먼트 쉐이더는 픽셀 쉐이더라 하는데, 화면을 구성하는 각 픽셀이 출력할 RGBA 값을 GPU를 통해 **병렬** 처리한다. 이러한 `FragmentShader`를 플러터에서는 `CustomPainter`로 간단히 활용할 수 있다.
+
+```dart
+class ShaderPainter extends CustomPainter {
+  final Color color;
+  final FragmentShader shader;
+  final Paint _paint = Paint();
+
+  ShaderPainter({required this.color, required this.shader});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    shader.setFloat(0, color.red. toDouble() / 255);
+    shader.setFloat(1, color.green.toDouble() / 255);
+    shader.setFloat(2, color.blue.toDouble() / 255);
+    canvas.drawRedt(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      _paint..shader = shader,
+    );
+  }
+
+  @override
+  bool shouldRepaint(ShaderPainter oldDelegate) =>
+    color != olddelegate.color || shader != oldDelegate.shader;
+}
+```
+
+`CustomPainter`를 확장해 `_ShaderPainter` 클래스를 선언한다. `Color`와 `FragmentShader`를 선언하고 생성자로 전달받아 초기화한다. `FragmentShader` 객체를 생성하는 과정은 잠시 뒤에 살펴보자.
+
+`CustomPainter`의 `paint` 메소드를 오버라이드 한다. `paint` 메소드에는 `FragmentShader`의 `setFloat` `0, 1, 2` 인덱스로 `color` 속성의 `red, green, blue` 값을 전달한다. 여기에서 사용된 인덱스는 `FragmentShader` 스크립트에 매핑될 값의 인덱스를 의미하는데 이 역시 잠시 후 `Fragment Shader` 스크립트를 자세히 살펴볼 때 알아보자.
+
+이제 화면을 칠하기 위해 `paint` 메소드로 전달된 `canvas` 객체로 `drawRect` 메소드를 호출하고, `Paint` 객체의 `shader`에 화면을 칠할 때 사용할 `fragment shader` 객체를 전달한다.
+
+`shouldRepaint`도 오버라이드 한다. `CustomPainter` 사용 시 최적화를 위해 중요한 메소드로 `rebuild`에 의해 새롭게 생성된 `CustomPainter`의 속성과 `shouldRepaint`의 인자로 전달된 이전 `CustomPainter`의 속성을 비교해 상태가 변경된 경우에만 `repaint`가 되도록 이전 상태와 비교 후 `true` 혹은 `false`를 반환하도록 구현한다.
+
+```dart
+FutureBuilder(
+  future: FragmentProgram.fromAsset('assets/shaders/helloworld.frag'),
+  builder: (context, snapshot) {
+    final fragmentProgram = snapshot.data;
+    if (fragmentProgram != null) {
+      return CustomPaint(
+        painter: ShaderPainter(
+          color: color,
+          shader: fragmentProgram.fragmentShader(),
+        ),
+      );
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
+  },
+)
+```
+
+`CustomPainter`를 확장한 `ShaderPainter` 객체를 `CustomPaint`의 `painter`로 전달한다.
+
+`helloworld.frag`라는 쉐이더 파일을 `FragmentProgram.fromAsset`으로 쉐이더 파일을 비동기로 로드한 뒤, 로드가 완료되면 `fragmentShader` 메소드를 호출해 `fragmentProgram`으로 변환한 뒤 `ShaderPainter`에 전달한다.
+
+`helloworld.frag`를 살펴보자
+
+```frag
+#version 460 core                       // OpenGL 버전(4.6)
+
+#include <flutter/runtime_effect.glsl>  // 플러터 사전 구현된 코드 추가
+
+uniform float r;                        // 쉐이더 외부에 전달 받을 값
+uniform float g;
+uniform float b;
+
+out vec4 FragColor;                     // 쉐이더 출력값
+
+void main() {                           // 프래그먼트 쉐이더 함수
+  FragColor = vec4(r, g, b, 1);
+}
+```
+
+```helloworld.frag` 쉐이더는 확장자에서 알 수 있듯 프래그먼트 쉐이더이다. 프래그먼트 쉐이더 상단에는 **OpenGL** 버전을 명시하고 `include`로 플러터 엔진에 사전 구현된 코드를 사용하기 위해 추가한다. `include`를 통해 다양한 픽셀 색상 연산에 다양한 유틸 함수나 상수를 사용할 수 있게된다.
+
+`uniform`으로 3개의 `float` 변수 `r, g, b`를 선언 했는데 `uniform`으로 변수를 선언하면 쉐이더 외부에서 인덱스를 통해 값을 전달할 수 있게된다.
+
+```dart
+@override
+void paint(Canvas canvas, Size size) {
+  shader.setFloat(0, color.red.toDouble() / 255);
+  shader.setFloat(1, color.green.toDouble() / 255);
+  shader.setFloat(2, color.blue.toDouble() / 255);
+  canvas.drawRect(
+    Rect.fromLTWH(0, 0, size.width, size.height),
+    _paint..shader = shader,
+  );
+}
+```
+
+앞서 쉐이더를 사용한 `paint` 메소드에서 `setFloat`를 호출하며 `0, 1, 2` 인덱스와 함께 전달한 값이 프래그먼트 쉐이더의 `uniform` 변수에 전달되는 것이다.
+
+`out`으로 선언한 변수는 `uniform`과 반대로 출력값이며, `vec4`로 `rgba` 색상을 표현한다.
+
+`main`은 프래그먼트 쉐이더 함수의 진입점이다. `main` 함수에서는 `uniform`으로 전달된 값을 `vec4`에 담아 출력값을 만드는 간단한 쉐이더로 구성된 것을 볼 수 있다. 이상 단순히 외부에서 전달한 값을 출력값으로 만드는 예제였다.
+
+### 렌더링 최적화
+
+`widget`, `element`, `renderobject`를 통해 랜더링되는 과정을 살펴보았고, `widget`과 `renderObject`를 커스터마이징해보기도 하고 custom paint, painter, fragment shader를 활용해 화면을 칠하는 방법을 살펴보았다.
+
+플러터팀에서는 16ms 이내 build, 16ms paint를 처리하도록 가이드한다. 단일 위젯의 build와 paint가 아닌 한 프레임에 처리하는 모든 위젯과 렌더오브젝트의 build와 paint를 각 각 16ms에 처리해야한다는 것이다. 영상이나 게임, 모바일 운영체제의 fps가 60프레임을 지원하며 유저의 눈높이는 보다 높아졌다. 랙이 없는 부드러운 애니메이션을 위해서는 60fps를 유지해야하는데, 이를 위해서는 상태 변경에 따라 rebuild, repaint 되는 모든 위젯과 렌더오브젝트가 매 프레임마다 각 각 8ms 이내 처리되어야함을 의미한다.
+
+8ms의 paint를 위해 `shouldRepaint`에서 화면을 다시 그릴지 여부를 반환하고 `markNeedsPaint`에서 화면을 다시 그리도록 예약하는 로직의 어떤 공통점이 렌더링을 최적화해줄까? 공통점은 단순하다 **그리지 않기** 컴포넌트를 분리하고 리빌드 되는 컴포넌트를 격리해 리빌드 되는 위젯을 최소화하고 위젯 트리에 단순하게 구성하고 필요에 따라 컴포지션이 아닌 위젯을 직접 만들고 렌더링 과정에서 살펴본 상태 비교 조건 처리 후 `repaint` 여부 검사를 하는 등의 모든 과정들이 모두 그리지 않기 위한 전략을 통해 최적화를 하고 있는 것 이다.
+
+그리지 않는 단순한 전략을 기억하고, 우리 모두가 고품질의 렌더링을 제공하는 앱을 개발하는 플러터 전문가로 나아가자.
+
 ## Flutter web을 활용하여 제품 개발 환경 개선하기
 
 ## 어느날 갑자기 앱이 터졌을 때
