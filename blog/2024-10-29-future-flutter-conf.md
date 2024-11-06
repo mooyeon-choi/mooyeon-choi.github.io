@@ -687,7 +687,6 @@ abstract class RenderObjectElement extends Element {
 
 렌더링에 직접적으로 관여하는 `RenderObject`에 도달하기까지 기나긴 여정이었다. 실제 렌더링은 비교적 단순하다. `RenderObject`는 공식 문서에서 **렌더트리**를 구성하는 오브젝트라 설명한다. 렌더트리를 구성하는 다양한 `RenderObject`가 렌더링을 처리하는 것이다. `RenderObject`는 직접적인 페인팅 외에도 레이아웃과 유저 입력에 대한 영역 검사, 접근성 등을 처리하는데, 이번 시간에는 `RenderObject`의 다양한 역할 중 페인팅에 대해 자세히 알아보자.
 
-
 ```dart
 class ColoredBox extends SingleChildrenderObjectWidget {
   @override
@@ -808,9 +807,9 @@ class NoChildColoredBox extends LeafRenderObjectWidget {
 
 다음으로 프래그먼트 쉐이더를 알아보자 프래그먼트 쉐이더는 **GPU**로 렌더링한다. 다음은 **Nvidia**가 2008년도에 **Nvision**이라는 행사에서 CPU와 GPU의 차이를 보여주기 위한 영상이다.
 
-|CPU|GPU|
-|-|-|
-|![cpu rendering](./images/2024-10-29-future-flutter/cpu_image_rendering.gif)|![gpu rendering](./images/2024-10-29-future-flutter/gpu_image_rendering.gif)
+| CPU                                                                          | GPU                                                                          |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| ![cpu rendering](./images/2024-10-29-future-flutter/cpu_image_rendering.gif) | ![gpu rendering](./images/2024-10-29-future-flutter/gpu_image_rendering.gif) |
 
 영상에서 보는 방식을 프래그먼트 쉐이더의 동작방식을 잘 보여준다. 프래그먼트 쉐이더는 픽셀 쉐이더라 하는데, 화면을 구성하는 각 픽셀이 출력할 RGBA 값을 GPU를 통해 **병렬** 처리한다. 이러한 `FragmentShader`를 플러터에서는 `CustomPainter`로 간단히 활용할 수 있다.
 
@@ -922,6 +921,147 @@ void paint(Canvas canvas, Size size) {
 그리지 않는 단순한 전략을 기억하고, 우리 모두가 고품질의 렌더링을 제공하는 앱을 개발하는 플러터 전문가로 나아가자.
 
 ## Flutter web을 활용하여 제품 개발 환경 개선하기
+
+라인 데마에칸 서비스를 플러터 환경으로 전환하며 겪었던 문제점들 중 테스트 환경과 관련하여 고민해본 내용을 공유해주었다. 동료들이 테스트 환경에 더 적극적으로 찹여할 수 있도록 하기위해 테스트 -> 피드백 -> 개선 사이클을 최소화 하기위한 방안을 고민하였으며, 이를 웹 배포를 통해 어떻게 해결하였는지 공유해주는 시간이었다.
+
+이를 참고하여 Web FrontEnd에서 많이 활용중인 Storybook과 유사한 Widgetbook과 Static Web 사이트 배포를 통해 현재 회사에서도 테스트 환경을 개선하여 디자이너와 기획자 동료분들로 부터 지속적이고 즉각적인 피드백을 받을 수 있는 환경을 구성할 수 있는 계기가 되었다.
+
+### 왜 Flutter Web인가?
+
+테스트 환경을 제공해주기 위해서는 여러 방법이 있을 것이다. 기존에는 SDK 파일로 컴파일하여 실제 디바이스에 실행가능한 상태로 제공해주는 방법을 많이 활용하였다. 하지만 이렇게 제공해주게 된다면 사람들은 본능적으로 최대한 한번에 보여주기 위해 노력하므로, 기능들이 어느정도 누적되었을 때 공유하기를 원한다. 따라서 디자이너나 기획자가 수정사항을 확인할 때에도 너무 많은 기능들이 포함 되어있어, 꼼꼼하게 기능들을 모두 확인하기는 어렵다.
+
+프로그래밍에 있어서도 이러한 문제점을 개선하기 위해 현재 많은 기업들에서 지속적인 배포를 지향하고 있다. 테스트에도 이러한 문제점을 개선하기 위해 지속적으로 테스트 환경을 업데이트해줄 필요가 있다.
+
+이번 발표에서 말하는 Web 배포의 핵심 요소는 아래의 3가지이다.
+
+- 앱 제품 개선 과정 효율화
+- 물리적 제약사항 극복
+- 프로덕션 수준으로 서비스를 출시하려 노력하지 않아도 됨
+
+우선, 앱 제품을 개선하기 위해 의사소통 과정을 효율화 하여야 한다. 이는 처음에 말했듯 지속적 개발과 연관되어 있다. 다음으로는 물리적 제약사항을 극복하기 위함이다. 라인의 경우 일본, 동남아 등 여러 나라에서 기획자들과 디자이너들이 근무하고 있어 디바이스에 프로그램을 직접 배포하여 전달해주기에는 물리적으로 힘들다. 따라서 특정 디바이스가 필요 없는 웹을 통해 공유하는 방법을 생각했다. 마지막으로 테스트 환경은 실제 프로덕션 수준으로 서비스를 출시하지 않아도 된다. 테스트 환경은 말그대로 테스트를 위한 환경, 우리의 서비스가 정상적으로 동작하는지를 확인하기 위한 것으로 실제 서비스와 동일한 수준으로 만들지 않아도 된다. 이 부분을 핵심 요소로 꼽은 이유는 모바일 디바이스 환경과 Web 브라우저 환경의 차이 때문이다. 대표적으로 모바일 디바이스의 경우 세션 스토리지, 쿠키를 설정할 수 없으므로 모두 디바이스 로컬 메모리에 저장하거나 Secure memory에 저장해주게 된다. 이러한 코드를 웹에서 그대로 실행하려면 문제가 발생하므로 만약, 웹에서도 프로덕션 수준으로 배포를 하여야한다면 문제가 된다. 하지만 우리는 테스트 환경을 화면이 어떻게 구성되는지, 기능들이 정상적으로 상호작용 하는지만 보기 위함이므로 이러한 요소들은 우회하여도 된다.
+
+### Web 빌드 및 배포 시도 사례
+
+그렇다면 Web 빌드 시 발생하는 문제점들과 이를 해결하는 방법에는 어떤 것들이 있을까? 라인 데마에칸 시스템에서 실제로 시도한 과정에서 발생한 문제점들과 이를 해결한 방법들을 통해 대표적인 문제점들을 살펴보자
+
+#### Unsupported operation: Platform.\_operatingSystem
+
+플랫폼 분기를 위해 사용중인 `Platform.isAndroid, Platform.isIOS` 코드에서 발생하는 오류이다.
+
+```bash
+Error: Unsupported operation: Platform._operatingSystem
+```
+
+Andoid, iOS 등 멀티플랫폼 환경을 제공하는 서비스라면 플랫폼 분기가 반드시 필요하다. 하지만 이렇게 특정 플랫폼만을 위한 코드를 작성하게 되면 어떤 플랫폼에도 속하지 않는 웹 브라우저 환경에서는 에러가 발생한다. 이를 해결하기 위해 해당 팀에서는 `defaultTargetPlatform`을 활용하여 플랫폼 분기 코드에 대응하도록 수정하였다.
+
+```dart
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+
+class PlatformUtils {
+  static bool get isWeb => kIsWeb;
+
+  static bool get isAndroid => defaultTargetPlatform == TargetPlatform.android;
+
+  static bool get isIOS => defaultTargetPlatForm == TargetPlatform.iOS;
+
+  static String get localeName => isWeb ? "ja_JP" : Platform.localeName;
+}
+```
+
+##### AS-IS
+
+```dart
+void showInfoDialog() {
+  if (Platform.isIOS) {
+    showActionSheet( ... );
+  } else {
+    showSystemDialog( ... );
+  }
+}
+```
+
+##### TO-BE
+
+```dart
+void showInfoDialog() {
+  if (PlatformUtils.isIOS) {
+    showActionSheet( ... );
+  } else {
+    showSystemDialog( ... );
+  }
+}
+```
+
+위와 같이 `PlatformUtils` 라는 클래스를 생성하여 `Platform`을 래핑하고 `DefaultPlatform`을 추가하여 `Platform`이 예상하는 값과 다를 때 처리하는 구문을 추가해주었다.
+
+#### h3_flutter package update
+
+특정 패키지들의 경우 버전이나 종속성으로 인한 문제로 에러가 발생할 수 있을 것이다. 발표자료에서는 Uber에서 개발한 지구 계층을 육각형 그리드로 매핑해놓은 패키지에서 에러가 발생하여 설명해주었다.
+h3_flutter 0.4.2를 사용할 때 에러가 발생하였고 0.6.6 버전 이후부터 웹을 지원하였지만 Android에서 빌드 오류가 발생하여 이슈 리포트를 통해 이를 수정하도록 요청하여 문제를 해결하였다.
+
+#### Unsupported operation: Trying to use the default webview
+
+개인정보 취급방침, 이용약관, 공지사항 등 WebView 화면에서 오류가 발생하였다. `webview_flutter: ^3.0.4` 를 사용 시 웹에서 빌드를 하면 에러가 발생한다. 이를 `webview_flutter_web: ^0.1.0+4`를 추가하여 해결하였다. 웹뷰 위젯 구현부를 **조건부 임포트**를 활용하여 실행가능한 패키지로 실행되도록 해준 것이다.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:driver_app/ui/lib/widget/webview_app.dart'
+  if(dart.library.html) import 'package:driver_app/ui/lib/widget/webview_web.dart';
+
+class SimpleWebView extends StatelessWidget {
+  const MyApp({
+    ...
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => WebViewImpl(
+    ...
+  );
+}
+```
+
+#### flutter_secure_storage - DomException
+
+데이터를 암호화하여 저장하기 위해 사용하는 패키지이다. 특정 데이터를 읽어오는 경우 **DomException**이 발생한다.
+
+키가 `{category}::{keyName}` 형식인 경우 이슈가 발행하여 `{keyName}` 형식으로 수정해주면 해결된다.
+
+```dart
+/// Encrypts and saves the [key] with the given [value].
+///
+/// If the key was aleady in the storage, its associated value is changed.
+/// If the value is null, deletes associated value for the given [key].
+@override
+Future<String?> read({
+  required String key,
+  required Map<String, String> options,
+}) async {
+  final value = web.window.localStorage("${options[_publicKey]!}.$key");
+
+  return _decryptValue(value, options);
+}
+```
+
+#### XMLHttpRequest error
+
+웹에서 API 통신을 시도할 경우 오류가 발생한다. **CORS (Cross-Origin Resource Sharing) issue**
+
+**로컬 개발 환경**에서 chrome 실행 시 `--disable-web-security`를 설정하여 대응하였다.
+
+##### Set `--disable-web-security` options
+
+1. `flutter/bin/cache` 이동 후 `flutter_tools.stamp`를 제거한다.
+2. `flutter/package/flutter_tools/lib/src/web/chrome.dart` 파일을 연다.
+3. `--disable-web-security` 옵션을 추가한다.
+
+**로컬 개발 환경**에서 chrome 실행 시 보안 설정을 수정한다. 실제 배포 환경에서 수정하지 않도록 주의 한다.
+
+#### Cross-Origin Resource Sharing (CORS)
+
+
 
 ## 어느날 갑자기 앱이 터졌을 때
 
