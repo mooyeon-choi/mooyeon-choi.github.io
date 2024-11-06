@@ -996,6 +996,73 @@ void showInfoDialog() {
 
 위와 같이 `PlatformUtils` 라는 클래스를 생성하여 `Platform`을 래핑하고 `DefaultPlatform`을 추가하여 `Platform`이 예상하는 값과 다를 때 처리하는 구문을 추가해주었다.
 
+#### h3_flutter package update
+
+특정 패키지들의 경우 버전이나 종속성으로 인한 문제로 에러가 발생할 수 있을 것이다. 발표자료에서는 Uber에서 개발한 지구 계층을 육각형 그리드로 매핑해놓은 패키지에서 에러가 발생하여 설명해주었다.
+h3_flutter 0.4.2를 사용할 때 에러가 발생하였고 0.6.6 버전 이후부터 웹을 지원하였지만 Android에서 빌드 오류가 발생하여 이슈 리포트를 통해 이를 수정하도록 요청하여 문제를 해결하였다.
+
+#### Unsupported operation: Trying to use the default webview
+
+개인정보 취급방침, 이용약관, 공지사항 등 WebView 화면에서 오류가 발생하였다. `webview_flutter: ^3.0.4` 를 사용 시 웹에서 빌드를 하면 에러가 발생한다. 이를 `webview_flutter_web: ^0.1.0+4`를 추가하여 해결하였다. 웹뷰 위젯 구현부를 **조건부 임포트**를 활용하여 실행가능한 패키지로 실행되도록 해준 것이다.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:driver_app/ui/lib/widget/webview_app.dart'
+  if(dart.library.html) import 'package:driver_app/ui/lib/widget/webview_web.dart';
+
+class SimpleWebView extends StatelessWidget {
+  const MyApp({
+    ...
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => WebViewImpl(
+    ...
+  );
+}
+```
+
+#### flutter_secure_storage - DomException
+
+데이터를 암호화하여 저장하기 위해 사용하는 패키지이다. 특정 데이터를 읽어오는 경우 **DomException**이 발생한다.
+
+키가 `{category}::{keyName}` 형식인 경우 이슈가 발행하여 `{keyName}` 형식으로 수정해주면 해결된다.
+
+```dart
+/// Encrypts and saves the [key] with the given [value].
+///
+/// If the key was aleady in the storage, its associated value is changed.
+/// If the value is null, deletes associated value for the given [key].
+@override
+Future<String?> read({
+  required String key,
+  required Map<String, String> options,
+}) async {
+  final value = web.window.localStorage("${options[_publicKey]!}.$key");
+
+  return _decryptValue(value, options);
+}
+```
+
+#### XMLHttpRequest error
+
+웹에서 API 통신을 시도할 경우 오류가 발생한다. **CORS (Cross-Origin Resource Sharing) issue**
+
+**로컬 개발 환경**에서 chrome 실행 시 `--disable-web-security`를 설정하여 대응하였다.
+
+##### Set `--disable-web-security` options
+
+1. `flutter/bin/cache` 이동 후 `flutter_tools.stamp`를 제거한다.
+2. `flutter/package/flutter_tools/lib/src/web/chrome.dart` 파일을 연다.
+3. `--disable-web-security` 옵션을 추가한다.
+
+**로컬 개발 환경**에서 chrome 실행 시 보안 설정을 수정한다. 실제 배포 환경에서 수정하지 않도록 주의 한다.
+
+#### Cross-Origin Resource Sharing (CORS)
+
+
+
 ## 어느날 갑자기 앱이 터졌을 때
 
 ## Flutter Bloc을 제품 개발에 야무지게 적용하기
