@@ -645,6 +645,8 @@ export default function Home(): JSX.Element {
               this.canvas.height = this.stageHeight * this.pixelRatio;
               this.ctx.scale(this.pixelRatio, this.pixelRatio);
 
+              console.log(this.stageWidth, this.stageHeight);
+
               this.visual.show(this.stageWidth, this.stageHeight);
             }
 
@@ -738,10 +740,10 @@ export default function Home(): JSX.Element {
           class Text {
             constructor() {
               this.canvas = document.createElement("canvas");
-              //this.canvas.style.position = "absolute";
-              //this.canvas.style.left = "0";
-              //this.canvas.style.top = "0";
-              //document.body.appendChild(this.canvas);
+              // this.canvas.style.position = "absolute";
+              // this.canvas.style.left = "0";
+              // this.canvas.style.top = "0";
+              // document.body.appendChild(this.canvas);
 
               this.ctx = this.canvas.getContext("2d");
             }
@@ -751,11 +753,11 @@ export default function Home(): JSX.Element {
               this.canvas.height = stageHeight;
 
               const myText = str;
-              const fontWidth = stageWidth > 700 ? 700 : 330;
+              const fontWidth = 700;
               const fontSize =
                 stageHeight / stageWidth < 1300 / 2100
                   ? stageHeight / 4
-                  : stageHeight / 30;
+                  : stageHeight / 3;
               const fontName = "Hind";
 
               this.ctx.clearRect(0, 0, stageWidth, stageHeight);
@@ -1164,7 +1166,7 @@ export default function Home(): JSX.Element {
                 false
               );
               document.addEventListener(
-                "touchend",
+                "touchmove",
                 this.onTouchEnd.bind(this),
                 false
               );
