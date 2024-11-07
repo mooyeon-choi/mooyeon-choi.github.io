@@ -1061,7 +1061,137 @@ Future<String?> read({
 
 #### Cross-Origin Resource Sharing (CORS)
 
+Cross-Origin Resource Sharing (CORS) 란? **브라우저**가 **자신의 출처(Origin)가 아닌 다른 출처로부터 자원 로드를 허용**하도록 서버가 허가해주는 HTTP 헤더 기반의 메커니즘으로 출처가 다른 서버간의 리소스 공유를 허용하는 것이다.
 
+:::info Origin(출처)란?
+
+URL (Uniform Resource Location) 구조에서 **Protocol + Host + Port** 부분을 의미한다.
+
+`https://future-flutter.dev:8080/sessions/detail?page=3#flutter_web`
+
+`https://`: Protocol
+
+`future-flutter.dev`: Host
+
+`:8080`: Port
+
+`/sessions/detail`: Path
+
+`?page=3` Query String
+
+`#flutter_web`: Fragment
+
+##### CORS - flow of preflight request case
+
+![CORS flow](./images/2024-10-29-future-flutter/flutter_web_1.png)
+
+##### Enabling --disable-web-secure
+
+![Enabling](./images/2024-10-29-future-flutter/flutter_web_2.png)
+
+#### (Tip) use `flutter_cors` tools
+
+여러 버전의 flutter SDK 를 사용할 경우 유용하다.
+
+```bash
+// install 'flutter_cors'
+$ dart pub global activate flutter_cors
+
+// disable chrome web security option
+$ fluttercors -d -p {flutter_sdk_path}
+// enable chrome web security option
+$ fluttercors -e -p {flutter_sdk_path}
+```
+
+#### Permission acquisition scenario (reviewing)
+
+권한획득 시나리오의 경우도 너무 복잡하여 웹에서 대응하기 어려웠다고 한다.
+
+|Android|iOS|
+|--|--|
+|![Android Permission](./images/2024-10-29-future-flutter/flutter_web_3.png)|![iOS Permission](./images/2024-10-29-future-flutter/flutter_web_4.png)|
+
+#### Web support platform not available (reviewing)
+
+웹을 미지원 하는 패키지로 인한 이슈도 있다.
+
+해당 팀에서 개발 당시 기기 의존적인 기능들이 많았는데 당시에는 그러한 패키지들이 거의 없어 특히 **웹에서 지도를 표현** 하는 문제가 가장 컸다고 한다.
+
+이러한 부분들은 최근 많은 패키지들이 웹에서도 지원되도록 개선되어 어느정도 해소되었다.
+
+![Web Update](./images/2024-10-29-future-flutter/flutter_web_5.png)
+
+#### 드라이버 앱의 웹 시도 결과
+
+Flutter web 빌드 및 로컬 개발환경까지 준비가 되었지만 웹 환경에서 드라이버 앱을 사용 가능한 수준까지 진행하는 못하였다.
+
+하지만 이 때의 경험을 살려 추후 Flutter Web 과제를 진행하는데 큰 도움이 되었다고 한다.
+
+### 두 번째 Flutter web 시도
+
+Recode & UI/UX 리뉴얼 과제를 진행하며 다시 Flutter web을 시도하였다.
+
+UI/UX를 리뉴얼 하는 과정에서 제품 개선과정의 동기화가 쉽지 않다고 느꼈는데 재택근무로 인한 물리적 제약사항, 기획자 및 관계자들을 위한 앱의 동작 테스트 수단 필요 등을 이유로 Flutter Web 활용을 다시 시도한다.
+
+이전의 Flutter Web 시도 경험을 바탕으로 PoC를 진행하고 컨슈머 앱을 웹에서 확인 가능한 환경을 제공하여 앱 동작을 확인할 수 있는 수단을 제공하려 하였다.
+
+#### ConsumerApp 웹 버전의 목표가 아닌 것
+
+위 과정에서 불필요한 부분은 배제하고 필요한 기능만을 개발하는 것이 가장 중요하였는데 이때 선정한 불필요한 항목은 다음과 같다.
+
+- 기존 웹 서비스를 대체하는 것
+- 모바일 기기와 완전히 동일하게 동작하는 것
+- 업무 프로세스에 최적화 하는 것
+
+이러한 요소들을 제외하고 해당 팀에서 Flutter 를 활용한 웹 개발 시 겪었던 문제들과 해결 방법을 공유해주었다.
+
+#### Unsupported operation: Platform._operatingSystem
+
+플랫폼 분기를 위해 사용중인 `Platform.isAndroid`, `Platform.isIOS` 코드에서 오류가 발생한다.
+
+이전과 같이 `defaultTargetPlatform`을 사용하여 플랫폼 분기 코드에 대응한다. 이 때 추가로 `CustomLint`를 추가해주어 기본 분기코드를 사용하지 않도록 방지하는 방법도 공유해주었다.
+
+##### Use custom_lint package
+
+```dart
+class _UsePlatformHelperLintRules extends DartLintRule {
+  const _UsePlatformHelperLintRules() : super(code: _code);
+
+  /// Metadata about the warning that will show-up in the IDE.
+  /// This is used for `// ignore: code` and enabling/disabing the lint
+  static const _code = LintCode(
+    name: 'use_platformhelper_instead',
+    problemMessage: "'Platform.{0}' should not be used",
+    correctionMessage: "Use 'PlatformHelper.{0}' instead",
+    errorSeverity: ErrorSeverity.ERROR,
+  );
+
+  @override
+  void run(
+    CustomLintResolver resolver,
+    ErrorReporter reporter,
+    CustomLintContext context,
+  ) {
+    /// The addPrefixedIdentifier checks the grammar of the [xxx].[xxx] format to forward the callback as node.
+    context.registry.addPrefixedIdentifier((node) {
+      final beginToken = node.beginToken;
+      final endToken = node.endToken;
+      if (beginToken.value().toString() == 'Platform' && endToken.value().toString() == 'isAndroid' || beginToken.value().toString() == 'Platform' && endToken.value().toString() == 'isIOS') {
+        /// Report a lint error.
+        reporter.reportErrorForNode(code, node, [endToken.value().toString()]);
+      }
+    });
+  }
+}
+```
+
+#### Update packages
+
+웹 빌드 시 패키지 내부에서도 오류가 발생한다. 참조 패키지에서 `dart:ffi` import 중 오류가 발생하여 확인하자 이후 해당 오류를 수정한 버전이 올라와 있었다고 한다.
+
+Flutter Web 도 출시된지 어느정도 시간이 지나 대부분의 패키지에서는 수정된듯 하다.
+
+--ppt 36페이지부터 계속
 
 ## 어느날 갑자기 앱이 터졌을 때
 
