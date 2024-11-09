@@ -190,7 +190,7 @@ final NativeLibrary _bindings = NativeLibrary(_dylib);
 - `ffigen`을 이용하면 `.h`를 읽어 자동으로 바인딩 코드를 생성해줌
 - `Go` 언어의 크로스 컴파일러를 이용해 쉽게 크로스 플랫폼 라이브러리 생성 가능
 
-:::info title=Next Step
+:::info title="Next Step"
 
 - IOS / macOS / Windows / Linux 등 안드로이드 외 다른 플랫폼 빌드
   - 예시는 Android / IOS / macOS 까지만 동작
@@ -468,7 +468,7 @@ Flutter Seoul의 오거나이저로 활동 중이신 에이든님의 발표로 �
 
 아래는 `ColoredBox` 위젯을 이용해 사각형의 Box 공간을 녹색으로 칠하는 간단한 코드이다. 렌더링 과정을 살펴보기 위해 `MaterialApp`이나 `Scafford`를 사용하지 않고 위젯트리를 간단히 구성하였다.
 
-```dart title=ColoredBox
+```dart title="ColoredBox"
 import 'package:flutter/material.dart';
 
 void main() {
@@ -488,7 +488,7 @@ widget에 대한 설명을 다시 한번 떠올려보자 `"Describes the configu
 
 다음으로 Widget인 ColoredBox가 Element를 어떻게 구성하는지, ColoredBox를 뜯어보며 확인해보자
 
-```dart title=ColoredBox
+```dart title="ColoredBox"
 class ColoredBox extends SingleChildrenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) => _RenderColoredBox(color: color);
@@ -521,7 +521,7 @@ abstract class RenderObjectWidget extends Widget {
 
 `Element`의 동작을 확인하기 위해 `SingleChildRenderObjectWidget`의 클래스 계층 구조를 살펴보자.
 
-```dart title=SingleChildRenderObjectWidget
+```dart title="SingleChildRenderObjectWidget"
 abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
   @override
   SingleChildRenderObjectElement createElement() => SingleChildRenderObjectElement(this);
@@ -559,7 +559,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
 
 플러터 공식 문서에서는 `runApp` 함수에 대해 이렇게 이야기한다. `"Inflate the given widget and attach it to the view"` `runApp` 함수는 함수의 인자로 전달한 위젯을 `inflate`하고 `view`에 추가한다. 그렇다면 `Widget`을 어떻게 `inflate`하고, `view`에 추가하는지 `runApp` 함수의 내부 동작을 뜯어보며 확인해보자.
 
-```dart title=runApp
+```dart title="runApp"
 void runApp(Widget app) {
   final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   _runWidget(binding.wrapWithDefaultView(app), binding, 'runApp');
@@ -1195,7 +1195,7 @@ Flutter Web 도 출시된지 어느정도 시간이 지나 대부분의 패키�
 
 ##### newrelic_mobile: 1.0.1
 
-```
+```bash
 Launching lib/main.dart on Chrome in debug mode...
 main.dart:1
 : Error: Dart library 'dart:ffi' is not available on this platform.
@@ -1218,7 +1218,7 @@ Exited
 `dart:ffi` 패키지의 경우 웹에서는 사용할 수 없다. 따라서 해당 패키지를 사용하는 `newrelic_mobile` 1.0.1 버전을 사용하면 위 에러가 발생하는데, 다음과 같이 1.0.3 버전 이후 해당 부분이 수정된 것을 볼 수 있다.
 
 [Commit log](https://github.com/newrelic/newrelic-flutter-agent/commit/2690bc968ba1833bbf80618f19bafc1bc70840c4)
-```dart title="Added 'import dart:ffi' at (1.0.1)
+```dart title="Added 'import dart:ffi' at (1.0.1)"
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io' show HttpOverrides, Platform;
@@ -1227,7 +1227,7 @@ import 'package:flutter/foundation.dart';
 ```
 
 [Commit log](https://github.com/newrelic/newrelic-flutter-agent/commit/017416eb6bede3de86319807ab52568a91223063)
-```dart title="Removed 'import dart:ffi' at (1.0.3)
+```dart title="Removed 'import dart:ffi' at (1.0.3)"
 import 'dart:async';
 // highlight-next-line
 - import 'dart:ffi';
@@ -1255,7 +1255,7 @@ import 'package:flutter/foundation.dart';
 
 해당 기능을 위해 플랫폼 별 다른 구현체를 반환하는 패턴으로 수정하여 패키지 인터페이스를 직접 사용하지 못하도록 Custom Lint 를 추가하여 해결하였다.
 
-``` title="main.dart 문제 2개 중 1개"
+```bash title="main.dart 문제 2개 중 1개"
 'FlutterAppBadger.***' should not be used
 Use '$appBadger.***' instead dart(use_app_badger)
 ```
@@ -1357,7 +1357,7 @@ class _PlatformMapState extends State<PlatformMap> {
 
 ```html
 <head>
-  <!-- // Other stuff -->
+  <!-- Other stuff -->
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" />
 </head>
 ```
@@ -1387,7 +1387,7 @@ build web **--web-renderer** 기본값이 `auto`에서 `canvaskit`로 변경되�
 
 |AS-IS|TO-BE|
 |--|--|
-|**--web-renderer {value}**<br/><br/>`auto` - 모바일 브라우저에서는 `html`, 데스크탑 브라우저에서는 `canvaskit`으로 동작<br/>`html` - 경량적, 웹 표준기술을 사용(하지만 제대로 동작하지 않는 기능이 많음)<br/>`canvaskit` - 고품질 그래픽, 일관된 렌더링|**--wasm**<br/><br/>브라우저가 `wasm`을 지원할 경우 `wasm`, 아닐 경우 `canvaski`으로 동작<br/>이 옵션을 설정하지 않을 경우 `canvaskit`으로 동작<br/><br/>`flutter build web -help` 로 옵션 지원여부 확인 가능|
+|**--web-renderer \{value\}**<br/><br/>`auto` - 모바일 브라우저에서는 `html`, 데스크탑 브라우저에서는 `canvaskit`으로 동작<br/>`html` - 경량적, 웹 표준기술을 사용(하지만 제대로 동작하지 않는 기능이 많음)<br/>`canvaskit` - 고품질 그래픽, 일관된 렌더링|**--wasm**<br/><br/>브라우저가 `wasm`을 지원할 경우 `wasm`, 아닐 경우 `canvaski`으로 동작<br/>이 옵션을 설정하지 않을 경우 `canvaskit`으로 동작<br/><br/>`flutter build web -help` 로 옵션 지원여부 확인 가능|
 
 #### Deploy to web
 
@@ -1416,7 +1416,7 @@ QA 팀에서 웹으로 배포를 요청하여 진행하게 되었고 개발 과�
 
 PR 생성 시, 작업 내용을 실제로 확인하기 위해 Flutter Web 내부 배포를 실행하였다.
 - `flutter analyze`, `flutter test`, `spell check` 등 실행
-- 플랫폼 별 빌드 실행 <- **Web 빌드 시 배포 수행**
+- 플랫폼 별 빌드 실행 < **Web 빌드 시 배포 수행**
 - 테스트 실행 결과 및 Web 빌드 결과 확인 URL을 PR Comment 추가
 - 매일 업로드된 버킷 목록과 PR 목록을 확인하여 자동으로 클라우드 저장소에 업로드된 웹 빌드물 삭제
 
@@ -1480,7 +1480,7 @@ Error: Unsupported operation: Platform._operatingSystem
 
 **브라우저**가 **자신의 출처(Origin)가 아닌 다른 출처로부터 자원 로드를 허용**하도록 서버가 허가해주는 HTTP 헤더 기반의 메커니즘 `출처가 다른 서버간의 리소스 공유를 허용하는 것`
 
-|Origin(출처)?||
+|Origin(출처)?|-|
 |--|--|
 |URL (Uniform Resource Location) 구조에서<br/> **Protocol + Host + Port**|![URL 구조](./images/2024-10-29-future-flutter/flutter_web_7.png)|
 
@@ -1505,7 +1505,7 @@ Error: Unsupported operation: Platform._operatingSystem
 
 :::note 참고 자료
 
-Flutter Web 을 활용해 제품 개발 환경 개선하기 with Future<Flutter> 2024
+Flutter Web 을 활용해 제품 개발 환경 개선하기 with Future Flutter 2024
 
 [Flutter 엔지니어로 직무 전환한 이야기](https://youtu.be/By9k4vZ__Mk)
 
