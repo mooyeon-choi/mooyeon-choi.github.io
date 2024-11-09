@@ -190,7 +190,7 @@ final NativeLibrary _bindings = NativeLibrary(_dylib);
 - `ffigen`을 이용하면 `.h`를 읽어 자동으로 바인딩 코드를 생성해줌
 - `Go` 언어의 크로스 컴파일러를 이용해 쉽게 크로스 플랫폼 라이브러리 생성 가능
 
-:::info title=Next Step
+:::info title="Next Step"
 
 - IOS / macOS / Windows / Linux 등 안드로이드 외 다른 플랫폼 빌드
   - 예시는 Android / IOS / macOS 까지만 동작
@@ -468,7 +468,7 @@ Flutter Seoul의 오거나이저로 활동 중이신 에이든님의 발표로 �
 
 아래는 `ColoredBox` 위젯을 이용해 사각형의 Box 공간을 녹색으로 칠하는 간단한 코드이다. 렌더링 과정을 살펴보기 위해 `MaterialApp`이나 `Scafford`를 사용하지 않고 위젯트리를 간단히 구성하였다.
 
-```dart title=ColoredBox
+```dart title="ColoredBox"
 import 'package:flutter/material.dart';
 
 void main() {
@@ -488,7 +488,7 @@ widget에 대한 설명을 다시 한번 떠올려보자 `"Describes the configu
 
 다음으로 Widget인 ColoredBox가 Element를 어떻게 구성하는지, ColoredBox를 뜯어보며 확인해보자
 
-```dart title=ColoredBox
+```dart title="ColoredBox"
 class ColoredBox extends SingleChildrenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) => _RenderColoredBox(color: color);
@@ -521,7 +521,7 @@ abstract class RenderObjectWidget extends Widget {
 
 `Element`의 동작을 확인하기 위해 `SingleChildRenderObjectWidget`의 클래스 계층 구조를 살펴보자.
 
-```dart title=SingleChildRenderObjectWidget
+```dart title="SingleChildRenderObjectWidget"
 abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
   @override
   SingleChildRenderObjectElement createElement() => SingleChildRenderObjectElement(this);
@@ -559,7 +559,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
 
 플러터 공식 문서에서는 `runApp` 함수에 대해 이렇게 이야기한다. `"Inflate the given widget and attach it to the view"` `runApp` 함수는 함수의 인자로 전달한 위젯을 `inflate`하고 `view`에 추가한다. 그렇다면 `Widget`을 어떻게 `inflate`하고, `view`에 추가하는지 `runApp` 함수의 내부 동작을 뜯어보며 확인해보자.
 
-```dart title=runApp
+```dart title="runApp"
 void runApp(Widget app) {
   final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   _runWidget(binding.wrapWithDefaultView(app), binding, 'runApp');
@@ -1081,6 +1081,8 @@ URL (Uniform Resource Location) 구조에서 **Protocol + Host + Port** 부분�
 
 `#flutter_web`: Fragment
 
+:::
+
 ##### CORS - flow of preflight request case
 
 ![CORS flow](./images/2024-10-29-future-flutter/flutter_web_1.png)
@@ -1191,7 +1193,361 @@ class _UsePlatformHelperLintRules extends DartLintRule {
 
 Flutter Web 도 출시된지 어느정도 시간이 지나 대부분의 패키지에서는 수정된듯 하다.
 
---ppt 36페이지부터 계속
+##### newrelic_mobile: 1.0.1
+
+```bash
+Launching lib/main.dart on Chrome in debug mode...
+main.dart:1
+: Error: Dart library 'dart:ffi' is not available on this platform.
+newrelic_mobile.dart:7
+import 'dart:ffi';
+       ^
+// highlight-start
+Context: The unavailable library 'dart:ffi' is imported through these packages:
+
+web_entrypoint.dart => package:consumer_app => package:newrelic_mobile => dart:ffi
+// highlight-end
+
+Detailed import paths for (some of) the these imports:
+...
+
+Failed to compile application.
+Exited
+```
+
+`dart:ffi` 패키지의 경우 웹에서는 사용할 수 없다. 따라서 해당 패키지를 사용하는 `newrelic_mobile` 1.0.1 버전을 사용하면 위 에러가 발생하는데, 다음과 같이 1.0.3 버전 이후 해당 부분이 수정된 것을 볼 수 있다.
+
+[Commit log](https://github.com/newrelic/newrelic-flutter-agent/commit/2690bc968ba1833bbf80618f19bafc1bc70840c4)
+```dart title="Added 'import dart:ffi' at (1.0.1)"
+import 'dart:async';
+import 'dart:ffi';
+import 'dart:io' show HttpOverrides, Platform;
+
+import 'package:flutter/foundation.dart';
+```
+
+[Commit log](https://github.com/newrelic/newrelic-flutter-agent/commit/017416eb6bede3de86319807ab52568a91223063)
+```dart title="Removed 'import dart:ffi' at (1.0.3)"
+import 'dart:async';
+// highlight-next-line
+- import 'dart:ffi';
+import 'dart:io' show HttpOverrides, Platform;
+
+import 'package:flutter/foundation.dart';
+```
+
+#### Support web platform
+
+- **flutter_inappwebview: 6.0.0**: 웹 실행 시 오류 발생
+- **fpjs_pro_flugin: ^3.0.0**: 전화번호 인증 flow 에서 오류 발생
+
+위 두 패키지의 경우 웹에서 실행 시 오류가 발생하였고 각각 `index.html`에 `web_support.js`, `index.js`를 추가해주어 해결했다.
+
+```html
+<!-- ... -->
+<script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/web_support.js" defer />
+<script src="assets/packages/fpjs_pro_plugin/web/index.js" defer />
+```
+
+#### Do not use package when run on web
+
+웹 환경에서는 앱의 기능을 제공할 수 없는 패키지들도 있다. 이러한 패키지들은 의도적으로 웹 환경에서는 미지원 하도록 처리가 필요하다.
+
+해당 기능을 위해 플랫폼 별 다른 구현체를 반환하는 패턴으로 수정하여 패키지 인터페이스를 직접 사용하지 못하도록 Custom Lint 를 추가하여 해결하였다.
+
+```bash title="main.dart 문제 2개 중 1개"
+'FlutterAppBadger.***' should not be used
+Use '$appBadger.***' instead dart(use_app_badger)
+```
+
+##### Case of fluuter_app_badger usage
+
+```dart title="app_badger.dart"
+AppBadger get $appBadger => PlatformHelper.isWeb ? _AppBadgerWeb() : _AppBadgerImpl();
+
+abstract class AppBadger {
+  Future<void> updateBadgeCount(int count);
+  Future<void> removeBadge();
+}
+
+// AS-IS
+FlutterAppBadger.updateBadgeCount(count);
+// TO-BE
+$appBadger.updateBadgeCount(count);
+```
+
+```dart title="app_badger_impl.dart"
+part of 'app_badger.dart';
+
+class _AppBadgerImpl extends AppBadger {
+  @override
+  Future<void> removeBadge() => FlutterAppBadger.removeBadge();
+
+  @override
+  Future<void> updateBadgeCount(int count) => FlutterAppBadger.updateBadgeCount(count);
+}
+```
+
+```dart title="app_badger_web.dart"
+part of 'app_badger.dart';
+
+class _AppBadgerWeb extends AppBadger {
+  @override
+  Future<void> removeBadge() {
+    debugPrint('AppBadger >> removeBadge');
+    return Future.value();
+  }
+
+  @override
+  Future<void> updateBadgeCount(int count) {
+    debugPrint('AppBadger >> updateBadgeCount($count)');
+    return Future.value();
+  }
+}
+```
+
+##### $ getter pattern
+
+플랫폼 별 다른 기능을 제공하는 경우 $ getter 형식을 사용하는 것으로 정리하였다.
+
+|Package Name|AS-IS|TO-BE|Support Custom Lint|
+|--|--|--|--|
+|adjust_sdk|Adjust.***|$adjustUtil.***|O|
+|newrelic_mobile|NewrelicMobile.***|$newrelicUtil.***|O|
+|flutter_inappwebview|ChromeSafariBrowser()|$chromeSafariBrowser|O|
+|flutter_app_badger|FlutterAppBadger.***|$appBadger.***|O|
+|firebase_core|Firebase.***|FirebaseUtil.***|X|
+|firebase_analytics|FirebaseAnalytics.instance.***|$firebaseAnalytics.***|O|
+|firebase_auth|FirebaseAuth.instance.***|$firebaseAuth.***|O|
+|firebase_crashlytics|FirebaseCrashlytics.instance.***|$firebaseCrashlytics.***|O|
+|firebase_messaging|FirebaseMessaging.instance.***|$firebaseMessaging.***|O|
+|firebase_remote_config|FirebaseRemoteConfig.instance.***|$firebaseRemoteConfig.***|O|
+|rokt_sdk|RoktSdk.***|$roktSdkUtil.***|X|
+
+##### Support MapView
+
+**platform_maps_flutter: ^1.0.2** 패키지를 사용하여 지도를 표시하여 주었는데, 해당 패키지의 경우 `iOS - AppleMapView / Android - GoogleMapView`를 사용하도록 개발되었기 때문에 웹에서는 별도의 처리가 필요하다.
+
+이를 웹에서는 `google_maps_flutter`를 이용해 맵뷰가 표시되도록 개선하였다.
+
+**In platform_maps_flutter**
+
+```dart
+class _PlatformMapState extends State<PlatformMap> {
+  @override
+  Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      // ...
+    } else if (Platform.isIOS) {
+      // ...
+    }
+  }
+}
+```
+
+**Refactor MapView**
+
+앱에서는 `platform_maps_flutter` / 웹에서는 `google_maps_flutter` 로 맵뷰
+
+![Refactor MapView](./images/2024-10-29-future-flutter/flutter_web_6.png)
+
+**Add Google Maps JavaScript API**
+
+`index.html`에 **Google Maps JavaScript API** 추가
+
+```html
+<head>
+  <!-- Other stuff -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" />
+</head>
+```
+
+위 방법대로 적용을 하면 로컬 개발환경에서는 `ReferrerNotAllowedMapError`가 발생한다. 하지만 배포 환경에서는 정상적으로 동작한다.
+
+#### Build web
+
+`--base-href` 설정을 할 경우 `web_support.js` 경로 오류가 발생한다. 빌드 완료 후 `index.html` 파일을 수정하는 스크립트를 작성하여 이를 해결하였다.
+
+```dart
+// Work-around: `flutter_inappwebview_web` doesn't support `--base-href` option.
+// Therefore, the script replaces a javascript path in `index.html`.
+// If the library supports that, we can remove below work-around.
+const htmlPath = './build/web/index.html'
+const originalHtml = Deno.readTextFileSync(htmlPath)
+const replacedHtml = originalHtml.replaceAll(
+  '/assets/packages/flutter_inappwebview_web/assets/web/web_support.js',
+  'assets/packages/flutter_inappwebview_web/assets/web/web_support.js',
+)
+Deno.writeTextFileSync(htmlPath, replacedHtml)
+```
+
+#### Web rendering option changed
+
+build web **--web-renderer** 기본값이 `auto`에서 `canvaskit`로 변경되었다. 또 `SDK 3.22` 부터는 `--wasm`도 사용가능하다(chrome만 지원). 이에 맞춰서 `build` 옵션을 설정해줄 수 있다.
+
+|AS-IS|TO-BE|
+|--|--|
+|**--web-renderer \{value\}**<br/><br/>`auto` - 모바일 브라우저에서는 `html`, 데스크탑 브라우저에서는 `canvaskit`으로 동작<br/>`html` - 경량적, 웹 표준기술을 사용(하지만 제대로 동작하지 않는 기능이 많음)<br/>`canvaskit` - 고품질 그래픽, 일관된 렌더링|**--wasm**<br/><br/>브라우저가 `wasm`을 지원할 경우 `wasm`, 아닐 경우 `canvaski`으로 동작<br/>이 옵션을 설정하지 않을 경우 `canvaskit`으로 동작<br/><br/>`flutter build web -help` 로 옵션 지원여부 확인 가능|
+
+#### Deploy to web
+
+AWS S3로 static page 배포를 진행하였다. 배포 진행시 아래와 같이 CORS issue가 발생하는데, 해당 발표자분은 인프라팀에 요청을 하여 이슈를 해결하였지만 현재 회사에서 유사하게 `Widgetbook`을 활용한 `Widget visual test` 환경을 구축 중에 동일한 이슈를 해결중이라. 추후 이에 대한 글도 작성할 예정이다.
+
+**CORS issue**
+- BFF (API Server)
+- Image Server
+
+### 컨슈머 앱의 웹 시도 결과
+
+라인에서는 이렇게 웹 배포를 적용하여 다음과 같이 팀 내부에서 활용 중이다.
+- 과제별 개발 진행상황 확인
+- 앱 제품에 대한 접근성 대폭 개선
+- 주문 ~ 배달 완료 주문 흐름 테스트가 편해짐
+
+위 경험들을 통해 **동료를 유저로 확장하는 경험**을 할 수 있었다.
+
+### 세 번째 Flutter web 시도
+
+위 경험을 바탕으로 리테일 앱도 웹 빌드 및 배포를 진행하게 된다. 리테일 앱이란 **Y!Shopping (LINEヤフー & Demae-can)** 서비스로 매장에서 주문을 수주하고 주문을 배달로 연계하는 서비스이다.
+
+QA 팀에서 웹으로 배포를 요청하여 진행하게 되었고 개발 과정에서 어떻게 활용하였는지 사례를 소개해주었다.
+
+#### Web build & deploy when Pull-Request created.
+
+PR 생성 시, 작업 내용을 실제로 확인하기 위해 Flutter Web 내부 배포를 실행하였다.
+- `flutter analyze`, `flutter test`, `spell check` 등 실행
+- 플랫폼 별 빌드 실행 < **Web 빌드 시 배포 수행**
+- 테스트 실행 결과 및 Web 빌드 결과 확인 URL을 PR Comment 추가
+- 매일 업로드된 버킷 목록과 PR 목록을 확인하여 자동으로 클라우드 저장소에 업로드된 웹 빌드물 삭제
+
+#### Deploy to web
+
+Verda cloud로 배포해주었고 마찬가지로 CORS 이슈가 발생하여 이를 인프라팀에 요청하여 해결한다.
+
+**CORS issue**
+- CORS header issue
+- CORS preflight issue
+
+BFF (API Server) 이슈 수정으로 대응
+
+### Flutter app 을 web 으로 활용 시 고려할 사항
+
+#### Do not use Platform.***
+
+`Platform.isAndroid`, `Platform.isIOS`를 사용하지 않기
+
+```bash
+Error: Unsupported operation: Platform._operatingSystem
+```
+
+[Unsupported operation: Platform._operatingSystem](#unsupported-operation-platform_operatingsystem)에서 본 것과 같이 **defaultTargetPlatform** class를 생성하여 추가적인이 필요합니다.
+
+#### Consider each package using within the app
+
+1. 웹에서 오류가 발생하는 지 확인한다.
+
+    로컬 개발환경에서 우선 확인
+
+    패키지 추가 시, 웹 환경 설정을 누락했을 가능성이 높다.
+
+2. 관련 **기능이 반드시 필요한지 확인**한다.
+
+    패키지가 웹을 지원하는지 확인하고, 가급적 지원하도록 대응하자.
+
+    (생각보다 많은) 패키지가 웹 환경을 지원한다.
+
+    만약 웹을 지원하지 않을 경우, **Mock 활용을 고려**하자.
+
+    패키지를 업데이트 했으면, 모바일 환경에서 한번 더 체크한다.
+
+3. 반대로, **굳이 필요하지 않은지 판단**한다.
+
+    관련 기능을 웹환경에서 의도적으로 제공하지 않는다.
+
+    인터페이스 호출 시 플랫폼별로 다르게 동작하도록 구성한다.
+
+    앱과 웹의 실행 환경은 다르다는 것을 항상 염두한다.
+
+4. 웹에서 **제약사항을 잘 공유**한다.
+
+    기술적으로 지원이 불가능한 경우가 있을 수 있다.
+
+    앱과 동작이 완벽히 동일하지 않을 수 있다.
+
+    브라우저 쿠키 & 캐시 제거 방법을 공유하자
+
+#### Cross-Origin Resource Sharing (CORS) ?
+
+**브라우저**가 **자신의 출처(Origin)가 아닌 다른 출처로부터 자원 로드를 허용**하도록 서버가 허가해주는 HTTP 헤더 기반의 메커니즘 `출처가 다른 서버간의 리소스 공유를 허용하는 것`
+
+|Origin(출처)?|-|
+|--|--|
+|URL (Uniform Resource Location) 구조에서<br/> **Protocol + Host + Port**|![URL 구조](./images/2024-10-29-future-flutter/flutter_web_7.png)|
+
+##### Enabling --disable-web-secure
+
+![disable web secure](./images/2024-10-29-future-flutter/flutter_web_2.png)
+
+#### Server-Side configuration
+
+**XMLHttpRequest, unauthorized 200 응답과 함께 데이터가 없는 현상 등**
+
+배포된 웹에서의 접근 허용 작업 요청
+
+- DevOps Engineer
+- Server Engineer
+
+#### Use Proxy Server
+
+만약 웹 서비스도 운영 중이면, proxy server 가 존재할 가능성이 높다
+
+![with proxy server](./images/2024-10-29-future-flutter/flutter_web_8.png)
+
+:::note 참고 자료
+
+Flutter Web 을 활용해 제품 개발 환경 개선하기 with Future Flutter 2024
+
+[Flutter 엔지니어로 직무 전환한 이야기](https://youtu.be/By9k4vZ__Mk)
+
+[멀쩡한 앱을 Flutter 앱으로 다시 짠이유– 일본 1위 배달앱, 두 번째 Recode](https://engineering.linecorp.com/ko/blog/demaecan-2nd-recode-kmm-to-flutter)
+
+[H3: Uber-s Hexagonal Hierarchical Spatial Index](https://www.uber.com/en-KR/blog/h3/)
+
+[Conditional imports across Flutter and Web](https://medium.com/flutter-community/conditional-imports-across-flutter-and-web-4b88885a886e)
+
+[Window.localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)
+
+[Flutter Web – XMLHttpRequest error](https://github.com/cfug/dio/issues/750)
+
+[How to solve flutter web api cors error only with dart code?](https://stackoverflow.com/questions/65630743/how-to-solve-flutter-web-api-cors-error-onlywith-dart-code/66879350#66879350)
+
+[flutter_cors](https://pub.dev/packages/flutter_cors)
+
+[Flutter 전환의 마침표 – 일본 1위 배달 앱, 세 번째 Recode](https://techblog.lycorp.co.jp/ko/demaecan-3rd-recode-react-native-to-flutter)
+
+[Flutter Web or React Native Web: Who Will Win the Battle?](https://www.expertappdevs.com/blog/flutter-web-vs-react-native-web)
+
+[Flutter에서 커스텀 린트 활용하기](https://techblog.lycorp.co.jp/ko/using-custom-lint-in-flutter)
+
+[Flutter InAppWebView 6 > Web Support](https://inappwebview.dev/blog/flutter-inappwebview-6#web-support)
+
+[Fingerprint Pro Flutter > web support](https://pub.dev/packages/fpjs_pro_plugin#web-platform)
+
+[google_maps_flutter_web > usage](https://pub.dev/packages/google_maps_flutter_web#usage)
+
+[Google Maps Platform > RefererNotAllowedMapError](https://developers.google.com/maps/documentation/javascript/error-messages#referer-not-allowed-map-error)
+
+[Intent to deprecate and remove the HTML renderer in Flutter Web](https://docs.google.com/document/d/1DGamHsa2lz_Qtgfrfa3j3fRaEopJXc7tCFVM1TQlck8)
+
+[Flutter Web을 활용해 제품 개발 환경 개선하기](https://techblog.lycorp.co.jp/ko/improve-development-experience-with-flutter-web)
+
+[교차 출처 리소스 공유 (CORS)](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS)
+
+[CORS, Preflight, 인증 처리 관련 삽질](https://www.popit.kr/cors-preflight-%EC%9D%B8%EC%A6%9D-%EC%B2%98%EB%A6%AC%EA%B4%80%EB%A0%A8-%EC%82%BD%EC%A7%88/)
+
+[SpringBoot에서 CORS할 때 header, preflight 이슈 해결하기](https://velog.io/@ojwman/spring-boot-cors-header-preflight)
+:::
+
 
 ## 어느날 갑자기 앱이 터졌을 때
 
