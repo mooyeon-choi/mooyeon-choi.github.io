@@ -55,41 +55,46 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 예시로 `css_colors`를 추가해보자
 
 1. `dependencies` 추가
-    * 프로젝트 폴더에 있는 `pubspec.yaml` 파일을 열고 `dependencies` 항목에 `css_colors`를 추가한다.
+
+   - 프로젝트 폴더에 있는 `pubspec.yaml` 파일을 열고 `dependencies` 항목에 `css_colors`를 추가한다.
 
 2. Install
-    * 터미널:
-        `flutter pub get`을 실행한다
-    * VS Code:
-        다운로드 아이콘으로 표시된 상단 작업 목록의 **패키지 가져오기**를 클릭한다.
-    * Android Studio/IntelliJ:
-        `pubspec.yaml` 상단의 작업 목록에서 **Pub get**을 클릭한다.
+
+   - 터미널:
+     `flutter pub get`을 실행한다
+   - VS Code:
+     다운로드 아이콘으로 표시된 상단 작업 목록의 **패키지 가져오기**를 클릭한다.
+   - Android Studio/IntelliJ:
+     `pubspec.yaml` 상단의 작업 목록에서 **Pub get**을 클릭한다.
 
 3. Import
-    * Dart code에 `import`를 사용하여 패키지를 추가한다.
+
+   - Dart code에 `import`를 사용하여 패키지를 추가한다.
 
 4. 앱 재실행하기
-    * `hot reload/restart`의 경우 Dart 코드만 업데이트 하므로 패키지가 플랫폼별 코드 (Android의 경우 Kotlin/Java, iOS의 경우 Swift/Objective-C)를 가져오는 경우 앱을 재실행하여 빌드해야한다.
+   - `hot reload/restart`의 경우 Dart 코드만 업데이트 하므로 패키지가 플랫폼별 코드 (Android의 경우 Kotlin/Java, iOS의 경우 Swift/Objective-C)를 가져오는 경우 앱을 재실행하여 빌드해야한다.
 
 #### 터미널 명령어를 통한 추가
 
 `flutter pub add "some-package"`를 통해서도 패키지 종속성을 추가할 수 있다. 마찬가지로 `css_colors`를 예시로 확인해보자.
 
 1. 프로젝트 디렉토리 내부 터미널에서 명령어 실행
-    * `flutter pub add css_colors`
+
+   - `flutter pub add css_colors`
 
 2. Import
-    * Dart code에 `import`를 사용하여 패키지를 추가한다.
+
+   - Dart code에 `import`를 사용하여 패키지를 추가한다.
 
 3. 앱 재실행하기
-    * `hot reload/restart`의 경우 Dart 코드만 업데이트 하므로 패키지가 플랫폼별 코드 (Android의 경우 Kotlin/Java, iOS의 경우 Swift/Objective-C)를 가져오는 경우 앱을 재실행하여 빌드해야한다.
+   - `hot reload/restart`의 경우 Dart 코드만 업데이트 하므로 패키지가 플랫폼별 코드 (Android의 경우 Kotlin/Java, iOS의 경우 Swift/Objective-C)를 가져오는 경우 앱을 재실행하여 빌드해야한다.
 
 #### 패키지 종속성 제거
 
 `flutter pub remove`를 통해 패키지를 제거할 수 있다.
 
 1. 프로젝트 디렉토리 내부 터미널에서 명령어 실행
-    * `flutter pub add css_colors`
+   - `flutter pub add css_colors`
 
 #### 문제 해결
 
@@ -111,14 +116,14 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 `traditional syntax`의 경우 단어 그대로 이전부터 사용되던 범위 설정 방식이며 아래와 같이 설정한다.
 
-|**Value**|**허용 범위**|**사용가능 여부**|**메모**|
-|-|-|-|-|
-|`any`|모든 버전|No|비어있는 버전 제약 조건을 명시적으로 보여주는 역할이다.|
-|`1.2.3`|해당 버전만|No|패키지를 사용하는 앱에 제약이 걸리기 때문에 패키지가 채택되지 않는다.|
-|`>=1.2.3`|주어진 버전 이상|Yes||
-|`>1.2.3`|주어진 버전 이후|No||
-|`<=1.2.3`|주어진 버전 이하|No||
-|`<1.2.3`|주어진 버전 이전|No||
+| **Value** | **허용 범위**    | **사용가능 여부** | **메모**                                                              |
+| --------- | ---------------- | ----------------- | --------------------------------------------------------------------- |
+| `any`     | 모든 버전        | No                | 비어있는 버전 제약 조건을 명시적으로 보여주는 역할이다.               |
+| `1.2.3`   | 해당 버전만      | No                | 패키지를 사용하는 앱에 제약이 걸리기 때문에 패키지가 채택되지 않는다. |
+| `>=1.2.3` | 주어진 버전 이상 | Yes               |                                                                       |
+| `>1.2.3`  | 주어진 버전 이후 | No                |                                                                       |
+| `<=1.2.3` | 주어진 버전 이하 | No                |                                                                       |
+| `<1.2.3`  | 주어진 버전 이전 | No                |                                                                       |
 
 패키지의 경우 여러 사용자들이 제약없이 활용할 수 있어야하므로 `>=` 만 허용되는 것에 유의하자.
 
@@ -130,10 +135,10 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 ```yaml title="pubspec.yaml"
 dependencies:
-    some_package:
-    another_package:
+  some_package:
+  another_package:
 dependency_overrides:
-    url_launcher: '5.4.0'
+  url_launcher: "5.4.0"
 ```
 
 충돌하는 종속성이 패키지 자체가 아니라 Android나 iOS 전용 라이브러리일 경우에는 어떻게 할까? **Android**의 경우 종속성 재정의 선언을 `Gradle` 빌드 로직에 추가하여 강제할 수 있다. `guava` 패키지를 예시로 보자.
@@ -147,8 +152,6 @@ configuration.all {
 ```
 
 **CocoaPods**의 경우 현재(2024-11-19) 종속성 재정의 기능을 제공하지 않고 있다.
-
-
 
 ## Flutter 패키지 개발하기
 
@@ -164,19 +167,21 @@ configuration.all {
 
 패키지를 업데이트할 때 마이그레이션 작업 없이 앱이 동작하도록 하기 위해 종속성들을 버전 범위로 설정해준다.
 
-* **범위 제약 조건**: 최소 및 최대 버전 지정
-    ```yaml
-    dependencies:
-        url_launcher: '>=5.4.0 <6.0.0'
-    ```
+- **범위 제약 조건**: 최소 및 최대 버전 지정
 
-* **[캐럿 구문](https://dart.dev/tools/pub/dependencies#caret-syntax)을 이용한 범위 제약**: 최소 버전을 설정한다. 이는 해당 버전부터 다음 메이저 버전 이전까지의 모든 버전을 포함한다.
-    ```yaml
-    dependencies:
-        collection: '^5.4.0'
-    ```
+  ```yaml
+  dependencies:
+    url_launcher: ">=5.4.0 <6.0.0"
+  ```
 
-    이 구문은 위 **범위 제약 조건** 과 같은 의미를 가진다.
+- **[캐럿 구문](https://dart.dev/tools/pub/dependencies#caret-syntax)을 이용한 범위 제약**: 최소 버전을 설정한다. 이는 해당 버전부터 다음 메이저 버전 이전까지의 모든 버전을 포함한다.
+
+  ```yaml
+  dependencies:
+    collection: "^5.4.0"
+  ```
+
+  이 구문은 위 **범위 제약 조건** 과 같은 의미를 가진다.
 
 상세 내용은 다음에 살펴볼 [패키지 버전 관리 가이드](#패키지-버전-관리-가이드)에서 확인하자.
 
@@ -191,7 +196,7 @@ Flutter 앱은 파일 시스템 `path:` 종속성을 사용하여 패키지에 �
 ```yaml title="상대 경로 종속성"
 dependencies:
 packageA:
-    path: ../pacakgeA/
+  path: ../pacakgeA/
 ```
 
 ##### Git 종속성
@@ -200,9 +205,9 @@ Git 저장소에 저장된 패키지에 의존할 수도 있다. 패키지가 �
 
 ```yaml title="Git 종속성"
 dependencies:
-    packageA:
-        git:
-            url: https://github.com/flutter/packageA.git
+  packageA:
+    git:
+      url: https://github.com/flutter/packageA.git
 ```
 
 ##### SSH를 사용한 Git 종속성
@@ -211,9 +216,9 @@ dependencies:
 
 ```yaml title="SSH를 사용한 Git 비공개 저장소"
 dependencies:
-    packageA:
-        git:
-            url: git@github.com:flutter/packageA.git
+  packageA:
+    git:
+      url: git@github.com:flutter/packageA.git
 ```
 
 ##### 폴더 내 패키지에 대한 Git 종속성
@@ -222,10 +227,10 @@ Pub은 패키지가 Git 저장소의 루트에 있다고 가정한다. 그렇지
 
 ```yaml title="폴더 내 패키지에 대한 Git 종속성"
 dependencies:
-    packageA:
-        git:     
-            url: https://github.com/flutter/packages.git
-            path: packages/packageA
+  packageA:
+    git:
+      url: https://github.com/flutter/packages.git
+      path: packages/packageA
 ```
 
 ##### 특정 커밋, 브랜치 고정 Git 종속성
@@ -244,5 +249,32 @@ dependencies:
 
 ## 패키지 버전 관리 가이드
 
-## 성공적으로 활용중인 오픈소스 패키지들
+pub 패키지 관리자는 버전 관리를 하는데 도움을 준다. 이번에는 버전 관리의 역사와 pub의 버전 관리 접근 방식에 대해 간략히 알아보자.
 
+### 버전 관리의 역사
+
+현대 소프트웨어 개발, 특히 웹 개발은 많은 기존 코드를 재사용하는 데 크게 의존한다. 여기에는 과거 작성한 코드뿐만 아니라 타사의 코드, 큰 프레임 워크에서 작은 유틸리티 라이브러리에 이르기까지 많은 것이 포함된다. 애플리케이션이 수십 개의 서로 다른 패키지와 라이브러리에 의존하는 것은 이처럼 드문 일이 아니다.
+
+이는 생각보다도 매우 강력한 효력을 발휘한다. 몇 주 만에 수백만 명의 사용자를 확보한 사이트를 구추하는 소규모 웹 스타트업의 이야기를 볼 때, 그들이 이를 달성할 수 있는 이유는 오픈 소스 커뮤니티 덕분이라 할 수 있다.
+
+하지만 이는 무료로 제공되지는 않는다. 코드 재사용, 특히 유지 관리하지 않는 코드 재사용에는 어려움이 있다. 앱에서 다른 사람이 개발한 코드를 사용하는 경우, 그들이 코드를 변경하면 어떻게 될까? 그들은 앱을 망가뜨리고 싶어하지 않으며, 이는 다들 마찬가지일 것이다. 따라서 이를 *버전관리*를 통해 해결하고자 한다.
+
+### Name과 Number
+
+외부 코드에 의존할 때, "내 앱은 `widgets`를 사용합니다." 라고만 말하지는 않는다. "내 앱은 `widgets 2.0.5`를 사용합니다." 라고 말한다. 이름과 버전 번호의 조합은 _변경 불가능한_ 코드 덩어리를 고유하게 식별한다. 업데이트하는 사람들은 원하는 모든 변경을 할 수 있지만 이미 릴리스된 버전은 건드리지 않겠다고 약속한다. 그들은 또 다른 `widgets 3.0.0`를 내놓을 수 있고 `2.0.5`에서는 사용하는 버전이 변경되지 않았기 때문에 전혀 영향을 미치지 않는다.
+
+*변경 사항*을 적용하고 싶을 때는 항상 앱을 최신 버전으로 지정할 수 있으며 이를 위해 해당 개발자와 협력할 필요가 없다. 그러나 그렇다고 해서 문제가 완전히 해결되지는 않는다.
+
+아래 내용에서 논의하는 버전 번호는 패키지 파일 이름에 설정된 버전 번호와 다를 수 있다. 여기에는 `-0`또는 `-beta`가 포함될 수 있다. 이러한 표기법은 종속성 해결에 영향을 미치지 않는다.
+
+### 공유 종속성 해결
+
+*종속성 그래프*가 실제로 *종속성 트리*일 때 특정 버전에 따라 잘 변경된다. 앱이 여러 패키지에 종속되고 해당 패키지가 자체 종속성을 갖는 경우와 같이 종속성이 겹치지 않는 한 모두 잘 동작한다.
+
+다음 예시를 참고해보자
+
+![Dependencies Tree](./images/2024-11-16-how-to-upload-opensource-package/dependencies_tree.png)
+
+그래서 `my_app`은 `widgets`와 `templates`를 사용하고 이 둘은 모두 `collection`을 사용한다. 이 것을 **공유 종속성** 이라 한다. 하지만 `widgets`에서 `collection 2.3.5` 종속성을 사용하고 싶지 않고 `templates`에서 `collection 2.3.7`을 사용하고 싶다면 어떻게 할까? 버전에 동의하지 않으면 어떻게 될까?
+
+## 성공적으로 활용중인 오픈소스 패키지들
