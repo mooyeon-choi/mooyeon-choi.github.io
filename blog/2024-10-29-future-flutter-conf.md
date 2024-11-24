@@ -1,12 +1,12 @@
 ---
 slug: future-flutter-conf
-title: 퓨처 플러터 컨퍼런스 후기
+title: 퓨처 플러터 컨퍼런스 톺아보기
 authors: mooyeon
 tags: [Dart, Flutter, app]
 date: 2024-10-29T12:47
 ---
 
-# Future Flutter 컨퍼런스 후기
+# Future Flutter 컨퍼런스 톺아보기
 
 ## 소개
 
