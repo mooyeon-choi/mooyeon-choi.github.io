@@ -2,7 +2,7 @@
 slug: first-study-review
 title: 기술 블로그 내용 공유 스터디 첫주차 리뷰
 authors: mooyeon
-tags: [Flutter, pub.dev, Opensource]
+tags: [study, pub.dev, refactoring, deploy]
 date: 2024-11-23T22:53
 ---
 
