@@ -73,6 +73,16 @@ const config = {
           {to: '/blog', label: '기록', position: 'left'},
           {to: 'showcase', label: 'Showcase', position: 'left'},
           {
+            href: 'https://evanescent-table-194.notion.site/Frontend-0866085aac3c4c619efbd9ab1d940329',
+            label: 'Resume',
+            position: 'right',
+          },
+          {
+            href: 'https://open.kakao.com/o/sEenYDXg',
+            label: 'CoffeeChat',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/mooyeon-choi',
             label: 'GitHub',
             position: 'right',
