@@ -125,6 +125,15 @@ const sidebars = {
                 'app/flutter/bloc/coreConceptsPackageBloc',
                 'app/flutter/bloc/coreConceptsPackageFlutterBloc',
               ]
+            },{
+              type: 'category',
+              label: 'Package',
+              link: {type: 'doc', id: 'app/flutter/package/intro'},
+              items: [
+                'app/flutter/package/flutterPackageEnvironments',
+                'app/flutter/package/howToDevelopPackage',
+                'app/flutter/package/packageVersioning',
+              ]
             },
             'app/flutter/navigator/intro',
           ]
