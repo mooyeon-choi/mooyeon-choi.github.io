@@ -2,7 +2,7 @@
 slug: identity-pool-with-aws-cognito
 title: Amazon Cognito로 사용자 관리하기
 authors: mooyeon
-tags: [aws, cognito, swift, cocoapods]
+tags: [aws, cognito, flutter, swift, cocoapods]
 date: 2024-11-25T19:45
 ---
 
@@ -20,6 +20,7 @@ Amazon Cognito는 웹 및 모바일 앱에 대한 사용자 인증 및 승인을
 1. [User pool](#user-pool)
 2. [Identity pool](#identity-pool)
 3. [Cognito Sync](#github-action을-통한-vercel-수동-배포-완전-정복-with-모노레포)
+4. [Flutter에 적용하기](#Flutter에-적용하기)
 
 :::
 
@@ -152,3 +153,188 @@ Amazon Cognito ID 풀 지역 가용성에 대한 자세한 내용은 [AWS 서비
 Amazon Cognito Sync는 AWS AppSync와 데이터를 동기화 하므로 AWS AppSync를 사용해도 된다.
 
 Amazon Cognito Sync는 애플리케이션 관련 사용자 데이터를 여러기기에서 동기화할 수 있는 AWS 서비스 및 클라이언트 라이브러리이다. Amazon Cognito Sync는 자체 백엔드를 사용하지 않고도 모바일 기기와 웹에서 사용자 프로필 데이터를 동기화할 수 있다. 클라이언트 라이브러리는 데이터를 로컬에 캐시하여 앱이 기기 연결 상태에 관계없이 데이터를 읽고 쓸 수 있도록 한다. 기기가 온라인 상태이면 데이터를 동기화할 수 있다. 푸시 동기화를 설정하면 다른 기기에 업데이트가 있음을 즉시 알릴 수 있다.
+
+## Flutter에 적용하기
+
+Cognito의 경우 아직 Flutter 환경설정에 대한 안내가 없다. 아래는 직접 Flutter 애플리케이션에 구현해보며 정리한 내용이다. 따라서 더 나은 구현 방법이 있을 수도 있으니 참고만 하자.
+
+### 패키지 설치
+
+주로 많이 활용되는 방식과 Cognito에서 추천하는 방식은 Carthage 을 사용한 설치법이다. 하지만 플러터의 경우 반드시 **CocoaPods**을 사용하도록 되어있어 해당 방식을 사용하지 못하였다. 해당 방법은 [링크](https://github.com/openid/AppAuth-iOS)를 참고하자.
+
+먼저 `Podfile`에 `pod 'AppAuth'` 를 추가하여 **AppAuth** 를 설치한다.
+
+#### CocoaPods
+
+```Podfile title="ios/Podfile"
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
+
+  // highlight-next-line
+  pod 'AppAuth'
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  ...
+end
+```
+
+### AppDelegate 설정
+
+**Cognito** 를 활용하여 사용자 추가 로직을 구현할 경우 반드시 AWS에서 제공하는 로그인 페이지를 통해야 한다. 해당 화면은 웹에서 실행되므로 `Safari` 실행이 필요하다. 따라서 로그인이 완료된 후 접근할 앱링크를 설정해준다.
+
+```swift title="AppDelegate.swift"
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    // ...
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        // Override point for customization after application launch.
+        return true
+    }
+
+    // highlight-start
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+
+        if let authorizationFlow = self.currentAuthorizationFlow, authorizationFlow.resumeExternalUserAgentFlow(with: url) {
+            self.currentAuthorizationFlow = nil
+            return true
+        }
+
+        return false
+    }
+    // highlight-end
+}
+```
+
+Swift로만 화면을 구성해줄 경우 ViewController를 통해 비동기 처리를 한다. 하지만 Flutter의 경우 methodCall을 통해 ViewController를 실행해주므로 해당 함수의 실행이 끝날때 ViewController가 사라져 결과값을 받아올 수 없다. 따라서 아래와 같이 `AppDelegate`에서 `Session`과 `AuthState` 값을 선언해준다.
+
+```swift title="AppDelegate.swift"
+// highlight-next-line
+import AppAuth
+import UIKit
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    // ...
+    // highlight-next-line
+    var currentAuthorizationFlow: OIDExternalUserAgentSession?
+    // highlight-next-line
+    var appState: OIDAuthState?
+
+    // ...
+    // ...
+}
+```
+
+### ViewController 설정
+
+먼저 사용자 풀의 OIDC 속성에 대한 값을 추가한다. 클라이언트 보안키가 있으므로 따로 잘 관리해주자.
+
+```swift title="secrets.swift"
+/**
+  The OIDC issuer from which the configuration will be discovered.
+*/
+let kIssuer: String = "http://cognito-idp.<your_region>.amazonaws.com/<your_resion>_<hash_key>";
+
+/**
+  The OAuth client ID.
+*/
+let kClientID: String = "<your_clientID>";
+
+/**
+  The OAuth redirect URI for the client
+*/
+let kRedirectURI: String = "<redirectURL: Applink>";
+
+/**
+  The OAuth logout URI for the client.
+*/
+let kLogoutURL: String = "<logout uri>";
+
+/**
+  Client secret key
+*/
+let kClientSecret: String = "<client_secret>"
+```
+
+`AppAuth`를 사용할 경우 `viewDidLoad()` 를 통해 화면이 로드된 후 코드가 동작하도록 해야한다.
+
+```swift title="AppAuthExampleViewController.swift"
+class AppAuthExampleViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // ...
+    }
+}
+```
+
+
+제공한 발급자 문자열에서 OIDC 검색을 구성한다. 권한 부여 코드를 구현하려면 애플리케이션이 사용자 풀 발급자에 대한 `.well-known/openid-configuration` 엔드포인트에서 발급자 엔드포인트를 검색할 수 있어야 한다.
+
+```swift title="AppAuthExampleViewController.swift"
+extension AppAuthExampleViewController {
+    func authWithAutoCodeExchange() {
+        guard let issuer = URL(string: kIssuer) else {
+            self.logMessage("Error creating URL for : \(kIssuer)")
+            return
+        }
+        
+        // discovers endpoints
+        OIDAuthorizationService.discoverConfiguration(forIssuer: issuer) { configuration, error in
+
+            guard let config = configuration else {
+                self.logMessage("Error retrieving discovery document: \(error?.localizedDescription ?? "DEFAULT_ERROR")")
+                self.setAuthState(nil)
+                return
+            }
+            // ...
+            
+            if let clientId = kClientID {
+                self.doAuthWithAutoCodeExchange(configuration: config, clientID: clientId, clientSecret: nil)
+            } // ...
+        }
+    }
+}
+```
+
+검색된 구성에서 사용자 풀 authorize 엔드포인트에 대한 Amazon Cognito 관리 로그인을 위한 로그인 URL을 구성한다. 이 코드는 앱 클라이언트 ID, openid 및 profile 범위, redirectURI를 요청에 추가한다. clientID에서 참조하는 앱 클라이언트는 이러한 범위를 요청할 수 있는 권한이 있어야 한다. 인증 후 Amazon Cognito는 앱 클라이언트에 대한 승인된 콜백 URL인 요청의 redirectURI로 리디렉션한다. OIDC 라이브러리는 권한 부여 코드를 액세스 토큰으로 교환한다.
+
+```swift title="AppAuthExampleViewController.swift"
+extension AppAuthExampleViewController {
+    func doAuthWithAutoCodeExchange(configuration: OIDServiceConfiguration, clientID: String, clientSecret: String?) {
+        guard let redirectURI = URL(string: kRedirectURI) else {
+            self.logMessage("Error creating URL for : \(kRedirectURI)")
+            return
+        }
+
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.logMessage("Error accessing AppDelegate")
+            return
+        }
+        // builds authentication request
+        let request = OIDAuthorizationRequest(configuration: configuration,
+                                              clientId: clientID,
+                                              clientSecret: clientSecret,
+                                              scopes: [OIDScopeOpenID, OIDScopeProfile],
+                                              redirectURL: redirectURI,
+                                              responseType: OIDResponseTypeCode,
+                                              additionalParameters: nil)
+
+        // performs authentication request
+        logMessage("Initiating authorization request with scope: \(request.scope ?? "DEFAULT_SCOPE")")
+
+        appDelegate.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: self) { authState, error in
+
+            if let authState = authState {
+                self.setAuthState(authState)
+                self.logMessage("Got authorization tokens. Access token: \(authState.lastTokenResponse?.accessToken ?? "DEFAULT_TOKEN")")
+            } else {
+                self.logMessage("Authorization error: \(error?.localizedDescription ?? "DEFAULT_ERROR")")
+                self.setAuthState(nil)
+            }
+        }
+    }
+}
+```
+
+`OIDAuthState.authState()`의 경우 비동기로 동작하는 API 요청 메서드이다. 하지만 Swift에서 해당 메서드를 따로 비동기 처리를 해줄 수 업어, 결과값을 받아올 수 없었다. 따라서 API 요청 세션을 `AppDelegate`에 저장해두어 앱이 실행되고 있는 동안 해당 세션이 끊기지 않도록 설정해주었다.
