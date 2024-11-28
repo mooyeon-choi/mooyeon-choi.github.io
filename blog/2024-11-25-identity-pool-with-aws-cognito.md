@@ -14,13 +14,12 @@ Amazon Cognito는 웹 및 모바일 앱에 대한 사용자 인증 및 승인을
 
 미국, 수술실이라는 특수한 환경에서 사용하는 애플리케이션을 개발하면서 사용자 요청을 최소화하기 위해 ML model 적용, 제스쳐 동작 등 다양한 시도를 하였다. 이번에는 사용자 인증과 관련하여 어떻게 하면 불필요한 과정을 줄이고 보다 안전하게 적용할 수 있을지 고민하며 Amazon Coginto를 적용한 내용이다.
 
-
 :::info 목차
 
 1. [User pool](#user-pool)
 2. [Identity pool](#identity-pool)
-3. [Cognito Sync](#github-action을-통한-vercel-수동-배포-완전-정복-with-모노레포)
-4. [Flutter에 적용하기](#Flutter에-적용하기)
+3. [Cognito Sync](#cognito-sync)
+4. [Flutter에 적용하기](#flutter에-적용하기)
 
 :::
 
@@ -140,11 +139,11 @@ Amazon Cognito 사용자 풀은 SSO 지원 앱에 대한 OIDC ID 공급자와 �
 
 Amazon Cognito ID 풀은 다음과 같은 ID 공급자를 지원한다.
 
-* 공공 공급자: Amazon을 ID 풀 IdP로 로그인 설정, Facebook을 ID 풀 IDP로 설정, Google을 ID 풀 IdP로 설정, Apple을 ID 풀 IdP로 로그인 설정
-* Amazon Cognito 사용자 풀
-* OIDC 공급자를 ID 풀 IdP로 설정
-* SAML 공급자를 ID 풀 IdP로 설정
-* 개발자 인증 ID
+- 공공 공급자: Amazon을 ID 풀 IdP로 로그인 설정, Facebook을 ID 풀 IDP로 설정, Google을 ID 풀 IdP로 설정, Apple을 ID 풀 IdP로 로그인 설정
+- Amazon Cognito 사용자 풀
+- OIDC 공급자를 ID 풀 IdP로 설정
+- SAML 공급자를 ID 풀 IdP로 설정
+- 개발자 인증 ID
 
 Amazon Cognito ID 풀 지역 가용성에 대한 자세한 내용은 [AWS 서비스 지역 가용성](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/)을 통해 확인할 수 있다.
 
@@ -268,7 +267,6 @@ class AppAuthExampleViewController: UIViewController {
 }
 ```
 
-
 제공한 발급자 문자열에서 OIDC 검색을 구성한다. 권한 부여 코드를 구현하려면 애플리케이션이 사용자 풀 발급자에 대한 `.well-known/openid-configuration` 엔드포인트에서 발급자 엔드포인트를 검색할 수 있어야 한다.
 
 ```swift title="AppAuthExampleViewController.swift"
@@ -278,7 +276,7 @@ extension AppAuthExampleViewController {
             self.logMessage("Error creating URL for : \(kIssuer)")
             return
         }
-        
+
         // discovers endpoints
         OIDAuthorizationService.discoverConfiguration(forIssuer: issuer) { configuration, error in
 
@@ -288,7 +286,7 @@ extension AppAuthExampleViewController {
                 return
             }
             // ...
-            
+
             if let clientId = kClientID {
                 self.doAuthWithAutoCodeExchange(configuration: config, clientID: clientId, clientSecret: nil)
             } // ...
