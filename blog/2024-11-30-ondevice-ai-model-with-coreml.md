@@ -16,7 +16,8 @@ date: 2024-11-25T19:45
 
 1. [CoreML](#coreml)
 2. [Torch에서 Core ML로 변환하기](#torch에서-core-ml로-변환하기)
-3. []
+3. [Core ML 실행하기](#core-ml-실행하기)
+4. [메모리 공간 할당](#메모리-공간-할당)
 
 :::
 
@@ -40,11 +41,11 @@ Core ML은 Apple 아이폰 CPU, GPU를 활용하여 온디바이스 환경에서
 
 :::note 요구사항
 
-* Python 3.8+
-* Torch
-* Ultralytics
-* coremltools
-* argparse
+- Python 3.8+
+- Torch
+- Ultralytics
+- coremltools
+- argparse
 
 :::
 
@@ -54,3 +55,112 @@ Core ML은 Apple 아이폰 CPU, GPU를 활용하여 온디바이스 환경에서
 pip install torch ultralytics coremltools
 ```
 
+### 모델 변환
+
+모델 변환은 python의 `coremltools` 패키지의 `convert` 매서드를 활용한다. `minimum_deployment_target`의 경우 **Neural Engine** 기능을 사용하기 위해서는 최소 **iOS 16** 버전 이상이어야 하며, `.mlpackage` 파일을 사용하기 위해서는 **iOS 15** 버전 이상이어야 한다.
+
+```py title="export.py"
+# ...
+import coremltools as ct
+# ...
+
+def torchscript_to_mlprogram(torchscript_path:str, mlprogram_path:str):
+    # ...
+    mlprogram_model = ct.convert(
+        scripted_model,
+        inputs=[ct.ImageType(name='input', shape=example_input.shape, bias=[0, 0, 0], scale=1/255.0, color_layout=ct.colorlayout.RGB)],
+        outputs=[ct.TensorType(name='box'), ct.TensorType(name='score'), ct.TensorType(name='kpts')],
+        minimum_deployment_target=ct.target.iOS15,
+        compute_precision=ct.precision.FLOAT16,
+        convert_to='mlprogram',
+        compute_units=ct.ComputeUnit.ALL,
+    )
+    #...
+```
+
+## Core ML 실행하기
+
+그렇다면 플러터 애플리케이션에서 Core ML을 활용하려면 어떻게 해야할까. Method Channel을 활용하여 Swift ViewController에 접근하는 방법과 Swift background thread를 활용하는 방법에 대해 알아보자.
+
+### Method Channel 설정
+
+#### FlutterAppDelegate
+
+FlutterAppDelegate 클래스에서 methodChannel을 설정해준다.
+
+```swift title="AppDelegate.swift"
+import UIKit
+import Flutter
+import Vision
+
+@UIApplicationMain
+@objc class AppDelegate: FlutterAppDelegate {
+
+  private let methodChannelName = "spino.app.flutter/modelne"
+  // ...
+  override func application(
+    // ...
+    let methodChannel = FlutterMethodChannel(name: methodChannelName, binaryMessenger: controller as! FlutterBinaryMessenger)
+    methodChannel.setMethodCallHandler { [weak self] methodCall, result in
+      methodChannel.setMethodCallHandler(handleMethodCall)
+    }
+  )
+  return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+}
+```
+
+methodCall시 실행되는 로직을 설정해준다. 임의로 메서드 명칭은 "caseName", 함수명은 "methodController" 으로 설정해주었다.
+
+```swift title="Appdelegate.swift"
+private func handleMethodCall(_ methodCall: FlutterMethodCall, _ result: @escaping FlutterResult) {
+  switch methodCall.method {
+  case "caseName":
+    guard let args = methodCall.arguments as? [String: Any] else {
+      result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments: imageData is nil", details: nil))
+      return
+    }
+
+    methodController(result: result)
+  }
+}
+```
+
+#### Controller
+
+Model을 생성할 때에는 `UIViewController`를 활용했다. 다른 좋은 방법이 더 있을지는 모르겠으나 각 기능을 객체화 하고 따로 관리해주기 위해서는 `UIViewController`를 따로 분리해주어 설정해주는 것이 관리하기 좋을 것이라 판단했다.
+
+```swift title="MethodController.swift"
+import UIKit
+import SwiftUI
+
+@available(iOS 15.0, *)
+class UIViewController: UIViewController {
+    @Published var predictionContents: [String: [Double]?]? = nil
+    let imagePredictor = YoloMLModelClass()
+    let predictionsToShow = 2
+}
+
+@available(iOS 15.0, *)
+extension UIViewController {
+    public func classifyImage(_ image: UIImage) {
+        do {
+            try self.imagePredictor.makePredictions(for: image,
+                                                    completionHandler: imagePredictionHandler)
+        } catch {
+            print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
+        }
+    }
+    private func imagePredictionHandler(_ predictions: YoloMLModelClass.Prediction?) {
+        guard let predictions = predictions else {
+            return
+        }
+
+        self.predictionContents = [
+            "score": predictions.score,
+            "points": predictions.points
+        ]
+    }
+}
+```
+
+## 메모리 공간 할당
