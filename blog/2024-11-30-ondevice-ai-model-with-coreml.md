@@ -3,7 +3,7 @@ slug: ondevice-ai-model-with-coreml
 title: iOS 환경에서 온디바이스 AI모델 최적화하기
 authors: mooyeon
 tags: [iOS, Swift, CoreML, Flutter, Torch]
-date: 2024-11-25T19:45
+date: 2024-12-02T19:45
 ---
 
 # iOS 환경에서 온디바이스 AI모델 최적화하기
@@ -164,3 +164,30 @@ extension UIViewController {
 ```
 
 ## 메모리 공간 할당
+
+### Configuration 설정
+
+```swift
+let defaultConfig = MLModelConfiguration()
+defaultConfig.computeUnits = .cpuAndGPU // all / cpuOnly / cpuAndNeuralNetwork 
+```
+
+### Background thread
+
+```swift title="AppDelegate.swift"
+private func getPointsFromImage(result: @escaping FlutterResult, image: UIImage) {
+  if #available(iOS 15.0, *) {
+    let detectPointController = DetectPointController()
+
+    DispatchQueue.global(qos: .userInitiated).async {
+      detectPointController.classifyImage(image)
+
+      DispatchQueue.main.async {
+        result(detectPointController.predictionContents)
+      }
+    }
+  } else {
+    result(FlutterError(code: "Flutter Error", message: "Error", details: nil))
+  }
+}
+```
