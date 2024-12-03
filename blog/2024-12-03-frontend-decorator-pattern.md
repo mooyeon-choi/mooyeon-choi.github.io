@@ -15,6 +15,7 @@ date: 2024-12-03T19:45
 :::info 목차
 
 1. [메타 프로그래밍이란?](#메타-프로그래밍이란)
+2. [자바스크립트와 데코레이터](#자바스크립트와-데코레이터)
 
 :::
 
@@ -121,6 +122,337 @@ class AppTest {
 }
 ```
 
-#### 정리
+메타 프로그래밍은 제네릭, 어노테이션등 다양한 형태로 사용되고 있다. 이번 글에서는 제네릭에 관련한 내용을 주로 다루었다.
 
-메타 프로그래밍은 제네릭, 어노테이션등 다양한 형태로 사용되고 있다. 이번 글에서는 제네릭에 관련한 내용을 주로 다루었는데 어노테이션에 대해서도 추후 확인해보자.
+## 자바스크립트와 데코레이터
+
+데코레이터는 기존 메서드에 몇가지 기능을 추가하는 함수이다. 원래 코드를 변경하지 않고도 객체의 동작을 수정하여 기능을 확장할 수 있다.
+
+![js decorator](./images/2024-12-03-frontend-decorator-pattern/js-decorators.webp)
+
+데코레이터는 코드의 가독성, 유지보수, 재사용성을 향상시키는데 좋다. JavaScript에서 데코레이터는 클래스, 메서드, 속성 또는 매개변수를 수정할 수 있는 함수이다. 소스 코드를 변경하지 않고도 코드의 다양한 부분에 동작이나 메타데이터를 추가하는 방법을 제공한다.
+
+데코레이터는 일반적으로 클래스와 함께 사용되며 다음과 같은 `@`기호로 시작한다.
+
+```js Decorator on JS
+// A simple decorator
+function log(target, key, descriptor) {
+  console.log(`Logging ${key} function`);
+  return descriptor;
+}
+
+class Example {
+  @log
+  greet() {
+    console.log("Hello, world");
+  }
+}
+
+const example = new Example();
+example.greet(); // Logs "Logging greet function" and "Hello, world!"
+```
+
+위의 코드는 데코레이터를 사용하여 메서드가 실행되기 전에 메시지를 로깅하여 클래스 메서드의 동작을 수정할 수 있는 방법을 보여준다.
+
+### 데코레이터 구성
+
+데코레이터는 구성되고 중첩되는 강력한 기능을 가지고 있다. 여러 데코레이터를 동일한 코드에 적용할 수 있으며 특정 순서로 실행된다. 복잡한 모듈식 애플리케이션을 구축하는데 도움이 된다.
+
+#### 데코레이터 구성 예시
+
+여러 데코레이터가 동일한 코드에 적용되는 사례를 살펴보자. 사용자 인증 및 권한 부여 수준에 따라 특정 경로에 대한 액세스를 제한하려는 웹 애플리케이션을 고려한다. 다음과 같이 데코레이터를 구성하여 이를 달성할 수 있다.
+
+```js
+@requireAuth
+@requireAdmin
+class AdminDashboard {
+  // ...
+}
+```
+
+여기에는 `requireAuth` 사용자 인증, `AdminDashboard`에 진입하기 전에 관리자 권한이 있는지 확인하는 `requireAdmin` 데코레이터가 있다.
+
+### 매개변수 데코레이터
+
+매개변수 데코레이터를 사용하면 메서드 매개변수를 수정할 수 있다. 다른 데코레이터 유형보다 덜 일반적이지만 함수 인수를 검증하거나 변환하는 것과 같은 특정 상황에서는 가치있다.
+
+#### 매개변수 데코레이터 예시
+
+다음은 함수 매개변수가 지정된 범위 내에 있는지 확인하는 매개변수 데코레이터의 예시이다.
+
+```js
+function validateParam(min, max) {
+  return function (target, key, index) {
+    const originalMethod = target[key];
+    target[key] = function (...args) {
+      const arg = args[index];
+      if (arg < min || arg > max) {
+        throw new Error(`Argument at index ${index} is out of range.`);
+      }
+      return originalMethod.apply(this, args);
+    }
+  }
+}
+
+class MathOperations {
+  @validateParam(0, 10)
+  multiply(a, b) {
+    return a * b;
+  }
+}
+
+const math = new MathOperations();
+math.multiply(5, 12); // Throws an error
+```
+
+이 코드는 `MathOperations` 클래스에서 호출되는 `multiply` 메서드에 적용된 `validateParam` 데코레이터를 정의한다. `validateParam` 데코레이터는 곱셈 메서드의 매개변수가 지정된 범위(0~10) 내에 있는지 확인한다. 곱셈 메서드가 인수 `5`, `12`를 사용하여 호출하면 데코레이터는 `12`가 범위를 벗어났음을 감지하고 에러를 `throw` 한다.
+
+### 비동기 데코레이터
+
+비동기 데코레이터는 최신 JavaScript 애플리케이션에서 비동기 작업을 처리한다. `async/await` 및 `promise`를 처리할 때 유용하다.
+
+#### 비동기 데코레이터 예시
+
+특정 메서드의 호출 속도를 제한하려는 시나리오를 생각해보자. `@throttle` 데코레이터를 적용한다.
+
+```js
+function throttle(delay) {
+  let lastExecution = 0;
+  return function (target, key, descriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = async function (...args) {
+      const now = Date.now();
+      if (now - lastExecution >= delay) {
+        lastExecution = now;
+        return originalMethod.apply(this, args);
+      } else {
+        console.log(`Method ${key} throttled`);
+      }
+    };
+  };
+}
+
+class DataService {
+  @throttle(1000)
+  async fetchData() {
+    // Fetch data from the server
+  }
+}
+
+const dataService = new DataService();
+dataService.fetchData(); // Executes only once per second
+```
+
+여기서 정의된 `throttle` 데코레이터는 `DataService` 클래스의 `fetchData` 메서드에 적용된다. `throttle` 데코레이터는 메서드가 1초에 한번만 실행되도록 한다. 더 자주 호출되는 경우 데코레이터는 메서드가 throttle 되었음을 나타내는 로그를 남긴다.
+
+이 코드는 데코레이터로 메서드가 호출되는 속도를 제어하는 방법을 보여준다. 이는 API 요청 속도 제한과 같은 시나리오에서 유용하다.
+
+### 사용자 정의 데코레이터 만들기
+
+JavaScript에서는 `@deprecated`나 `@readonly` 같은 빌트인 데코레이터를 제공하지만, 특정 프로젝트 요구 사항에 맞게 사용자 정의 데코레이터를 만들어야할 경우도 있다.
+
+사용자 정의 데코레이터는 JavaScript 코드에서 클래스, 메서드, 속성 또는 매개변수의 동작이나 속성을 수정하는 사용자 정의 함수이다. 이러한 데코레이터는 특정 기능을 캡슐화하고 재사용하거나 코드베이스 전체에서 특정 규칙을 일관되게 적용한다.
+
+#### 사용자 정의 데코레이터 예시
+
+데코레이터는 `@` 심볼과 함께 제공된다. 메서드 실행 전후에 메시지를 기록하는 사용자 지정 데코레이터를 만들어보자. 이 데코레이터는 사용자 지정 데코레이터의 기본 구조를 이해하는데 도움 될 것이다.
+
+```js
+function logMethod(target, key, descriptor) {
+  const originalMethod = descriptor.value; // Save the original method
+
+  // Redefine the method with custom behavior
+  descriptor.value = function (...args) {
+    console.log(`Before ${key} is called`);
+    const result = originalMethod.apply(this, args);
+    console.log(`After ${key} is called`);
+    return result;
+  };
+
+  return descriptor;
+}
+
+class Example {
+  @logMethod
+  greet() {
+    console.log("Hello, world!");
+  }
+}
+
+const example = new Example();
+example.greet();
+```
+
+이 예에서 우리는 `Example` 클래스의 `greet` 메서드를 래핑하는 `logMethod` 데코레이터를 정의하였다. 데코레이터는 메서드 실행 전후에 메시지를 기록하여 소스 코드를 수정하지 않고도 greet 메서드의 동작을 향상시킨다.
+
+또 다른 예시를 보자. 메서드의 실행 시간을 기록하는 `@measureTime` 사용자 정의 데코레이터이다.
+
+```js
+function measureTime(target, key, descriptor) {
+  const originalMethod = descriptor.value;
+  descriptor.value = function (...args) {
+    const start = performance.now();
+    const result = originalMethod.apply(this, args);
+    const end = performance.now();
+    console.log(`Execution time for ${key}: ${end - start} milliseconds`);
+    return result;
+  };
+  return descriptor;
+}
+
+class Timer {
+  @measureTime
+  heavyComputation() {
+    // Simulate a heavy computation
+    for (let i = 0; i < 1000000000; i++) {}
+  }
+}
+
+const timer = new Timer();
+timer.heavyComputation(); // Logs execution time
+```
+
+위의 코드는 명명된 `measureTime` 사용자 지정 데코레이터를 정의하고 `Timer` 메서드에 적용한다. 이 데코레이터는 데코레이팅된 메서드의 실행 시간을 측정한다. `heavyComputation` 메서드를 호출하면 데코레이터는 시작 시간을 기록하고, 계산을 실행하고, 종료 시간을 기록하고, 경과 시간을 계산하고, 콘솔에 기록한다.
+
+이 코드는 데코레이터가 메서드에 성능 모니터링 및 타이밍 기능을 추가하는 방법을 보여준다. 이러한 기능은 코드를 최적화 하고 병목 현상을 식별하는 데 유용하다.
+
+#### 사용자 정의 데코레이터의 사용 사례
+
+사용자 지정 데코레이터는 검증, 인증, 로깅 또는 성능 측정과 같은 다양한 기능을 제공할 수 있다. 다음은 몇가지 사용 사례이다.
+
+* **검증**: 이전 예제에서 매개변수 검증과 함께 보여준 것처럼, 메서드 인수를 검증하여 특정 기준을 충족하는지 확인하기 위해 데코레이터를 만들 수 있다.
+* **인증 및 권한 부여**: 데코레이터는 액세스 제어 및 권한 부여 규칙을 시행하는 데 사용할 수 있으며, 이를 통해 경로나 방법을 보호할 수 있다.
+* **캐싱**: 데코레이터는 캐싱 메커니즘을 구현하여 데이터를 효율적으로 저장하고 검색하고 불필요한 계산을 줄일 수 있다.
+* **로깅**: 데코레이터는 메서드의 호출, 성능 메트릭 또는 오류를 기록하여 디버깅 및 모니터링을 도울 수 있다.
+* **메모이제이션**: 메모이제이션 데코레이터는 특정 입력에 대한 함수 결과를 캐시하여 반복적인 계산의 성능을 개선할 수 있다.
+* **재시도 메커니즘**: 실패 시 자동으로 특정 횟수만큼 메서드를 재시도하는 데코레이터를 만들 수 있다.
+* **이벤트 처리**: 데코레이터는 메서드 실행 전후에 이벤트를 트리거하여 이벤트 기반 아키텍처를 구현할 수 있다.
+
+### 다양한 프레임워크의 데코레이터
+
+Angular, React, Vue.js와 같은 JavaScript 프레임워크와 라이브러리는 데코레이터를 사용하기 위한 자체 규칙이 있다. 이러한 프레임워크에서 데코레이터가 어떻게 작동하는지 이해하면 더 나은 애플리케이션을 구축하는 데 도움이 된다.
+
+#### Angular: 데코레이터의 광범위한 사용
+
+포괄적인 프론트엔드 프레임워크인 Angular는 데코레이터에 크게 의존하여 구성 요소, 서비스 등의 다양한 영역을 정의한다. 다음은 Angular의 일부 데코레이터이다.
+
+* `@Component`: 구성 요소를 정의하고 구성 요소의 선택기, 템플릿 및 스타일과 같은 메타데이터를 지정하는 데 사용된다.
+
+  ```js
+  @Component({
+    selector: "app-example",
+    template: "<p>Example component</p>",
+  })
+  class ExampleComponent {}
+  ```
+
+* `@Injectable`: 클래스를 다른 구성 요소 및 서비스에 주입될 수 있는 서비스로 표시한다.
+
+  ```js
+  @Injectable()
+  class ExampleService {}
+  ```
+
+* `@Input`, `@Output`: 이러한 데코레이터를 사용하면 구성 요소에 대한 입력 및 출력 속성을 정의하여 부모 및 자식 구성 요소간의 통신을 용이하게 할 수 있다.
+
+  ```js
+  @Input() title: string;
+  @Output() notify: EventEmitter<string> = new EventEmitter();
+  ```
+
+Angular 데코레이터는 코드 구성을 강화하여, 명확하고 체계적인 아키텍처로 복잡한 애플리케이션을 더 쉽게 만들 수 있도록 한다.
+
+### React: 고차 구성 요소
+
+React는 인기있는 JavaScript 라이브러리이다. Angular와 같은 방식으로 네이티브 데코레이터가 없다. 하지만 React는 데코레이터의 한 형태로 작동하는 고차 구성 요소(HOC)라는 개념을 도입했다. HOC는 구성 요소를 가져와 새로운 향상된 구성 요소를 반환하는 함수이다. 코드 재사용, 상태 추상화 및 props 조작을 위해 작동한다.
+
+다음은 구성 요소가 렌더링되는 시점을 기록하는 HOC의 예시이다.
+
+```js
+function withLogger(WrappedComponent) {
+  return class extends React.Component {
+    render() {
+      console.log("Rendering", WrappedComponent.name);
+      return <WrappedComponent {...this.props} />;
+    }
+  };
+}
+
+const EnhancedComponent = withLogger(MyComponent);
+```
+
+이 예에서 `withLogger` 는 래핑하는 모든 구성 요소의 렌더링을 기록하는 상위 구성 요소이다. 소스 코드를 변경하지 않고 추가 동작으로 구성 요소를 향상시키는 방법이다.
+
+### Vue.js: 데코레이터를 사용한 컴포넌트 옵션
+
+Vue.js 는 사용자 인터페이스를 구축하기 위한 또 다른 인기 있는 JavaScript 프레임워크이다. Vue.js 는 기본적으로 데코레이터를 지원하지 않지만, 일부 프로젝트와 라이브러리에서는 데코레이터를 사용하여 구성 요소 옵션을 정의할 수 있다.
+
+다음은 `vue-class-component`와 함께 데코레이터를 사용하여 Vue 구성 요소를 정의하는 예시이다.
+
+```js
+javascriptCopy code
+import { Component, Prop, Vue } from 'vue-class-component';
+
+@Component
+class MyComponent extends Vue {
+  @Prop() title: string;
+  data() {
+    return { message: 'Hello, world!' };
+  }
+}
+```
+
+이 예제에서 `@Component` 데코레이터는 Vue 컴포넌트를 정의하는 데 사용되고, `@Prop` 데코레이터는 컴포넌트에 prop을 만드는데 사용된다.
+
+### 데코레이터 팩토리
+
+**데코레이터 팩토리**는 데코레이터 함수를 반환하는 함수이다. 데코레이터를 직접 정의하는 대신, 전달한 인수에 따라 데코레이터를 생성하는 함수를 만든다. 이를 통해 데코레이터의 동작을 사용자 정의하에 다양하게 활용하고 재사용 가능하게 만들 수 있다.
+
+데코레이터 팩토리의 일반적인 구조는 다음과 같다.
+
+```js
+function decoratorFactory(config) {
+  return function decorator(target, key, descriptor) {
+    // Customize the behavior of the decorator based on the 'config' argument.
+    // Modify the 'descriptor' or take other actions as needed.
+  };
+}
+```
+
+여기, `config` 인수를 받아들이는 `decoratorFactory` 데코레이터 팩토리 함수가 있다. 제공된 구성에 따라 대상, 키 또는 설명자를 수정할 수 있는 데코레이터 함수를 반환한다.
+
+중요도 메시지를 기록하는 데코레이터 팩토리인 아래 예시를 보자.
+
+```js
+function logWithSeverity(severity) {
+  return function (target, key, descriptor) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args) {
+      console.log(`[${severity}] ${key} called`);
+      return originalMethod.apply(this, args);
+    };
+  };
+}
+
+class Logger {
+  @logWithSeverity("INFO")
+  info() {
+    // Log informational message
+  }
+
+  @logWithSeverity("ERROR")
+  error() {
+    // Log error message
+  }
+}
+
+const logger = new Logger();
+logger.info(); // Logs "[INFO] info called"
+logger.error(); // Logs "[ERROR] error called"
+```
+
+위의 코드에서 사용자 정의 데코레이터는 `Logger` 클래스 내의 메서드를 강화하는 데 사용된다. 이러한 데코레이터는 
+
+https://www.sitepoint.com/javascript-decorators-what-they-are/#whataredecoratorsinjavascript
+
+이어서 작성
