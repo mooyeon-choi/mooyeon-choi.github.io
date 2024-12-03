@@ -3,7 +3,7 @@ slug: frontend-decorator-pattern
 title: 프론트앤드에서의 데코레이터 패턴 살펴보기
 authors: mooyeon
 tags: [FrontEnd, Decorator, DesignPattern, JavaScript, Flutter]
-date: 2024-11-25T19:45
+date: 2024-12-03T19:45
 ---
 
 # 프론트앤드에서의 데코레이터 패턴 살펴보기
@@ -83,3 +83,44 @@ Foo *obj = [[Foo alloc] init];
 id obj = [[NSClassFromString(@"Foo") alloc] init];
 [obj performSelector: @selector(hello)];
 ```
+
+objc 는 객체에 메시지를 던지는 message dispatch를 사용한다. 클래스를 특정하지 않고 `performSelector`로 직접 메시지를 호출할 수 있다. 해당 클래스와 메소드의 내부 구조를 파악하고 매칭되는 메소드를 호출하는 방식이므로 reflection을 사용했다고 볼 수 있다.
+
+```java Java 예시
+import java.lang.reflect.Method;
+
+// Without reflection
+Foo foo = new Foo();
+foo.hello();
+
+// With reflection
+try {
+  Object foo = Foo.class.getDeclaredConstructor().newInstance();
+
+  Method m = foo.getClass().getDeclaredMethod("hello", new Class<?>[0]);
+  m.invoke(foo);
+} catch (ReflectiveOperationException ignored) {}
+```
+
+Java에서도 클래스를 직접 생성하는게 아니라 reflection을 통해서 생성하는 방법을 지원한다. 그리고 method를 호출하는 것도 reflection을 통해서 호출할 수 있다. 같은 맥락에서 `getAnnotation()`를 호출해서 annotation이 존재하는지 확인할 수도 있다. 한번 커스텀 어노테이션을 만들어서 확인해보자. 런타임에서도 어노테이션을 확인하려면 `@Retention(RetentionPolicy.RUNTIME)`를 추가해줘야 한다.
+
+```java Annotation Examples
+@Retention(RetentionPolicy.RUNTIME)
+public @inteface MyAnnotation {
+  String greeting() default "hello";
+}
+// ...
+class AppTest {
+  @Test
+  void testMyAnnotation() {
+    App classUnderTest = new App();
+    MyAnnotation myAnnotation = classUnderTest.getClass().getAnnotation(MyAnnotation.class);
+    assertNotNull(myAnnotation);
+    assertEquals("hello", myAnnotation.greeting());
+  }
+}
+```
+
+#### 정리
+
+메타 프로그래밍은 제네릭, 어노테이션등 다양한 형태로 사용되고 있다. 이번 글에서는 제네릭에 관련한 내용을 주로 다루었는데 어노테이션에 대해서도 추후 확인해보자.
