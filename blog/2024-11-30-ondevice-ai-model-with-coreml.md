@@ -169,10 +169,12 @@ extension UIViewController {
 
 ```swift
 let defaultConfig = MLModelConfiguration()
-defaultConfig.computeUnits = .cpuAndGPU // all / cpuOnly / cpuAndNeuralNetwork 
+defaultConfig.computeUnits = .cpuAndGPU // all / cpuOnly / cpuAndNeuralNetwork
 ```
 
 ### Background thread
+
+iOS에서 메모리 공간의 경우 동적으로 할당된다 하지만, QoS를 통해 우선순위를 지정해줄 수 있는데 이를 활용하여 필요한
 
 ```swift title="AppDelegate.swift"
 private func getPointsFromImage(result: @escaping FlutterResult, image: UIImage) {
