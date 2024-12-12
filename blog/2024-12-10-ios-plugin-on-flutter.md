@@ -247,12 +247,10 @@ class MyApp extends StatefulWidget {
    State<MyApp> createState() => _MyAppState();
 }
 
-
 // api 객체 생성 및 사용
 class _MyAppState extends State<MyApp> {
    String _platformVersion = 'Unknown';
    final _helloWorldPlugin = HelloWorld();
-
 
    Future<void> initPlaotformState() async {
       String platformVersion;
@@ -269,7 +267,6 @@ class _MyAppState extends State<MyApp> {
          _platformVersion = platformVersion;
       });
    }
-
 
    @Override
    Widget build(BuildContext context) {
