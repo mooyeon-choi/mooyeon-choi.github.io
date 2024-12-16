@@ -181,6 +181,58 @@ public class HelloWorldPlugin: NSObject, FlutterPlugin {
 @end
 ```
 
+### 권한 요청
+
+패키지에서 사용하는 기능을 적용하기 위해서는 해당 패키지에서 요구하는 권한을 추가해주어야 한다. 이를 위해서는 README 사용법에 필요한 권한 목록을 명시해주거나 `.xcprivacy`를 통해 패키지 설치 시 권한 목록이 추가되도록 해줄 수 있다. 다음은 패키지 파일을 통해 권한을 추가해주는 방법이다.
+
+#### PrivacyInfo.xcprivacy 생성
+
+우선 `PrivacyInfo.xcprivacy` 파일을 통해 필요한 권한 목록을 추가해준다.
+
+```plist title="BackgroundMode 사용 요청 예시"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+		<string>fetch</string>
+	</array>
+</dict>
+</plist>
+```
+
+#### 리소스 번들에 추가
+
+**CocoaPods**을 사용해서 패키지 관리를 해주는 경우 패키지 빌드 시 필요한 속성들을 `.podspec`에 설정해주게 된다. 현재 사용 중인 `Flutter 3.19.X` 버전 기준 **Flutter**에서 **iOS dependency manager**로 **CocoaPods**만을 지원하고 있으므로 관련된 속성은 반드시 `.podspec` 으로 명시 해주어야 한다.
+
+이를 통해 **리소스 번들** 목록에 위에서 정의한 권한 설정 파일을 추가해주자.
+
+```podspec
+Pod::Spec.new do |s|
+  s.name             = 'example_plugin'
+  s.version          = '0.0.1'
+  s.summary          = 'A new Flutter plugin project.'
+  s.description      = <<-DESC
+A new Flutter plugin project.
+                       DESC
+  s.homepage         = 'http://example.com'
+  s.license          = { :file => '../LICENSE' }
+  s.author           = { 'Your Company' => 'email@example.com' }
+  s.source           = { :path => '.' }
+  s.source_files = 'Classes/**/*'
+  s.public_header_files = 'Classes/**/*.h'
+  s.dependency 'Flutter'
+  s.platform = :ios, '13.0'
+
+  # Flutter.framework does not contain a i386 slice.
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
+  s.resource_bundles = {'pinokiolab_multi_file_uploader_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+  s.swift_version = '5.0'
+end
+```
+
 ## 샘플 앱에서 플러그인 사용
 
 `example/pubspec.yaml`
