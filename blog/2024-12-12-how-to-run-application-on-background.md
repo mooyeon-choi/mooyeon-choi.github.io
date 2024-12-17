@@ -300,7 +300,7 @@ WorkManager가 실행할 작업을 만들려면 `Worker` 클래스를 확장하�
 
 ### Background Tasks
 
-iOS 13부터 추가된 프레임워크로 시스템과 앱 간의 Background Task 요청을 담당하는 역할을 한다. 해당 프레임워크에서는 `BGAppRefreshTask`, `BGProcessingTask` 두 가지 타입을 제공해주는데 `BGAppRefreshTask`는 30초 정도가 소요되는 작업에 사용되고 그 이상의(몇분, 보통 5분 내외) 시간이 소요되는 작업들은 `BGProcessingTask`를 사용하게 한다.
+iOS 13부터 추가된 프레임워크로 시스템과 앱 간의 Background Task 요청을 담당하는 역할을 한다. 해당 프레임워크에서는 `BGAppRefreshTask`, `BGProcessingTask` 두 가지 타입을 제공해주는데 `BGAppRefreshTask`는 30초 정도가 소요되는 작업에 사용되고 그 이상의 시간이 소요되는 작업들은 `BGProcessingTask`를 사용하게 한다.
 
 ![ios background tasks run](./images/2024-12-12-how-to-run-application-on-backend/ios_background_tasks_run.png)
 
@@ -319,3 +319,56 @@ iOS 13부터 추가된 프레임워크로 시스템과 앱 간의 Background Tas
 `BGProcessingTask`의 경우 반대로 대용량 파일 다운로드나 데이터 동기화와 같이 시간이 많이 걸리는 작업을 수행하기 위해 만들어졌다.
 
 ## 플러터에 연결하기
+
+하지만 위와 같은 방법으로 프로그램을 동작하기 위해서는 결국 Kotlin, Swift 코드 모두 작성해야 한다. 단순히 백그라운드 작업을 추가해주기 위해 네이티브 언어로 작성하려고 보니 다트 코드보다 Kotlin, Swift 코드가 더 많아질 것 같다. 어떻게 좀 더 쉽게 적용할 수 있을까?
+
+Flutter에서는 멀티 프로세스 환경에서도 코드를 실행해줄 수 있도록 Android/iOS 환경에서 각각 [FlutterEngine](https://github.com/flutter/engine) 패키지를 제공해준다. 플러터 엔진은 플러터 애플리케이션을 호스팅하기 위한 휴대용 런타임 환경이다. 애니메이션 및 그래픽, 파일 및 네트워크 I/O, 접근성 지원, 플러그인 아키텍쳐, Dart 런타임 및 컴파일 툴체인 등 플러터의 핵심이 되는 기능들을 모두 구현할 수 있으며 이를 오픈소스로 제공해주고 있다.
+
+따라서 FlutterEngine을 활용하여 Dart 코드를 받아와 백그라운드 프로세스에서 바로 실행될 수 있도록 적용한다면 보다 쉽게 백그라운드 작업을 적용할 수 있다.
+
+아래에는 이러한 플러터엔진을 잘 활용한 [flutter_workmanager](https://pub.dev/packages/workmanager) 패키지를 참고하여 개발한 내용을 정리하였다.
+
+### 코드로 작성하기
+
+플러터 코드에서 시작해 거꾸로 타고 들어가면서 코드를 확인해보자.
+
+먼저 네이티브 코드에서 플러터 코드를 그대로 사용하기 위해 `@pragma('vm:entry-point')` 주석을 추가해준다. 이는 컴파일러에 해당 함수(또는 클래스와 같은 다른 엔티티)가 **네이티브 코드에서 사용될 것**임을 나타낸다. 이 주석이 없으면 Dart 컴파일러는 최적화를 위해 사용하지 않는 함수를 제거하고, 인라인으로 만들거나, 이름을 축소하는 등 작업을 할 수 있으며 이 경우 네이티브 코드에서는 이를 호출하지 못할 수 있다.
+
+#### Main
+
+```dart
+@pragma(
+    'vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
+void callbackDispatcher() {
+  BackgroundTask().executeTask((task, inputData) async {
+    switch (task) {
+    // ...
+```
+
+위 코드와 같이 백그라운드 프로세싱을 위한 `BackgroundTask` 클래스를 선언해주고 Callback을 위한 `executeTask()` 함수에 비동기 함수를 전달한다.
+
+#### BackgroundTask
+
+`executeTask()`에서는 전달받은 함수를 `FlutterMethodCallHandler()`를 통해 네이티브 코드로 전달해준다.
+
+```dart
+/// A helper function so you only need to implement a [BackgroundTaskHandler]
+void executeTask(final BackgroundTaskHandler backgroundTask) {
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+
+  _backgroundChannel.setMethodCallHandler((call) async {
+    final inputData = call.arguments["be.pinokiolab.workmanager.INPUT_DATA"];
+    return backgroundTask(
+      call.arguments["be.pinokiolab.workmanager.DART_TASK"],
+      inputData == null ? null : jsonDecode(inputData),
+    );
+  });
+  _backgroundChannel.invokeMethod("backgroundChannelInitialized");
+}
+```
+
+#### Native Code
+
+MethodCall을 통해 Kotlin, Swift 코드를 실행해주면 각각의 클래스에 설정되어있던 FlutterEngine을 통해 Dart 코드를 실행해준다.
+
