@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[6866],{1330:l=>{l.exports=JSON.parse('{"label":"WebGl","permalink":"/blog/tags/web-gl","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

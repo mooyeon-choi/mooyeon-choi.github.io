@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[5083],{7319:a=>{a.exports=JSON.parse('{"label":"Dart","permalink":"/blog/tags/dart","allTagsPath":"/blog/tags","count":2,"unlisted":false}')}}]);

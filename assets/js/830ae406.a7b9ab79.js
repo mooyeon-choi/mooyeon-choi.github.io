@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[8684],{6511:e=>{e.exports=JSON.parse('{"label":"Imperative","permalink":"/blog/tags/imperative","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

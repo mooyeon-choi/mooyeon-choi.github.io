@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[1949],{7927:l=>{l.exports=JSON.parse('{"label":"CoreML","permalink":"/blog/tags/core-ml","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

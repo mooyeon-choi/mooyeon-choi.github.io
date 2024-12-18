@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[9311],{5291:a=>{a.exports=JSON.parse('{"label":"refactoring","permalink":"/blog/tags/refactoring","allTagsPath":"/blog/tags","count":2,"unlisted":false}')}}]);

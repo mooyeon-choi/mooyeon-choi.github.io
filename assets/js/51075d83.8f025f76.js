@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmylog=self.webpackChunkmylog||[]).push([[1930],{9265:t=>{t.exports=JSON.parse('{"tag":{"label":"flutter","permalink":"/blog/tags/flutter","allTagsPath":"/blog/tags","count":9,"unlisted":false},"listMetadata":{"permalink":"/blog/tags/flutter","page":1,"postsPerPage":10,"totalPages":1,"totalCount":9,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
