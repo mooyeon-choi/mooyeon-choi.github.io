@@ -73,6 +73,96 @@ analyzer:
 
 :::
 
+### 모델 코드 작성
+
+아래의 예시를 보자.
+
+```dart
+// 파일명은 "example.dart"로 설정하였다.
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
+
+// required: Freezed code generator를 통해 생성된 코드와 연결해준다.
+part 'main.freezed.dart';
+// optional: 모델 클래스를 직렬화 해줘야한다면 아래의 파일을 추가해주어야 한다. 불필요하다면 넘어가도 된다.
+part 'example.g.dart';
+
+@freezed
+class Person with _$Person {
+  const factory Person({
+    required String firstName,
+    required String lastName,
+    required int age,
+  }) = _Person;
+
+  factory Person.fromJson(Map<String, Object?> json)
+      => _$PersonFromJson(json);
+}
+```
+
+위 Snippet은 `Person`이라는 이름의 모델을 정의한다.
+
+- `Person`은 3개의 속성을 가지고 있다. (`firstName`, `lastName`, `age`)
+- `@freezed` 를 사용하므로 이 클래스의 모든 속성은 변경할 수 없다(immutable).
+- `fromJson`을 정의하였으므로, 직렬화/역직렬화가 가능하다. Freezed는 `toJson` 함수도 제공해줄 것이다.
+- Freezed는 다음 사항들도 자동으로 생성해준다.
+  - `copyWith` method: 객체를 다른 속성으로 복제하기 위함
+  - `toString` override: 객체의 모든 속성을 문자열로 나열
+  - `operator ==` and `hashCode` override (`Person`이 immutable 하므로)
+
+위 예에서 우리는 아래와 같은 몇가지 사실을 알 수 있다.
+
+- 모델에 `@freezed`(또는 `@Freezed`/`@unfreezed`) 주석을 달아야한다.
+- 클래스의 이름 앞에 `_$`를 붙인 `Mixin`을 적용해야한다. 이 믹스인은 객체의 다양한 속성/메서드를 정의한다.
+- Freezed 클래스에서 생성자를 정의할 때는 `factory` 키워드를 표시된대로 사용해야한다. 이 생성자의 매개변수는 이 클래스에 포함된 모든 속성의 목록이 된다. 매개변수는 반드시 `name`을 설정해주거나 `required`일 필요는 없다. 원하는 경우 선택적 매개변수를 자유롭게 사용하면 된다.
+
+#### mutable 클래스 정의하기
+
+위 기본 예시의 경우 모든 속성이 `final`인 모델을 정의하는 방법을 알아보았다. 하지만 상황에 따라 변경 가능한 속성을 정의하고 싶을때도 있을 것이다.
+
+Freezed는 `@freezed` 주석을 `@unfreezed`로 대체하여 이를 지원한다.
+
+```dart
+@unfreezed
+class Person with _$Person {
+  factory Person({
+    required String firstName,
+    required String lastName,
+    required final int age,
+  }) = _Person;
+
+  factory Person.fromJson(Map<String, Object?> json)
+      => _$PersonFromJson(json);
+}
+```
+
+이는 이전 Snippet과 거의 동일한 모델을 정의하지만 아래와 같은 차이가 있다.
+
+- `firstName`, `lastName`은 이제 변경 가능하다. 따라서 다음과 같이 활용할 수 있다.
+
+  ```dart
+  void main() {
+    var person = Person(firstName: 'John', lastName: 'Smith', age: 42);
+
+    person.firstName = 'Mona';
+    person.lastName = 'Lisa';
+  }
+  ```
+
+- `age`의 경우 여전히 변경할 수 없는데, 이는 `final` 속성을 명시적을 표시했기 때문이다.
+- `Person` 클래스에는 커스텀 `==`/`hashCode` 구현이 없다.
+
+  ```dart
+  void main() {
+    var john = Person(firstName: 'John', lastName: 'Smith', age: 42);
+    var john2 = Person(firstName: 'John', lastName: 'Smith', age: 42);
+
+    print(john == john2); // false
+  }
+  ```
+
+- 당연히, `Person`
+
 ### Generator 실행
 
 Code generator를 실행하기 위해, 터미널(프로젝트 루트 위치)에 아래의 명령어를 입력한다.
