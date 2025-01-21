@@ -161,7 +161,134 @@ class Person with _$Person {
   }
   ```
 
-- 당연히, `Person`
+- 당연히, `Person` 클래스는 변경 가능하기 때문에 `const`를 사용하여 인스턴스화 하는 것은 불가능하다.
+
+### Mutable Lists/Maps/Sets
+
+기본적으로 `@freezed` 유형의 `List`, `Map`, `Set` 속성은 변경 불가능하도록 반환된다.
+
+즉, 다음과 같이 작성하면 런타임 오류가 발생한다.
+
+```dart
+@freezed
+class Example with _$Example {
+  factory Example(List<int> list) = _Example;
+}
+
+void main() {
+  var example = Example([]);
+  example.list.add(42); // 콜랙션 변경을 시도하므로 오류 발생
+}
+```
+
+아래와 같이 속성값을 추가하여 해당 동작을 비활성화할 수 있다.
+
+```dart
+@Freezed(makeCollectionsUnmodifiable: false)
+class Example with _$Example {
+  factory Example(List<int> list) = _Example;
+}
+
+void main() {
+  var example = Example([]);
+  example.list.add(42); // OK
+}
+```
+
+### copyWith 작동 방식
+
+앞서 확인했듯이, Freezed를 사용하여 모델을 정의할 때 코드 생성기는 자동으로 `copyWith` 메서드를 생성해준다. 이 메서드는 다른 값을 가진 객체를 복제하는 데 사용된다.
+
+```dart
+@freezed
+class Person with _$Person {
+  factory Person(String name, int? age) = _Person;
+}
+```
+
+위 예시와 같이 작성했을 경우 아래와 같이 사용할 수 있다.
+
+```dart
+void main() {
+  var person = Person('Remi', 24);
+
+  // `age` not passed, its value is preserved
+  print(person.copyWith(name: 'Dash')); // Person(name: Dash, age: 24)
+  // `age` is set to `null`
+  print(person.copyWith(age: null)); // Person(name: Remi, age: null)
+}
+```
+
+> `person.copyWith(age: null)`와 같이 Freezed는 `null` 값을 입력값으로 사용할 수 있다.
+
+### Deep copy
+
+`copyWith`로도 이미 충분히 쓸만하지만, 만약 더 복잡한 객체를 다룬다면 불충분할 수 있다.
+
+아래의 클래스를 보자.
+
+```dart
+@freezed
+class Company with _$Company {
+  factory Company({String? name, required Director director}) = _Company;
+}
+
+@freezed
+class Director with _$Director {
+  factory Director({String? name, Assistant? assistant}) = _Director;
+}
+
+@freezed
+class Assistant with _$Assistant {
+  factory Assistant({String? name, int? age}) = _Assistant;
+}
+```
+
+우리가 `Company`를 참조할 때, `Assistant`를 변경하고 싶을 때가 있을 것 이다. `Assistant`의 `name`을 `copyWith`로 변경하기 위해 우리는 아래와 같이 코드를 작성해야할 것이다.
+
+```dart
+Company company;
+
+Company newCompany = company.copyWith(
+  director: company.director.copyWith(
+    assistant: company.director.assistant.copyWith(
+      name: 'John Smith',
+    ),
+  ),
+);
+```
+
+위와 같이 작성하여도 원하는대로 동작하지만, 중복되는 코드가 많아서 직관적이지 못하다.
+
+이러한 경우에 **Freezed**의 "deep copy"를 사용할 수 있다.
+
+Freezed 모델에 Freezed 모델인 속성이 포함되어 있는 경우 코드 생성기는 아래와 같은 대체 구문을 제공한다.
+
+```dart
+Company company;
+
+Company newCompany = company.copyWith.director.assistant(name: 'John Smith');
+```
+
+위 코드는 처음에 보았던 코드와 동일하게 동작(`company`내의 assistant `name` 수정)하지만 이제 중복되는 코드를 작성할 필요가 없다.
+
+이 구문을 활용하면 만약, 감독의 이름을 변경하고 싶을 때에도 아래와 같이 사용할 수 있다.
+
+```dart
+Company company;
+Company newCompany = company.copyWith.director(name: 'John Doe');
+```
+
+처음 정의한 `Company` / `Director` / `Assistant` 정의에 따라 아래와 같은 모든 "복사" 구문이 동작한다.
+
+```dart
+Company company;
+
+company = company.copyWith(name: 'Google', director: Director(...));
+company = company.copyWith.director(name: 'Larry', assistant: Assistant(...));
+```
+
+/// 이어서 작성
 
 ### Generator 실행
 
