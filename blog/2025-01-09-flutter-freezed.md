@@ -288,6 +288,220 @@ company = company.copyWith(name: 'Google', director: Director(...));
 company = company.copyWith.director(name: 'Larry', assistant: Assistant(...));
 ```
 
+### Null 타입 고려
+
+일부 객체는 `null`이 될 수 있다. 예를 들어, `Company` 클래스를 사용할 때, `Director`의 `assistant`를 `null`로 설정할 수 있다.
+
+아래 코드를 보자
+
+```dart
+Company company = Company(name: 'Google', director: Director(assistant: null));
+Company newCompany = company.copyWith.director.assistant(name: 'John');
+```
+
+`assistant`가 없는데 assistant의 `name`을 수정하려 하므로 오류가 발생할 것을 쉽게 예측할 수 있다.
+
+위 상황과 같이, `company.copyWith.director.assistant`는 `null`을 반환할 것이다. 따라서 우리의 코드는 컴파일에 실패한다.
+
+이를 고치기 위해서 `?.call` 연산자를 사용할 수 있다.
+
+```dart
+Company? newCompany = company.copyWith.director.assistant?.call(name: 'John');
+```
+
+### 모델에 Getter와 Method 추가하기
+
+때로는 클래스에 수동으로 method/property를 추가해야할때가 있다.
+
+하지만 다음 코드를 실행해보면 오류가 발생한다.
+
+```dart
+@freezed
+class Person with _$Person {
+  const factory Person(String name, {int? age}) = _Person;
+
+  void method() {
+    print('hello world');
+  }
+}
+```
+
+컴파일 실패와 함께 다음과 같은 에러 내용이 표시될 것이다. `The non-abstract class _$_Person is missing implementations for these members:`
+
+이를 수정하기 위해서는 빈 Private 생성자를 정의해야 한다. 그러면 생성된 코드가 클래스를 구현하는 대신 클래스를 확장/서브클래싱 할 수 있도록 한다.
+
+```dart
+@freezed
+class Person with _$Person {
+  // Added constructor. Must not have any parameter
+  const Person._();
+
+  const factory Person(String name, {int? age}) = _Person;
+
+  void method() {
+    print('hello world');
+  }
+}
+```
+
+### Asserts
+
+Dart는 `factory` 생성자에 `assert(...)` 명령문을 추가하는 것을 허용하지 않는다. 따라서 Freezed 클래스에 assert를 추가하려면 `@Assert` 데코레이터가 필요하다.
+
+```dart
+class Person with _$Person {
+  @Assert('name.isNotEmpty', 'name cannot be empty')
+  @Assert('age >= 0')
+  factory Person({
+    String? name,
+    int? age,
+  }) = _Person;
+}
+```
+
+### Default
+
+assert와 마찬가지로 Dart는 "팩토리 생성자 재접근(redirecting factory constructors)"을 통해 기본값을 지정하는 것을 허용하지 않는다. 따라서 속성에 대한 기본값을 지정하려면 다음과 같이 `@Default` 주석이 필요하다.
+
+```dart
+class Example with _$Example {
+  const factory Example([@Default(42) int value]) = _Example;
+}
+```
+
+> 참고: 직렬화/역직렬화를 사용하는 경우에는 `@JsonKey(defaultValue: <something>)`가 자동으로 추가된다.
+
+### 데코레이터와 주석
+
+Freezed는 각각의 매개변수와 생성자 정의를 데코레이팅/문서화하여 속성 및 클래스 수준 데코레이터/문서화를 지원한다.
+
+아래의 예시를 보자
+
+```dart
+@freezed
+class Person with _$Person {
+  const factory Person({
+    String? name,
+    int? age,
+    Gender? gender,
+  }) = _Person;
+}
+```
+
+위 코드를 문서화 하려면 다음과 같이 적용하자
+
+```dart
+@freezed
+class Person with _$Person {
+  const factory Person({
+    /// The name of the user.
+    ///
+    /// Must not be null
+    String? name,
+    int? age,
+    Gender? gender,
+  }) = _Person;
+}
+```
+
+`gender` 속성을 `@deprecated`로 표시하려면 아래와 같이 작성한다.
+
+```dart
+@freezed
+class Person with _$Person {
+  const factory Person({
+    String? name,
+    int? age,
+    @deprecated Gender? gender,
+  }) = _Person;
+}
+```
+
+위와 같이 작성하면 아래의 모든 경우에 반영된다.
+
+- 생성자
+
+  ```dart
+  Person(gender: Gender.something); // gender is deprecated
+  ```
+
+- 생성자 생성
+
+  ```dart
+  _Person(gender: Gender.something); // gender is deprecated
+  ```
+
+- 속성
+
+  ```dart
+  Person person;
+  print(person.gender); // gender is deprecated
+  ```
+
+- `copyWith` 매개변수
+  ```dart
+  Person person;
+  person.copyWith(gender: Gender.something); // gender is deprecated
+  ```
+
+위와 유사하게, 생성된 클래스에 적용하려면 정의하는 팩토리 생성자를 데코레이트할 수 있다.
+
+`_Person`을 더이상 사용하지 않으려면 아래와 같이 작성한다.
+
+```dart
+@freezed
+class Person with _$Person {
+  @deprecated
+  const factory Person({
+    String? name,
+    int? age,
+    Gender? gender,
+  }) = _Person;
+}
+```
+
+### Union 유형에 대한 개별 클래스의 Mixin 및 인터페이스
+
+같은 클래스에 여러 유형이 있는 경우 해당 유형 중 하나가 인터페이스를 구현하거나 클래스를 믹스인하도록 설정할 수 있다. 각각 `@Implements` 또는 `@With` 데코레이터를 사용하여 적용할 수 있다. 아래의 예시에서는 `GeographicArea`로 `City`를 구현한다.
+
+```dart
+abstract class GeographicArea {
+  int get population;
+  String get name;
+}
+
+@freezed
+sealed class Example with _$Example {
+  const factory Example.person(String name, int age) = Person;
+
+  @Implements<GeographicArea>()
+  const factory Example.city(String name, int population) = City;
+}
+```
+
+이는 클래스에 일반 유형 매개변수(예: `AdministrativeArea<T>`)가 있는 경우를 제외하고는 일반 클래스를 구현하거나 혼합할 때도 작동합니다(예: `AdministrativeArea<House>`). 이 경우 고정하면 올바른 코드가 생성되지만 컴파일할 때 주석 선언에 로드 오류가 발생합니다. 이를 방지하려면 다음과 같이 `@Implements.fromString` 및 `@With.fromString` 데코레이터를 사용해야 합니다.
+
+```dart
+abstract class GeographicArea {}
+abstract class House {}
+abstract class Shop {}
+abstract class AdministrativeArea<T> {}
+
+@freezed
+sealed class Example<T> with _$Example<T> {
+  const factory Example.person(String name, int age) = Person<T>;
+
+  @With.fromString('AdministrativeArea<T>')
+  const factory Example.street(String name) = Street<T>;
+
+  @With<House>()
+  @Implements<Shop>()
+  @Implements<GeographicArea>()
+  @Implements.fromString('AdministrativeArea<T>')
+  const factory Example.city(String name, int population) = City<T>;
+}
+```
+
 /// 이어서 작성
 
 ### Generator 실행
