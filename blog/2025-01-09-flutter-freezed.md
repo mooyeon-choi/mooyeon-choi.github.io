@@ -479,7 +479,7 @@ sealed class Example with _$Example {
 }
 ```
 
-이는 클래스에 일반 유형 매개변수(예: `AdministrativeArea<T>`)가 있는 경우를 제외하고는 일반 클래스를 구현하거나 혼합할 때도 작동합니다(예: `AdministrativeArea<House>`). 이 경우 고정하면 올바른 코드가 생성되지만 컴파일할 때 주석 선언에 로드 오류가 발생합니다. 이를 방지하려면 다음과 같이 `@Implements.fromString` 및 `@With.fromString` 데코레이터를 사용해야 합니다.
+이는 클래스에 일반 유형 매개변수(예: `AdministrativeArea<T>`)가 있는 경우를 제외하고는 일반 클래스를 구현하거나 혼합할 때도 작동한다(예: `AdministrativeArea<House>`). 이 경우 고정하면 올바른 코드가 생성되지만 컴파일할 때 주석 선언에 로드 오류가 발생한다. 이를 방지하려면 다음과 같이 `@Implements.fromString` 및 `@With.fromString` 데코레이터를 사용해야 한다.
 
 ```dart
 abstract class GeographicArea {}
@@ -502,7 +502,206 @@ sealed class Example<T> with _$Example<T> {
 }
 ```
 
-/// 이어서 작성
+> 참고 1: 모든 추상 멤버를 구현하여 인터페이스 요구 사항을 준수하는지 확인해야 한다. 인터페이스에 멤버가 없거나 필드만 있는 경우 유니온 타입의 생성자에 추가하여 인터페이스 계약을 이행할 수 있다. 인터페이스가 클래스에서 구현하는 메서드 또는 **getter**를 정의하는 경우 모델에 getter 및 메서드 추가하기 지침을 참고해야 하는 점에 유의하자.
+
+> 참고 2: freezed 클래스에는 `@With` / `@Implements`를 사용할 수 없다. Freezed 클래스는 확장할 수 없다.
+
+### FromJson / ToJson
+
+Freezed 는 `fromJson` / `toJson` 을 기본적으로 생성해주지 않지만, `json_serializable`을 활용한다면 이를 적용할 수 있다.
+
+아래의 코드를 보자.
+
+```dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'model.freezed.dart';
+
+@freezed
+sealed class Model with _$Model {
+  factory Model.first(String a) = First;
+  factory Model.second(int b, bool c) = Second;
+}
+```
+
+위 코드에 `fromJson` / `toJson` 을 추가하려면 아래의 두 줄을 추가해줘야한다.
+
+- `part` 추가: `part 'model.g.dart'`
+- 목표 클래스에 생성자 추가: `factory Model.fromJson(Map<String, dynamic> json) => _$ModelFromJson(json);`
+
+적용된 결과는 아래와 같다.
+
+```dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'model.freezed.dart';
+part 'model.g.dart';
+
+@freezed
+sealed class Model with _$Model {
+  factory Model.first(String a) = First;
+  factory Model.second(int b, bool c) = Second;
+
+  factory Model.fromJson(Map<String, dynamic> json) => _$ModelFromJson(json);
+}
+```
+
+:::warning 주의
+
+- `pubspec.yaml`에 `json_serializable`을 추가하는 것을 잊지말자!
+
+```yaml
+dev_dependencies:
+  json_serializable:
+```
+
+- Freezed는 **factory**에 `=>`를 사용하는 경우에만 코드를 생성해준다.
+
+:::
+
+### fromJSON - 여러 생성자가 있는 경우
+
+여러 생성자가 있는 클래스의 경우 **Freezed**는 런타임 유형이라는 문자열 요소에 대한 JSON 응답을 확인하고 그 값에 따라 사용할 생성자를 선택한다.
+
+아래의 예시를 보자
+
+```dart
+@freezed
+sealed class MyResponse with _$MyResponse {
+  const factory MyResponse(String a) = MyResponseData;
+  const factory MyResponse.special(String a, int b) = MyResponseSpecial;
+  const factory MyResponse.error(String message) = MyResponseError;
+
+  factory MyResponse.fromJson(Map<String, dynamic> json) => _$MyResponseFromJson(json);
+}
+```
+
+Freezed는 다음과 같이 각 JSON 객체의 런타임 유형을 사용하여 생성자를 선택한다.
+
+```json
+[
+  {
+    "runtimeType": "default",
+    "a": "This JSON object will use constructor MyResponse()"
+  },
+  {
+    "runtimeType": "special",
+    "a": "This JSON object will use constructor MyResponse.special()",
+    "b": 42
+  },
+  {
+    "runtimeType": "error",
+    "message": "This JSON object will use constructor MyResponse.error()"
+  }
+]
+```
+
+`@Freezed`와 `@FreezedUnionValue`를 활용하면 key와 value를 다른 값으로 변경할 수도 있다.
+
+```dart
+@Freezed(unionKey: 'type', unionValueCase: FreezedUnionCase.pascal)
+sealed class MyResponse with _$MyResponse {
+  const factory MyResponse(String a) = MyResponseData;
+
+  @FreezedUnionValue('SpecialCase')
+  const factory MyResponse.special(String a, int b) = MyResponseSpecial;
+
+  const factory MyResponse.error(String message) = MyResponseError;
+
+  // ...
+}
+```
+
+위와 같이 작성하면 JSON 데이터는 아래와 같이 변경된다.
+
+```json
+[
+  {
+    "type": "Default",
+    "a": "This JSON object will use constructor MyResponse()"
+  },
+  {
+    "type": "SpecialCase",
+    "a": "This JSON object will use constructor MyResponse.special()",
+    "b": 42
+  },
+  {
+    "type": "Error",
+    "message": "This JSON object will use constructor MyResponse.error()"
+  }
+]
+```
+
+key와 value를 커스터마이징 하기위해서는 `build.yaml` 파일을 다음과 같이 변경해주어야한다.
+
+```yaml
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          union_key: type
+          union_value_case: pascal
+```
+
+JSON 응답을 제어하지 않는 경우 사용자 정의 변환기를 구현할 수 있다. 사용자 정의 변환기는 사용할 생성자를 결정하기 위한 자체 로직을 추가로 구현해야한다.
+
+```dart
+class MyResponseConverter implements JsonConverter<MyResponse, Map<String, dynamic>> {
+  const MyResponseConverter();
+
+  @override
+  MyResponse fromJson(Map<String, dynamic> json) {
+    // type data was already set (e.g. because we serialized it ourselves)
+    if (json['runtimeType'] != null) {
+      return MyResponse.fromJson(json);
+    }
+    // you need to find some condition to know which type it is. e.g. check the presence of some field in the json
+    if (isTypeData) {
+      return MyResponseData.fromJson(json);
+    } else if (isTypeSpecial) {
+      return MyResponseSpecial.fromJson(json);
+    } else if (isTypeError) {
+      return MyResponseError.fromJson(json);
+    } else {
+      throw Exception('Could not determine the constructor for mapping from JSON');
+    }
+ }
+
+  @override
+  Map<String, dynamic> toJson(MyResponse data) => data.toJson();
+}
+```
+
+이를 적용하려면 데코레이터 생성자 매개변수에 아래와 같이 전달해야 한다.
+
+```dart
+@freezed
+class MyModel with _$MyModel {
+  const factory MyModel(@MyResponseConverter() MyResponse myResponse) = MyModelData;
+
+  factory MyModel.fromJson(Map<String, dynamic> json) => _$MyModelFromJson(json);
+}
+```
+
+이렇게 하면, json 직렬화/역직렬화에 `MyResponseConverter.fromJson()`과 `MyResponseConverter.toJson()`를 사용한다.
+
+아래와 같이 생성자 매개변수에 `List`를 추가하도록 커스텀 변환기를 설정할 수 있다.
+
+```dart
+@freezed
+class MyModel with _$MyModel {
+  const factory MyModel(@MyResponseConverter() List<MyResponse> myResponse) = MyModelData;
+
+  factory MyModel.fromJson(Map<String, dynamic> json) => _$MyModelFromJson(json);
+}
+```
+
+> freezed 객체의 중첩 리스트를 직렬화하려면 `@JsonSerializable(explicitToJson: true)`를 추가하거나, `build.yaml` 파일에 `explicit_to_json`을 추가한다.
+
+### 일반 클래스의 역직렬화
+
+/// 내용 추가
 
 ### Generator 실행
 
