@@ -82,3 +82,13 @@ class MyApp extends StatelessWidget {
 하지만 이렇게 상태와 문맥정보를 계속 상속해서 사용하면 위젯 트리의 깊이는 계속해서 깊어질 수 밖에 없다.
 
 따라서 Flutter에서는 상태를 분리하여 관리할 수 있도록 **MVVM 패턴**을 활용할 것을 권장하고 있다.
+
+[Flutter Docs: Guide to app architecture](https://docs.flutter.dev/app-architecture/guide)
+
+![mvvm intro with layers](./images/2025-02-07-frontend-application-design/mvvm-intro-with-layers.png)
+
+간단하게 살펴보자면 우선 위와 같이 애플리케이션을 UI 계층과 데이터 계층으로 구분한다. 이 후 **View**, **ViewModel**을 통해 UI 계층을 구성하고 **Repository**와 **Service**로 Data 계층의 **Model**를 구성한다.
+
+![feature architecture simplified](./images/2025-02-07-frontend-application-design/feature-architecture-simplified.png)
+
+**ViewModel**은 UI의 상태를 관리하고 **View**는 해당 상태를 표시한다.
