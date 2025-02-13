@@ -664,6 +664,7 @@ final GoRouter onGenerateCustomRoute = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) =>
+          /// 사용시 에러 발생 !!
           const AuthenticatedView(
         child: CustomScreen(),
       ),
@@ -672,4 +673,58 @@ final GoRouter onGenerateCustomRoute = GoRouter(
 
 일반적으로 **Flutter Navigator 2.0**을 통해서 개발하는 환경이라면 **GoRouter**를 적용해서 사용하고 있을 것이다. 위 예시는 **GoRouter**설정 파일의 예시로 기본 **Router** 설정 방법도 크게 다르지 않다.
 
-`AuthenticatedView` 위젯을 활용하여 화면을 감싸주면 해당 위젯에 접근할 때, Authentication 정보를 확인한다. 인증 세션을 확인하여 인증된 사용자일 경우 `AuthState`에 해당 인증정보를 담아두는데 해당 `state`가 `null`인지 확인하는 로직을 거친다.
+~~`AuthenticatedView` 위젯을 활용하여 화면을 감싸주면 해당 위젯에 접근할 때, Authentication 정보를 확인한다. 인증 세션을 확인하여 인증된 사용자일 경우 `AuthState`에 해당 인증정보를 담아두는데 해당 `state`가 `null`인지 확인하는 로직을 거친다.~~
+
+위 코드를 확인해보니 로그아웃을 할 때, `ScaffoldMessenger`의 `key` 값에서 에러가 발생하는 것을 확인하였다(2025년 2월 12일 수요일 기준). `ScaffoldMessenger`의 `key` 값을 `Authenticator` 클래스가 생성될 때 `GlobalKey`로 생성해주는데 이때 생성한 키값을 모든 위젯에 동일하게 할당하여 `GoRouter`의 구조와 겹쳐 에러가 발생한다.
+
+> `GoRouter`에서는 설정해준 Router Widget의 부모요소들을 Stack 메모리 공간에 모두 생성한다.
+
+[Pub.dev의 amplify_auth_cognito 예시](https://pub.dev/packages/amplify_auth_cognito/example)를 확인해보면 아래와 같이 작성하도록 권장하고 있다. ~~이외의 다른 문서는 찾지 못함(2025년 2월 13일 목요일 기준)~~
+
+```dart
+/// ...
+@override
+  Widget build(BuildContext context) {
+    return Authenticator(
+      preferPrivateSession: true,
+      child: MaterialApp.router(
+        title: 'Flutter Demo',
+        builder: Authenticator.builder(),
+        theme: ThemeData.light(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
+        routeInformationParser: _router.routeInformationParser,
+        routerDelegate: _router.routerDelegate,
+        debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+///...
+```
+
+하지만 위 코드에도 문제가 있는데 위 코드로 애플리케이션을 실행하면 `'package:go_router/src/parser.dart': Failed assertion: line 63 pos 12: 'routeInformation.state != null': is not true.` 에러가 발생한다.
+
+따라서
+
+```dart
+/// ...
+@override
+  Widget build(BuildContext context) {
+    return Authenticator(
+      preferPrivateSession: true,
+      child: MaterialApp.router(
+        title: 'Flutter Demo',
+        builder: Authenticator.builder(),
+        theme: ThemeData.light(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
+        /// routeInformationParser: _router.routeInformationParser,
+        /// routerDelegate: _router.routerDelegate,
+        /// ->
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+///...
+```
+
+와 같이 작성해주어야한다.
