@@ -6,18 +6,17 @@ sidebar_position: 4
 
 ## 목차
 
-* [참고하면 좋은 자료들](#참고하면-좋은-자료들)
-* [Heading](#heading)
-* [Paragraph](#paragraph)
-* [Line](#line)
-* [Text attributes](#text-attributes)
-* [Quote](#quote)
-* [Bullet list](#bullet-list)
-* [Numbered list](#numbered-list)
-* [Link](#link)
-* [Image](#image)
-* [Table](#table)
-* [Code](#code)
+- [참고하면 좋은 자료들](#참고하면-좋은-자료들)
+- [Heading](#heading)S
+- [Line](#line)
+- [Text attributes](#text-attributes)
+- [Quote](#quote)
+- [Bullet list](#bullet-list)
+- [Numbered list](#numbered-list)
+- [Link](#link)
+- [Image](#image)
+- [Table](#table)
+- [Code](#code)
 
 ## 참고하면 좋은 자료들
 
@@ -50,13 +49,16 @@ ctrl + F 로 간단하게 사용하고 싶은 Emoji를 찾아 복사해서 쓰�
 ```
 
 # Heading 1
+
 ## Heading 2
+
 ### Heading 3
+
 #### Heading 4
+
 ##### Heading 5
+
 ###### Heading 6
-
-
 
 ## Line
 
@@ -67,7 +69,7 @@ ___ (언더바를 세번 입력해준다.)
 
 paragraph
 
-___
+---
 
 ## Text attributes
 
@@ -75,7 +77,7 @@ ___
 This is the **bold** text and this is the *italic* text and let's do ~~strikethrough~~.
 ```
 
-This is the **bold** text and this is the *italic* text and let's do ~~strikethrough~~.
+This is the **bold** text and this is the _italic_ text and let's do ~~strikethrough~~.
 
 ## Quote
 
@@ -97,10 +99,12 @@ Other fruits:
 ```
 
 Fruits:
-* 🍎
-* 🍋
+
+- 🍎
+- 🍋
 
 Other fruits:
+
 - 🍑
 - 🍏
 
@@ -114,6 +118,7 @@ Numbers:
 ```
 
 Numbers:
+
 1. first
 2. second
 3. third
@@ -148,24 +153,25 @@ Numbers:
 |cell1|cell2|cell3|
 |cell1|cell2|cell3|
 ```
-|Header|Description1|Description2|
-|--:|:--|:--:|
-|cell1|cell2|cell3|
-|cell1|cell2|cell3|
+
+| Header | Description1 | Description2 |
+| -----: | :----------- | :----------: |
+|  cell1 | cell2        |    cell3     |
+|  cell1 | cell2        |    cell3     |
 
 ## Code
 
-```
+````
 # `(백틱) 키
 To pring message in the console, use `console.log('your message')` and ..
 
 ​```ts
 console.log('your message')
 ​```
-```
+````
 
 To pring message in the console, use `console.log('your message')` and ..
 
 ```ts
-console.log('your message')
+console.log("your message");
 ```
