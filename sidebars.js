@@ -30,6 +30,27 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Languages',
+      items: [
+        {
+          type: 'category',
+          label: 'JavaScript',
+          items: [
+            'languages/javaScript/javascriptBasic',
+            'languages/javaScript/dataType',
+          ]
+        },
+        {
+          type: 'category',
+          label: 'TypeScript',
+          items: [
+            'languages/typeScript/tsIn5min',
+          ]
+        }
+      ]
+    },
+    {
+      type: 'category',
       label: 'Web',
       link: {type: 'doc', id: 'web/intro'},
       items: [
@@ -39,14 +60,13 @@ const sidebars = {
           items: [
             'web/basic/html',
             'web/basic/css',
-            'web/basic/javascript'
           ]
         },
         {
           type: 'category',
           label: 'Frontend',
           items: [
-            'web/frontend/angular_vs_react_vs_vue',
+            'web/frontend/angularVsReactVsVue',
             {
               type: 'category',
               label: 'Vanilla JS',
@@ -59,14 +79,66 @@ const sidebars = {
             },
             {
               type: 'category',
-              label: 'TypeScript',
+              label: 'React',
               items: [
-                'web/frontend/typeScript/tsIn5min'
+                'web/frontend/react/gettingStarted',
+                'web/frontend/react/reactBasic',
+                'web/frontend/react/pureComponent',
+              ]
+            },
+            {
+              type: 'category',
+              label: 'Vue',
+              items: [
+                'web/frontend/vue/gettingStarted',
+                'web/frontend/vue/vueBasic',
               ]
             },
           ]
         },
       ],
+    },
+    {
+      type: 'category',
+      label: 'App',
+      items: [
+        {
+          type: 'category',
+          label: 'Flutter',
+          items: [
+            {
+              type: 'category',
+              label: 'Testing',
+              link: {type: 'doc', id: 'app/flutter/testing/intro'},
+              items: [
+                'app/flutter/testing/howToStartFlutterTest',
+                'app/flutter/testing/appBuild',
+                'app/flutter/testing/providerUnitTest',
+                'app/flutter/testing/widgetTest',
+              ]
+            }, {
+              type: 'category',
+              label: 'Bloc',
+              link: {type: 'doc', id: 'app/flutter/bloc/intro'},
+              items: [
+                'app/flutter/bloc/howToStartBlocWithFlutter',
+                'app/flutter/bloc/coreConceptsPackageBloc',
+                'app/flutter/bloc/coreConceptsPackageFlutterBloc',
+              ]
+            },{
+              type: 'category',
+              label: 'Package',
+              link: {type: 'doc', id: 'app/flutter/package/intro'},
+              items: [
+                'app/flutter/package/flutterPackageEnvironments',
+                'app/flutter/package/howToDevelopPackage',
+                'app/flutter/package/packageVersioning',
+              ]
+            },
+            'app/flutter/navigator/intro',
+          ]
+        },
+      ]
     }
   ],
 };
