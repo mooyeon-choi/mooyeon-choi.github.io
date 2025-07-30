@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer').themes.github;
+const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -73,6 +73,16 @@ const config = {
           {to: '/blog', label: '기록', position: 'left'},
           {to: 'showcase', label: 'Showcase', position: 'left'},
           {
+            href: 'https://evanescent-table-194.notion.site/Frontend-0866085aac3c4c619efbd9ab1d940329',
+            label: 'Resume',
+            position: 'right',
+          },
+          {
+            href: 'https://open.kakao.com/o/sEenYDXg',
+            label: 'CoffeeChat',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/mooyeon-choi',
             label: 'GitHub',
             position: 'right',
@@ -82,8 +92,14 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['dart'],
       },
     }),
+
+  scripts: [
+    'https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js',
+  ],
 };
 
 module.exports = config;
