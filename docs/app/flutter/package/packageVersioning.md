@@ -80,7 +80,7 @@ dependencies:
   collection: ^2.3.5
 ```
 
-:::memo
+:::note
 
 이 예에서는 캐럿 구문을 사용하여 다양한 버전을 표현한다. `^2.3.5` 문자열은 "`3.0.0`을 제외한 `2.3.5`에서 `3.0.0`까지의 모든 버전 범위"를 의미한다. 자세한 내용은 [캐럿 구문](https://dart.dev/tools/pub/dependencies#caret-syntax)을 참고하자.
 
