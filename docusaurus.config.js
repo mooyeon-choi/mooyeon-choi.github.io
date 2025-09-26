@@ -73,7 +73,7 @@ const config = {
           {to: '/blog', label: '기록', position: 'left'},
           {to: 'showcase', label: 'Showcase', position: 'left'},
           {
-            href: 'https://evanescent-table-194.notion.site/Frontend-0866085aac3c4c619efbd9ab1d940329',
+            href: 'https://www.canva.com/design/DAGz-nqnzUs/hqoQlPIJGeUcR_Zt0MYSRA/view?utm_content=DAGz-nqnzUs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h675136036a',
             label: 'Resume',
             position: 'right',
           },
