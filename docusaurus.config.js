@@ -78,6 +78,11 @@ const config = {
             position: 'right',
           },
           {
+            href: 'https://www.canva.com/design/DAG0FtTtc7Q/5bxilRwjMyASzdWmJYeuIA/watch?utm_content=DAG0FtTtc7Q&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he3cc71b0d4',
+            label: 'Portfolio',
+            position: 'right',
+          },
+          {
             href: 'https://open.kakao.com/o/sEenYDXg',
             label: 'CoffeeChat',
             position: 'right',
