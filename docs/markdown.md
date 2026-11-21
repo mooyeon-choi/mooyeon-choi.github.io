@@ -33,9 +33,9 @@ ctrl + F 로 간단하게 사용하고 싶은 Emoji를 찾아 복사해서 쓰�
 
 뿐만 아니라 아래와 같이 내 프로젝트 Repository의 URL을 입력하면 자동으로 추천 Badge들을 생성해주어 쉽게 만들어줄 수 있다
 
-<img src="./images/shieldsio_recommend1.PNG" width="600px"/>
+![Shields.io 배지 추천 화면](./images/shieldsio_recommend1.PNG)
 
-<img src="./images/shieldsio_recommend2.PNG" width="600px"/>
+![저장소별 배지 예시](./images/shieldsio_recommend2.PNG)
 
 ## Heading
 

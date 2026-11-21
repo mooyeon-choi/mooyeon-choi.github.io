@@ -14,14 +14,19 @@ Amazon Cognito는 웹 및 모바일 앱에 대한 사용자 인증 및 승인을
 
 미국, 수술실이라는 특수한 환경에서 사용하는 애플리케이션을 개발하면서 사용자 요청을 최소화하기 위해 ML model 적용, 제스쳐 동작 등 다양한 시도를 하였다. 이번에는 사용자 인증과 관련하여 어떻게 하면 불필요한 과정을 줄이고 보다 안전하게 적용할 수 있을지 고민하며 Amazon Coginto를 적용한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [User pool](#user-pool)
 2. [Identity pool](#identity-pool)
 3. [Cognito Sync](#cognito-sync)
 4. [Flutter에 적용하기](#flutter에-적용하기)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -41,13 +46,18 @@ Amazon Cognito user pool은 다음과 같은 특징을 가지고 있다.
 
 Amazon Cognito 사용자 풀에는 사용자 프로필을 사용자 풀에 추가하는 사용자 중심, 관리자 중심 및 프로그래밍 방식이 있다. Amazon Cognito 사용자 풀은 다음 가입 모델을 지원한다. 앱에서 아래 모델의 모든 조합을 사용할 수 있다.
 
-:::warning 중요
+<aside class="callout warning">
+
+<strong>중요</strong>
+
 
 사용자 풀에서 사용자 가입을 활성화 하면 인터넷에 있는 모든 사람이 계정에 가입하고 앱에 로그인할 수 있다. 앱을 공개적으로 개방하려는 경우가 아니면 사용자 풀에서 셀프 등록을 비활성화 해야한다. 이 설정을 변경하려면 사용자 풀 콘솔의 **Authentication** 아래 **Sign-up** 메뉴에서 **Self-service sign-up** 설정을 변경하거나 `CreateUserPool` 또는 `UpdateUserPool` API 요청에서 `AllowAdmiCreateUserOnly` 값을 수정해야 한다.
 
 사용자 풀에 설정할 수 있는 보안 기능에 대한 자세한 내용은 [Amazon Cognito 사용자 풀 보안 기능 사용](https://docs.aws.amazon.com/cognito/latest/developerguide/managing-security.html)을 참고하자.
 
-:::
+
+</aside>
+
 
 1. 사용자는 앱에 정보를 입력하고 사용자 풀에 고유한 사용자 프로필을 만들 수 있다. API 가입 작업을 호출하여 사용자 풀에 사용자를 등록할 수 있다. 이러한 가입 작업을 누구에게나 공개하거나 **Client secret** 또는 **AWS credentials**로 권한을 부여할 수 있다.
 

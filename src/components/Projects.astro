@@ -1,0 +1,138 @@
+---
+import {
+  works,
+  experiments,
+  experimentId,
+  technologies,
+} from '../lib/projects';
+const featured = Object.entries(works).map(([id, w]) => ({
+  id,
+  title: w.name,
+  image: w.image,
+  kind: w.kind,
+  terms: w.terms,
+  tags: technologies[id],
+}));
+const older = experiments.map((p) => ({
+  id: experimentId(p.title),
+  title: p.title,
+  image: p.preview,
+  kind: p.description,
+  terms: p.title,
+  tags: p.tags,
+}));
+const allTags = [...new Set([...featured, ...older].flatMap((p) => p.tags))];
+const groups = [
+  { title: '대표 프로젝트', items: featured },
+  { title: '이전 프로젝트', items: older },
+];
+---
+
+<div class="hero"><h1>프로젝트</h1></div>
+<form class="project-search" role="search">
+  <label class="search"
+    >프로젝트 찾기<input
+      name="name"
+      type="search"
+      placeholder="이름 또는 기술"
+    /></label
+  >
+  <details>
+    <summary>기술로 찾기</summary><div class="tag-links">
+      {
+        allTags.map((tag) => (
+          <label>
+            <input type="checkbox" name="tags" value={tag} /> {tag}
+          </label>
+        ))
+      }
+      <label
+        ><input type="checkbox" name="operator" value="AND" /> 선택한 기술 모두 포함</label>
+    </div>
+  </details>
+</form>
+{
+  groups.map(({ items, title }) => (
+    <section class="project-group">
+      <>
+        <h2>{title}</h2>
+        <div class="works">
+          {items.map((p) => (
+            <a
+              class="project"
+              href={'/projects/' + p.id}
+              data-search={[p.title, p.terms, p.kind, ...p.tags]
+                .join(' ')
+                .toLowerCase()}
+              data-tags={p.tags.join(' ')}
+            >
+              <img class="cover" src={p.image} alt="" loading="lazy" />
+              <strong>{p.title}</strong>
+              <span class="small">{p.kind}</span>
+            </a>
+          ))}
+        </div>
+      </>
+    </section>
+  ))
+}
+<p id="no-projects" hidden>검색 결과가 없습니다.</p>
+<script>
+  const form = document.querySelector<HTMLFormElement>('.project-search')!;
+  const input = form.querySelector<HTMLInputElement>('[type=search]')!;
+  const options = [
+    ...form.querySelectorAll<HTMLInputElement>('[type=checkbox]'),
+  ];
+  function filter(update: boolean) {
+    const data = new FormData(form),
+      tags = data.getAll('tags').map(String),
+      query = input.value.trim().toLowerCase();
+    let count = 0;
+    for (const group of document.querySelectorAll<HTMLElement>(
+      '.project-group',
+    )) {
+      let visible = 0;
+      for (const item of group.querySelectorAll<HTMLElement>('.project')) {
+        const matches = tags.filter((t) =>
+          item.dataset.tags!.split(' ').includes(t),
+        ).length;
+        item.hidden =
+          !item.dataset.search!.includes(query) ||
+          (data.has('operator')
+            ? matches !== tags.length
+            : tags.length > 0 && !matches);
+        if (!item.hidden) visible++;
+      }
+      group.hidden = !visible;
+      count += visible;
+    }
+    document.getElementById('no-projects')!.hidden = !!count;
+    if (update) {
+      const params = new URLSearchParams();
+      data.forEach((value, key) => params.append(key, String(value)));
+      if (!query) params.delete('name');
+      history.replaceState(
+        null,
+        '',
+        location.pathname + (params.size ? '?' + params : ''),
+      );
+    }
+  }
+  function restore() {
+    const params = new URLSearchParams(location.search);
+    input.value = params.get('name') || '';
+    options.forEach(
+      (o) => (o.checked = params.getAll(o.name).includes(o.value)),
+    );
+    if (options.some((o) => o.checked))
+      form.querySelector('details')!.open = true;
+    filter(false);
+  }
+  restore();
+  form.addEventListener('input', () => filter(true));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    filter(true);
+  });
+  window.addEventListener('popstate', restore);
+</script>

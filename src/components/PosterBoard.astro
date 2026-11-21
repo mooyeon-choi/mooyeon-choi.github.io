@@ -1,0 +1,89 @@
+---
+import { games, works } from '../lib/projects';
+const labels = {
+  meari: '웹 오락실',
+  mirinae: '3D 별자리 관측소',
+  saegim: '모션 그래픽 편집기',
+  wootpun: '웹·모바일 리더',
+};
+---
+
+<div
+  class="atlas"
+  id="ms-atlas"
+  role="group"
+  aria-label="대표 프로젝트"
+  data-active="meari"
+>
+  <div
+    class="zone arcade-zone active"
+    data-work="meari"
+    role="group"
+    aria-label="메아리 웹 오락실"
+  >
+    <span class="cell-copy"
+      ><span class="cell-type">웹 오락실</span><strong
+        >메아리 <i aria-hidden="true">↗</i></strong
+      ></span
+    >
+    <div class="arcade-slots">
+      {
+        Object.entries(games).map(([id, game]) => (
+          <a
+            class="game-slot"
+            data-game={id}
+            data-image={game.thumbnail}
+            data-title={game.shortTitle}
+            data-shot={game.shot}
+            aria-label={game.title + ' · ' + game.shot}
+            href={'/projects/meari/' + id}
+          />
+        ))
+      }
+    </div>
+  </div>
+  {
+    Object.entries(works)
+      .filter(([id]) => id !== 'meari')
+      .map(([id, work]) => (
+        <a class="zone" data-work={id} href={'/projects/' + id}>
+          <span class="cell-copy">
+            <>
+              <span class="cell-type">{labels[id]}</span>
+              <strong>
+                {work.name} <i aria-hidden="true">↗</i>
+              </strong>
+            </>
+          </span>
+        </a>
+      ))
+  }
+  <a
+    class="print-mount"
+    id="ms-preview-link"
+    href="/projects/meari"
+    aria-label="메아리 상세 보기"
+  >
+    <div class="print" id="ms-print" aria-hidden="true">
+      {
+        Object.keys(works).map((id) => (
+          <img
+            data-face={id}
+            src={'/img/posters/' + id + '.webp'}
+            width="800"
+            height="545"
+            alt=""
+            class:list={[{ visible: id === 'meari' }]}
+          />
+        ))
+      }
+      <div class="game-print" hidden>
+        <img class="game-frame" alt="" /><div class="print-credit">
+          <b></b><span></span>
+        </div>
+      </div>
+      <span class="varnish"></span>
+    </div>
+  </a>
+</div>
+<script src="../lib/board.ts"></script>

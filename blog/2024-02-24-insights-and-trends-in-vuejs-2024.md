@@ -16,13 +16,18 @@ date: 2024-02-24T20:25
 
 이 글에서는 Vite 5가 뷰에 미치는 영향, 매크로, vapor mode, 널리 알려진 오해들, **새로운 특징 또는 기능**, 향후 버전의 option API 지원 여부, VitePress 등에 대한 일반적인 인사이트를 살펴보겠습니다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. Evan You와 함께하는 Q&A 세션
 2. 결론
 3. 도움 될만한 링크
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -32,17 +37,27 @@ date: 2024-02-24T20:25
 
 Vite 내에서 성능 향상을 위해 수행되는 대부분의 작업은 Vite 자체에 한정되어 있습니다. 하지만 Vite를 사용하는 누구든 같은 혜택을 누릴 수 있습니다.
 
-:::info 추가로,
+<aside class="callout info">
+
+<strong>추가로,</strong>
+
 중요한 세부 사항도 언급되었습니다. 뷰 3.4의 모든 이점을 활용하려면 "vitejs/plugin-vue"를 최신 버전으로 업데이트하는 것이 좋습니다. 이 업데이트는 프로젝트의 빌드 성능을 향상시킬 수 있습니다.
-:::
+
+</aside>
+
 
 ### 2. 뷰 코어 기능에 추가적인 Vue.js 매크로가 추가될 예정인가요?
 
 Vue.js 팀은 뷰 코어에 새로운 매크로를 통합하는 것을 매우 신중하게 고려합니다. 현재로서는 뷰에 새로운 매크로를 도입할 계획이 없습니다.
 
-:::info
+<aside class="callout info">
+
+<strong>참고</strong>
+
 매크로는 뷰에 공식적으로는 통합되지 않는 개념적인 제안이나 아이디어입니다. 이러한 제안들은 뷰의 추가적인 기능이나 문법적 설탕(syntactic sugar)을 탐구하고 확장하는 것을 목표로 합니다.
-:::
+
+</aside>
+
 
 ### 3. 뷰 vapor mode의 최신 소식은 무엇인가요?
 
@@ -50,9 +65,14 @@ Vue.js 팀은 뷰 코어에 새로운 매크로를 통합하는 것을 매우 �
 
 이 모드에서는 복잡한 마이그레이션이나 사용을 위한 준비 조치가 필요하지 않습니다. 이 기술을 이용하면 최적화가 필요한 특정 컴포넌트에 vapor mode를 활성화할 수 있습니다.
 
-:::info vapor mode
+<aside class="callout info">
+
+<strong>vapor mode</strong>
+
 성능 향상을 위한 비가상 DOM 모드 개발에 사용되는 vapor mode
-:::
+
+</aside>
+
 
 ### 4. 사람들이 Vue.js에 대해 갖고 있는 가장 큰 오해는 무엇이라고 생각하나요?
 
@@ -105,11 +125,16 @@ vapor mode는 현재 뷰 생태계 내에서 개발되고 있는 가장 중요�
 
 **VitePress 출시에 많은 기대 부탁드립니다.**
 
-:::info VitePress란?
+<aside class="callout info">
+
+<strong>VitePress란?</strong>
+
 **\*VitePress**는 콘텐츠 중심의 신속한 웹사이트 구축을 위해 제작된 정적 사이트 생성기(SSG)입니다. 문서, 블로그, 포트폴리오, 마케팅 사이트를 생성하는 데 적합합니다.
 
 Nuxt.js보다 훨씬 경량의 대안을 제공하여 웹 개발에 효율성을 높입니다.
-:::
+
+</aside>
+
 
 ## 결론
 

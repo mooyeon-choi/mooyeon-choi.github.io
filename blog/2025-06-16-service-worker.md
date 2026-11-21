@@ -12,12 +12,17 @@ date: 2025-06-16T12:25
 
 신규 통합 웹 시스템을 구축하며 물류센터 현장에서 네트워크 사용량에 제한이 있어 파일 업로드가 원할하지 않은 경우가 발생하였다. 이를 위해 화면에서 네트워크 요청 로직을 분리하여 파일을 화면 로직과 별도로 업로드해줄 수 있는 방법이 필요하였다. Service Worker를 통해 어떻게 화면에서 네트워크 요청 로직을 분리하였는지, Service Worker가 무엇이길래? 가능하였는지 알아보자.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [배경](#배경)
 2. [Service Worker API란?](#service-worker-api란)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -39,7 +44,10 @@ date: 2025-06-16T12:25
 
 서비스 워커는 보안상의 이유로 HTTPS를 통해서만 실행된다. 가장 중요한 점은 HTTP 연결은 [중간자 공격(man-in-middle attack)](https://developer.mozilla.org/en-US/docs/Glossary/MitM)에 의한 악성 코드 삽입에 취약하며, 이러한 강력한 API에 대한 접근이 허용될 경우 공격이 더욱 악화될 수 있다는 것이다. Firefox에서는 서비스 워커 API가 숨겨져 있어 사용자가 시크릿 브라우징 모드에 있을 때는 사용할 수 없다.
 
-:::tip Worker란?
+<aside class="callout tip">
+
+<strong>Worker란?</strong>
+
 
 Web Worker API(Worker)의 인터페이스는 스크립트를 통해 생성될 수 있는 백그라운드 작업을 나타내며, 해당 작업은 생성자에게 메시지를 다시 보낼 수 있다.
 
@@ -49,4 +57,5 @@ Worker는 부모 페이지와 동일한 `Origin(출처)` 에서 호스팅되는 
 
 모든 인터페이스와 함수를 웹 워커에서 사용할 수 있는 것은 아니다. 상세 내용은 [웹 워커에서 사용할 수 있는 함수 및 클래스](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Functions_and_classes_available_to_workers)를 참조하자
 
-:::
+
+</aside>

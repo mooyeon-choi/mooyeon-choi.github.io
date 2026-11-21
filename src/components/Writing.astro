@@ -1,0 +1,107 @@
+---
+import Rows from './Rows.astro';
+import {
+  posts,
+  notes,
+  noteGroups,
+  tagsByPath,
+  tagged,
+  pageSize,
+  indexedPaths,
+} from '../lib/content';
+const { path } = Astro.props;
+const base = path.replace(/\/page\/\d+$/, '');
+const page = Number(path.match(/\/page\/(\d+)$/)?.[1] || 1);
+const tag = tagsByPath.get(base);
+const isNotes = path === '/docs',
+  archive = path === '/blog/archive',
+  tagIndex = path === '/blog/tags',
+  authors = path === '/blog/authors';
+const title = isNotes
+  ? '학습 노트'
+  : archive
+    ? '글 아카이브'
+    : tagIndex
+      ? '태그'
+      : authors
+        ? '글쓴이'
+        : tag
+          ? '#' + tag
+          : '기록';
+const list = tag ? tagged(tag) : posts;
+const pages = indexedPaths(base, list.length);
+---
+
+<div class="hero"><h1>{title}</h1></div>
+<nav class="writing-nav" aria-label="기록 탐색">
+  {
+    [
+      ['/writing', '글'],
+      ['/docs', '학습 노트'],
+      ['/blog/tags', '태그'],
+      ['/blog/archive', '아카이브'],
+    ].map(([href, label]) => (
+      <a href={href} aria-current={path === href ? 'page' : undefined}>
+        {label}
+      </a>
+    ))
+  }
+</nav>
+{
+  isNotes ? (
+    noteGroups.map((group) => (
+      <section class="index-group">
+        <>
+          <h2>{group}</h2>
+          <Rows items={notes.filter((n) => n.category === group)} />
+        </>
+      </section>
+    ))
+  ) : tagIndex ? (
+    <div class="tag-cloud">
+      {[...tagsByPath].map(([href, name]) => (
+        <a href={href}>
+          #{name} <small>{tagged(name).length}</small>
+        </a>
+      ))}
+    </div>
+  ) : archive ? (
+    [...new Set(posts.map((p) => p.day.slice(0, 4)))].map((year) => (
+      <section class="index-group">
+        <>
+          <h2>{year}</h2>
+          <Rows items={posts.filter((p) => p.day.startsWith(year))} />
+        </>
+      </section>
+    ))
+  ) : authors ? (
+    <>
+      <>
+        <h2>Mooyeon Choi</h2>
+        <p>
+          <a href="/about">소개 보기 →</a>
+        </p>
+        <Rows items={posts} />
+      </>
+    </>
+  ) : (
+    <>
+      <Rows
+        items={
+          path === '/writing'
+            ? posts
+            : list.slice((page - 1) * pageSize, page * pageSize)
+        }
+      />
+      {path !== '/writing' && pages.length > 1 && (
+        <nav class="pagination" aria-label="페이지">
+          {pages.map((href, i) => (
+            <a href={href} aria-current={page === i + 1 ? 'page' : undefined}>
+              {i + 1}
+            </a>
+          ))}
+        </nav>
+      )}
+    </>
+  )
+}

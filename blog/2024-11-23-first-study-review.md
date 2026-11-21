@@ -14,13 +14,18 @@ date: 2024-11-23T22:53
 
 이 글은 이번 첫 스터디 모임에서 공유한 주제들을 정리한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [오픈소스 패키지 배포 시 고려해야할 것들](#오픈소스-패키지-배포-시-고려해야할-것들)
 2. [레거시에서 어떻게 탑을 쌓아올릴 것인가](#레거시에서-어떻게-탑을-쌓아올릴-것인가)
 3. [GITHUB ACTION을 통한 VERCEL 수동 배포 완전 정복 (with 모노레포)](#github-action을-통한-vercel-수동-배포-완전-정복-with-모노레포)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -96,11 +101,16 @@ JavaScript의 대표적인 패키지 매니저 `npm`과 비교해본다면 `npm`
 
 운영되고 있는 서비스를 리팩토링 하는 것은 '달리는 자동차의 바퀴를 갈아끼우는 것'과 같다고 한다.
 
-:::info 유레카! 
+<aside class="callout info">
+
+<strong>유레카! </strong>
+
 
 ![Eureka!](./images/2024-11-23-first-study-review/first_study_review_1.png)<br/>*"달리는 자동차의 바퀴를 갈아끼는 것이 어렵다면, 새로운 자동차를 만들어버리면 되지 않을까?"*
 
-:::
+
+</aside>
+
 
 사람들은 생각한다. '그냥 새로 만드는게 더 빠르겠는데?' 이렇게 진행되는 리팩토링 방식이 **빅뱅 리팩토링**이다.
 
@@ -136,13 +146,18 @@ JavaScript의 대표적인 패키지 매니저 `npm`과 비교해본다면 `npm`
 
 이를 해결하기 위해 약간의 *꼼수*로 `README.md` 파일을 수정하는 방식을 사용하는 사람이 생기고 이를 점차 많은 사람들이 빈번하게 사용하여 불필요한 fake commit 생성, merge conflict 등 여러 문제가 발생한다. 따라서 이를 개선하기 위해 다른 방안을 찾게되었다.
 
-:::tip 모노레포 파이프라인 최적화
+<aside class="callout tip">
+
+<strong>모노레포 파이프라인 최적화</strong>
+
 
 모노레포를 직접 회사에서 적용해보지는 않아 잘 이해가 안가는 부분도 많았다. 검색해보다가 아래의 내용이 많은 도움이 되었다. 
 
 [200여개 서비스 모노레포의 파이프라인 최적화](https://toss.tech/article/monorepo-pipeline)
 
-:::
+
+</aside>
+
 
 ### 배포 Flow 개선
 

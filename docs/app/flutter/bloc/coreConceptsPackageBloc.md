@@ -1,16 +1,26 @@
 # 핵심 개념 (package:bloc)
 
-:::tip 참고
+<aside class="callout tip">
+
+<strong>참고</strong>
+
 아래 내용을 확인하기 전에 [`package:bloc`](https://pub.dev/packages/bloc) 내용을 읽어봅시다
-:::
+
+</aside>
+
 
 블록 패키지의 사용법을 이해하기 위해선 다음과 같은 몇가지 중요한 핵심 개념에 대해 알아야합니다. 이어지는 내용에서 각각의 세부내용을 살펴보며 Counter App. 을 생성합니다.
 
 ## Streams
 
-:::tip 참고
+<aside class="callout tip">
+
+<strong>참고</strong>
+
 다음의 [Dart 공식문서](https://dart.dev/tutorials/language/streams)에서 `Streams`에 대한 정보를 추가로 확인할 수 있습니다.
-:::
+
+</aside>
+
 
 > Stream은 비동기 데이터 시퀀스입니다.
 
@@ -65,9 +75,14 @@ void main() async {
 
 > 상태는 `Cubit`의 출력값이며 애플리케이션 상태의 일부를 나타냅니다. UI 구성 요소는 상태에 대한 알림을 받고 현재 상태에 따라 화면 일부를 다시 그릴 수 있습니다.
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `Cubit`에 대한 추가적인 세부사항은 다음 [Github issue](https://github.com/felangel/cubit/issues/69)에서 확인할 수 있습니다.
-:::
+
+</aside>
+
 
 ### Cubit 생성하기
 
@@ -108,9 +123,14 @@ class CounterCubit extends Cubit<int> {
 
 위 코드는 `CounterCubit`의 상태 증가를 알리기위한 `increment` public method를 제공합니다. `increment`를 호출하면 `Cubit`의 `state` getter를 통해 현재 상태에 접근하며, `emit`을 통해 현재 상태에 1을 더한 새로운 상태에 접근합니다.
 
-:::warning 주의
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 `emit` method는 `Cubit` 내부에서만 사용되어야합니다.
-:::
+
+</aside>
+
 
 ### Cubit 사용하기
 
@@ -147,13 +167,23 @@ Future<void> main() async {
 
 위 코드에서는 `subscription`을 통해 `CounterCubit`의 상태 변경에 대한 출력값을 받습니다. 이후 `increment`를 호출하여 새로운 상태를 반환합니다. 마지막으로, 더 이상 업데이트 정보를 받고싶지 않을 때 `subscription`의 `cancel`을 호출하여 `Cubit`을 닫습니다.
 
-:::note
-`await Future.delayed(Duration.zero);` 는 `subscription`이 즉시 취소되는 것을 방지하기위해 추가되었습니다.
-:::
+<aside class="callout note">
 
-:::warning 주의
+<strong>참고</strong>
+
+`await Future.delayed(Duration.zero);` 는 `subscription`이 즉시 취소되는 것을 방지하기위해 추가되었습니다.
+
+</aside>
+
+
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 `listen`을 호출하면 `Cubit`의 다음 상태 변경만 가져옵니다.
-:::
+
+</aside>
+
 
 ### Cubit 뜯어보기
 
@@ -189,9 +219,14 @@ void main() {
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `Change`는 `Cubit`의 상태가 업데이트 되기 직전에 발생합니다. `Change`는 현재 상태(`currentState`)와 다음 상태(`nextState`)로 구성됩니다.
-:::
+
+</aside>
+
 
 #### BlocObserver
 
@@ -207,9 +242,14 @@ class SimpleBlocObserver extends BlocObserver {
 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 우리가 해야할 일은 `BlocObserver`를 확장하고 `onChange` 메서드를 override 하는 것 뿐입니다.
-:::
+
+</aside>
+
 
 `SimpleBlocObserver`를 활용하면 아래와 같이 `main` 함수에서 간단하게도 활용 가능합니다.
 
@@ -229,13 +269,23 @@ CounterCubit Change { currentState: 0, nextState: 1 }
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
-내부(Internal) `onChange` override 가 먼저 호출되고, `super.onChange` 에 의해 `BlocObserver`에 있는 `onChange`에 전달합니다.
-:::
+<aside class="callout note">
 
-:::tip
+<strong>참고</strong>
+
+내부(Internal) `onChange` override 가 먼저 호출되고, `super.onChange` 에 의해 `BlocObserver`에 있는 `onChange`에 전달합니다.
+
+</aside>
+
+
+<aside class="callout tip">
+
+<strong>팁</strong>
+
 `BlocObserver` 뿐만 아니라 `Cubit` 인스턴스에서도 `Change`에 접근할 수 있습니다.
-:::
+
+</aside>
+
 
 ### Error Handling
 
@@ -264,9 +314,14 @@ class CounterCubit extends Cubit<int> {
 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onError` 는 `Cubit`의 특정 에러에 대해 재정의 하기위해 사용될 수 있습니다.
-:::
+
+</aside>
+
 
 `onError` 또한 모든 에러를 전역적으로(global) 처리하기 위해 `BlocObserver`에서 재정의하여 사용 가능합니다.
 
@@ -303,9 +358,14 @@ CounterCubit Change { currentState: 0, nextState: 1 }
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onChange`와 마찬가지로 `onError` 또한 내부 override가 먼저 호출되고 `BlocObserver`에 있는 `onChange`에 전달합니다.
-:::
+
+</aside>
+
 
 ## Bloc
 
@@ -349,9 +409,14 @@ class CounterBloc extends Bloc<CounterEvent, int> {
 }
 ```
 
-:::tip
+<aside class="callout tip">
+
+<strong>팁</strong>
+
 `EventHandler`는 이벤트를 추가하는 것 외에도 `Emitter`를 통해 전달받은 이벤트에 대한 응답을 0개 이상의 `state`로 내보낼 수 있습니다.
-:::
+
+</aside>
+
 
 `EventHandler`를 활용하여 `CounterIncrementPressed` 이벤트를 처리하도록 작성해봅니다.
 
@@ -371,17 +436,32 @@ class CounterBloc extends Bloc<CounterEvent, int> {
 
 위 코드에서는 모든 `CounterIncrementPressed` 이벤트들을 관리하기위해 `EventHandler`에 등록하였습니다. 각각의 이벤트는 `state` getter와 `emit(state + 1)`을 통해 현재 상태에 접근할 수 있습니다.
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `Bloc`은 `BlocBase`를 상속받으므로 `Cubit`에서와 같이 `state` getter를 통해 언제든지 현재 상태에 접근할 수 있습니다.
-:::
 
-:::warning
+</aside>
+
+
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 Bloc은 직접 `emit`을 호출하여 새로운 상태에 접근하면 안됩니다. 항상 `EventHandler`의 이벤트를 거쳐 상태를 변경해야합니다.
-:::
 
-:::warning
+</aside>
+
+
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 `Bloc`과 `Cubit` 모두 중복상태는 무시합니다. 만약 `state == nextState`일 때, `State nextState`를 내보내면 상태 변경이 발생하지 않습니다.
-:::
+
+</aside>
+
 
 ### Bloc 사용하기
 
@@ -402,9 +482,14 @@ Future<void> main() async {
 
 위 코드에서, 우리는 `CounterBloc`의 인스턴스를 생성합니다. 그런 다음 현재 상태를 표시합니다.(새 상태로 변경이 없으므로 초기 상태) 다음으로 `CounterIncrementPressed` 이벤트를 추가하여 상태를 변경해줍니다. 마지막으로 `Bloc`의 `state`를 다시 확인하면 `0`에서 `1`로 바뀐 상태를 확인할 수 있습니다. 이후 `close`를 호출하여 `Bloc` 내부 상태 스트림을 닫습니다.
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `await Future.delayed(Duration.zero)` 는 다음 이벤트 루프를 기다리도록 설정하기 위해 추가되었습니다. (`EventHandler`가 이벤트를 처리할 수 있도록 허용)
-:::
+
+</aside>
+
 
 #### Stream 사용법
 
@@ -423,9 +508,14 @@ Future<void> main() async {
 
 위 코드는 `CounterBloc`을 구독하여 상태 변경을 표시합니다. 그런 다음 `CounterIncrementPressed` 이벤트를 추가하여 `on<CounterIncrementPressed>` `EventHandler` 를 통해 새 상태를 받아옵니다. 마지막으로 `cancel`을 호출하여 `Bloc`을 닫습니다.
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `await Future.delayed(Duration.zero)` 은 구독이 즉시 취소되는 것을 막기위해 추가된 코드입니다.
-:::
+
+</aside>
+
 
 ### Bloc 살펴보기
 
@@ -500,9 +590,14 @@ Transition { currentState: 0, event: Instance of 'CounterIncrementPressed', next
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onTransition`은 `onChange` 전에 발생하며 `currentState`에서 `nextState`로 변경하는 이벤트도 포함합니다.
-:::
+
+</aside>
+
 
 #### BlocObserver
 
@@ -550,9 +645,14 @@ CounterBloc Change { currentState: 0, nextState: 1 }
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onTransition`이 호출되고 난 후 `onChange`를 호출합니다.
-:::
+
+</aside>
+
 
 `Bloc` 인스턴스의 또 다른 기능으로 새 이벤트를 호출할 때 `onEvent`를 override하여 `onChange`와 `onTransition` 같이 `onEvent` 도 로컬(locally) 및 전역(globally)으로 재정의할 수 있습니다.
 
@@ -619,9 +719,14 @@ CounterBloc Change { currentState: 0, nextState: 1 }
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onEvent`가 추가되자마자 호출되는 것을 볼 수 있습니다. 로컬 `onEvent`는 `BlocObserver`의 전역 `onEvent`보다 먼저 호출됩니다.
-:::
+
+</aside>
+
 
 ### 에러 핸들링
 
@@ -715,17 +820,32 @@ CounterBloc Change { currentState: 0, nextState: 1 }
 Change { currentState: 0, nextState: 1 }
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 로컬 `onError`는 `BlocObserver`의 글로벌 `onError`보다 먼저 호출됩니다.
-:::
 
-:::note
+</aside>
+
+
+<aside class="callout note">
+
+<strong>참고</strong>
+
 `onError`와 `onChange`는 `Bloc`과 `Cubit`에서 동일하게 동작합니다.
-:::
 
-:::warning
+</aside>
+
+
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 `EventHandler`에서 발생하는 처리되지 않은 예외도 `onError`에 보고됩니다.
-:::
+
+</aside>
+
 
 ## Cubit vs. Bloc
 
@@ -817,10 +937,19 @@ CounterBloc() : super(0) {
 
 위 코드를 사용하면 추가 코드를 거의 작성하지 않고 들어오는 이벤트를 쉽게 디바운싱할 수 있습니다.
 
-:::tip
-독자적인 이벤트 변환기에 대해서는 [package:bloc_concurrency](https://pub.dev/packages/bloc_concurrency)에서 확인하세요
-:::
+<aside class="callout tip">
 
-:::tip
+<strong>팁</strong>
+
+독자적인 이벤트 변환기에 대해서는 [package:bloc_concurrency](https://pub.dev/packages/bloc_concurrency)에서 확인하세요
+
+</aside>
+
+
+<aside class="callout tip">
+
+<strong>팁</strong>
+
 만약 아직도 어떤 것을 사용해야할지 확신이 없다면 `Cubit`을 사용하고 필요에따라 `Bloc`으로 리팩토링하거나 확장할 수 있습니다.
-:::
+
+</aside>

@@ -1,0 +1,144 @@
+---
+import { records, tagPath } from '../lib/content';
+import { articles, works } from '../lib/projects';
+const { entry } = Astro.props;
+let body = await entry.module.compiledContent();
+const first = entry.headings[0];
+const repeatsTitle =
+  first?.depth === 1 && first.text === entry.title && /^\s*<h1\b/.test(body);
+if (repeatsTitle) body = body.replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>/, '');
+const toc = entry.headings.filter((h) => h.depth === 2 || h.depth === 3);
+const related = Object.entries(articles).find(
+  ([, url]) => url === entry.path,
+)?.[0];
+const group = records
+  .filter(
+    (r) =>
+      r.post === entry.post && (entry.post || r.category === entry.category),
+  )
+  .sort((a, b) =>
+    entry.post ? b.date.localeCompare(a.date) : a.path.localeCompare(b.path),
+  );
+const index = group.findIndex((r) => r.path === entry.path);
+---
+
+<div class="reader">
+  <a class="back" href={entry.post ? '/writing' : '/docs'}
+    >← {entry.post ? '글 목록' : '학습 노트'}</a
+  >
+  <article>
+    <header class="article-head">
+      <p class="small">
+        {
+          entry.post
+            ? 'Mooyeon Choi · ' + entry.day
+            : '학습 노트 · ' + entry.category
+        }
+      </p><h1 id={repeatsTitle ? first.slug : undefined}>{entry.title}</h1>
+      {
+        entry.tags.length > 0 && (
+          <div class="tag-links">
+            {entry.tags.map((tag) => (
+              <a href={tagPath(tag)}>#{tag}</a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    {
+      toc.length > 1 && (
+        <details class="contents">
+          <>
+            <summary>목차</summary>
+            <ul>
+              {toc.map((h) => (
+                <li class:list={[{ nested: h.depth === 3 }]}>
+                  <a href={'#' + h.slug}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </>
+        </details>
+      )
+    }
+    <div class="prose" set:html={body} />
+    {
+      related && (
+        <a class="text-action" href={'/projects/' + related}>
+          {works[related].name} 프로젝트 보기 →
+        </a>
+      )
+    }
+  </article>
+  <div class="neighbours">
+    {
+      [group[index - 1], group[index + 1]].map(
+        (r, i) =>
+          r && (
+            <a href={r.path}>
+              <small>{i ? '다음 글' : '이전 글'}</small>
+              {r.title}
+            </a>
+          ),
+      )
+    }
+  </div>
+</div>
+<script>
+  for (const [i, group] of [
+    ...document.querySelectorAll('.code-tabs'),
+  ].entries()) {
+    const panels = [
+      ...group.querySelectorAll<HTMLElement>(':scope > .code-panel'),
+    ];
+    if (!panels.length) continue;
+    const tabs = document.createElement('div');
+    tabs.className = 'tab-bar';
+    tabs.setAttribute('role', 'tablist');
+    tabs.setAttribute('aria-label', '코드 예시');
+    const buttons = panels.map((panel, j) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.id = 'tab-' + i + '-' + j;
+      panel.id = 'code-' + i + '-' + j;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-controls', panel.id);
+      button.textContent = panel.getAttribute('aria-label');
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', button.id);
+      tabs.append(button);
+      return button;
+    });
+    function select(index: number) {
+      panels.forEach((panel, j) => {
+        panel.hidden = j !== index;
+        buttons[j].setAttribute('aria-selected', String(j === index));
+        buttons[j].tabIndex = j === index ? 0 : -1;
+      });
+    }
+    buttons.forEach((button, j) => {
+      button.addEventListener('click', () => select(j));
+      button.addEventListener('keydown', (e) => {
+        const offsets = {
+          ArrowLeft: -1,
+          ArrowRight: 1,
+          Home: -j,
+          End: buttons.length - 1 - j,
+        };
+        if (!(e.key in offsets)) return;
+        e.preventDefault();
+        const k = (j + offsets[e.key] + buttons.length) % buttons.length;
+        select(k);
+        buttons[k].focus();
+      });
+    });
+    group.prepend(tabs);
+    select(0);
+  }
+  if (document.querySelector('.twitter-tweet')) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://platform.twitter.com/widgets.js';
+    document.body.append(script);
+  }
+</script>

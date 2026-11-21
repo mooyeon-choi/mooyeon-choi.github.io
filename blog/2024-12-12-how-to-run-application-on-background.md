@@ -6,8 +6,6 @@ tags: [flutter, iOS, swift, android]
 date: 2024-12-12T15:12
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # 애플리케이션을 백그라운드에서 동작시키기 위한 방법
 
@@ -15,13 +13,18 @@ import TabItem from '@theme/TabItem';
 
 애플리케이션을 개발하다보면 대용량 파일 업로드/다운로드 주기적인 데이터 fetch 작업 등 애플리케이션에서 백그라운드로 동작을 해줘야하는 상황들이 있다. 이러한 백그라운드 프로세스 작업들의 경우 어떤 식으로 실행할 수 있으며 어떻게 유지할 수 있는지 iOS/Android 각각의 환경에서 알아본 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [안드로이드에서의 백그라운드 작업](#안드로이드에서의-백그라운드-작업)
 2. [iOS에서의 백그라운드 작업](#ios에서의-백그라운드-작업)
 3. [플러터에 연결하기](#플러터에-연결하기)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -80,35 +83,41 @@ WorkManager를 사용하면 백그라운드에서 실행하기 위해 즉각적�
 
 복잡한 작업의 경우 직관적인 인터페이스를 사용하여 [개별 작업을 연결](https://developer.android.com/topic/libraries/architecture/workmanager/how-to/chain-work?_gl=1*ipxv84*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..)하여 어떤 작업이 순차적으로 실행되고 어떤 작업이 병렬로 실행될지 제어할 수 있다.
 
-<Tabs>
-  <TabItem value="Kotlin" label="Kotlin" default>
-    ```kt
-    val continuation = WorkManager.getInstance(context)
-    .beginUniqueWork(
-        Constants.IMAGE_MANIPULATION_WORK_NAME,
-        ExistingWorkPolicy.REPLACE,
-        OneTimeWorkRequest.from(CleanupWorker::class.java)
-    ).then(OneTimeWorkRequest.from(WaterColorFilterWorker::class.java))
-    .then(OneTimeWorkRequest.from(GrayScaleFilterWorker::class.java))
-    .then(OneTimeWorkRequest.from(BlurEffectFilterWorker::class.java))
-    .then(
-        if (save) {
-            workRequest<SaveImageToGalleryWorker>(tag = Constants.TAG_OUTPUT)
-        } else /* upload */ {
-            workRequest<UploadWorker>(tag = Constants.TAG_OUTPUT)
-        }
-    )
-    ```
-  </TabItem>
-  <TabItem value="Java" label="Java">
-    ```java
-    WorkManager.getInstance(...)
-      .beginWith(Arrays.asList(workA, workB))
-      .then(workC)
-      .enqueue();
-    ```
-  </TabItem>
-</Tabs>
+<div class="code-tabs">
+
+<section class="code-panel" aria-label="Kotlin">
+
+```kt
+val continuation = WorkManager.getInstance(context)
+.beginUniqueWork(
+    Constants.IMAGE_MANIPULATION_WORK_NAME,
+    ExistingWorkPolicy.REPLACE,
+    OneTimeWorkRequest.from(CleanupWorker::class.java)
+).then(OneTimeWorkRequest.from(WaterColorFilterWorker::class.java))
+.then(OneTimeWorkRequest.from(GrayScaleFilterWorker::class.java))
+.then(OneTimeWorkRequest.from(BlurEffectFilterWorker::class.java))
+.then(
+    if (save) {
+        workRequest<SaveImageToGalleryWorker>(tag = Constants.TAG_OUTPUT)
+    } else /* upload */ {
+        workRequest<UploadWorker>(tag = Constants.TAG_OUTPUT)
+    }
+)
+```
+
+</section>
+<section class="code-panel" aria-label="Java">
+
+```java
+WorkManager.getInstance(...)
+  .beginWith(Arrays.asList(workA, workB))
+  .then(workC)
+  .enqueue();
+```
+
+</section>
+
+</div>
 
 각 작업 태스크에 대해 해당 작업에 대한 [입력 및 출력 데이터를 정의](https://developer.android.com/topic/libraries/architecture/workmanager/how-to/define-work?_gl=1*mlerpu*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..#input_output) 할 수 있다. 작업을 함께 연결할때 WorkManager는 자동으로 한 작업 목록에서 다음 작업 목록으로 출력 데이터를 전달한다.
 
@@ -116,11 +125,16 @@ WorkManager를 사용하면 백그라운드에서 실행하기 위해 즉각적�
 
 WorkManager는 [Coroutines](https://developer.android.com/topic/libraries/architecture/workmanager/advanced/coroutineworker?_gl=1*155py4x*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..)과 [RxJava](https://developer.android.com/topic/libraries/architecture/workmanager/advanced/rxworker?_gl=1*1nq42mo*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..)와 [완벽하게 통합](https://developer.android.com/topic/libraries/architecture/workmanager/advanced/threading?_gl=1*1nq42mo*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..)되며, [사용자의 비동기 API를 플러그인](https://developer.android.com/topic/libraries/architecture/workmanager/advanced/listenableworker?_gl=1*1cyuof1*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..)할 수 있는 유연성을 제공한다.
 
-:::tip 참고
+<aside class="callout tip">
+
+<strong>참고</strong>
+
 
 코루틴과 WorkManager는 서로 다른 사용 사례에 권장되지만 상호 배타적이지는 않다. WorkManager를 통해 예약된 작업 내에서 코루틴을 사용할 수 있다.
 
-:::
+
+</aside>
+
 
 ### WorkManager 시작하기
 
@@ -128,68 +142,77 @@ WorkManager를 사용하려면 먼저 라이브러리를 Android 프로젝트로
 
 앱 `build.gradle` 파일에 다음 종속성을 추가하자.
 
-<Tabs>
-  <TabItem value="Groovy" label="Groovy" default>
-    ```gradle
-    dependencies {
-      def work_version = "2.9.1"
+<div class="code-tabs">
 
-      // (Java only)
-      implementation "androidx.work:work-runtime:$work_version"
+<section class="code-panel" aria-label="Groovy">
 
-      // Kotlin + coroutines
-      implementation "androidx.work:work-runtime-ktx:$work_version"
+```gradle
+dependencies {
+  def work_version = "2.9.1"
 
-      // optional - RxJava2 support
-      implementation "androidx.work:work-rxjava2:$work_version"
+  // (Java only)
+  implementation "androidx.work:work-runtime:$work_version"
 
-      // optional - GCMNetworkManager support
-      implementation "androidx.work:work-gcm:$work_version"
+  // Kotlin + coroutines
+  implementation "androidx.work:work-runtime-ktx:$work_version"
 
-      // optional - Test helpers
-      androidTestImplementation "androidx.work:work-testing:$work_version"
+  // optional - RxJava2 support
+  implementation "androidx.work:work-rxjava2:$work_version"
 
-      // optional - Multiprocess support
-      implementation "androidx.work:work-multiprocess:$work_version"
-    }
-    ```
+  // optional - GCMNetworkManager support
+  implementation "androidx.work:work-gcm:$work_version"
 
-  </TabItem>
-  <TabItem value="Kotlin" label="Kotlin">
-    ```kt
-    dependencies {
-      val work_version = "2.9.1"
+  // optional - Test helpers
+  androidTestImplementation "androidx.work:work-testing:$work_version"
 
-      // (Java only)
-      implementation("androidx.work:work-runtime:$work_version")
+  // optional - Multiprocess support
+  implementation "androidx.work:work-multiprocess:$work_version"
+}
+```
 
-      // Kotlin + coroutines
-      implementation("androidx.work:work-runtime-ktx:$work_version")
+</section>
+<section class="code-panel" aria-label="Kotlin">
 
-      // optional - RxJava2 support
-      implementation("androidx.work:work-rxjava2:$work_version")
+```kt
+dependencies {
+  val work_version = "2.9.1"
 
-      // optional - GCMNetworkManager support
-      implementation("androidx.work:work-gcm:$work_version")
+  // (Java only)
+  implementation("androidx.work:work-runtime:$work_version")
 
-      // optional - Test helpers
-      androidTestImplementation("androidx.work:work-testing:$work_version")
+  // Kotlin + coroutines
+  implementation("androidx.work:work-runtime-ktx:$work_version")
 
-      // optional - Multiprocess support
-      implementation("androidx.work:work-multiprocess:$work_version")
-    }
-    ```
+  // optional - RxJava2 support
+  implementation("androidx.work:work-rxjava2:$work_version")
 
-  </TabItem>
-</Tabs>
+  // optional - GCMNetworkManager support
+  implementation("androidx.work:work-gcm:$work_version")
+
+  // optional - Test helpers
+  androidTestImplementation("androidx.work:work-testing:$work_version")
+
+  // optional - Multiprocess support
+  implementation("androidx.work:work-multiprocess:$work_version")
+}
+```
+
+</section>
+
+</div>
 
 종속성을 추가하고 Gradle 프로젝트를 동기화한 후 실행할 작업을 정의한다.
 
-:::tip 참고
+<aside class="callout tip">
+
+<strong>참고</strong>
+
 
 베타, 알파, 릴리스 후보 버전을 포함한 최신 버전의 WorkManager는 항상 [WorkManager 릴리스 페이지](https://developer.android.com/jetpack/androidx/releases/work?_gl=1*1wpnp38*_up*MQ..*_ga*MTQ1MDI1MDM4NC4xNzM0MzkxNDMz*_ga_6HH9YJMN9M*MTczNDM5MTQzMy4xLjAuMTczNDM5MTQzMy4wLjAuMjEzODYzMDMwMA..) 에서 찾을 수 있다.
 
-:::
+
+</aside>
+
 
 #### 작업 정의하기
 
@@ -197,46 +220,50 @@ WorkManager를 사용하려면 먼저 라이브러리를 Android 프로젝트로
 
 WorkManager가 실행할 작업을 만들려면 `Worker` 클래스를 확장하고 `doWork()`메서드를 재정의한다. 예를 들어 이미지를 업로드하는 `Worker`를 만들려면 다음과 같이 적용할 수 있다.
 
-<Tabs>
-  <TabItem value="Kotlin" label="Kotlin" default>
-    ```kt
-    class UploadWorker(appContext: Context, workerParams: WorkerParameters):
-       Worker(appContext, workerParams) {
-      override fun doWork(): Result {
+<div class="code-tabs">
 
-          // Do the work here--in this case, upload the images.
-          uploadImages()
+<section class="code-panel" aria-label="Kotlin">
 
-          // Indicate whether the work finished successfully with the Result
-          return Result.success()
-      }
-    }
-    ```
+```kt
+class UploadWorker(appContext: Context, workerParams: WorkerParameters):
+   Worker(appContext, workerParams) {
+  override fun doWork(): Result {
 
-  </TabItem>
-  <TabItem value="Java" label="Java">
-    ```java
-    public class UploadWorker extends Worker {
-      public UploadWorker(
-          @NonNull Context context,
-          @NonNull WorkerParameters params) {
-          super(context, params);
-      }
+      // Do the work here--in this case, upload the images.
+      uploadImages()
 
-      @Override
-      public Result doWork() {
+      // Indicate whether the work finished successfully with the Result
+      return Result.success()
+  }
+}
+```
 
-        // Do the work here--in this case, upload the images.
-        uploadImages();
+</section>
+<section class="code-panel" aria-label="Java">
 
-        // Indicate whether the work finished successfully with the Result
-        return Result.success();
-      }
-    }
-    ```
+```java
+public class UploadWorker extends Worker {
+  public UploadWorker(
+      @NonNull Context context,
+      @NonNull WorkerParameters params) {
+      super(context, params);
+  }
 
-  </TabItem>
-</Tabs>
+  @Override
+  public Result doWork() {
+
+    // Do the work here--in this case, upload the images.
+    uploadImages();
+
+    // Indicate whether the work finished successfully with the Result
+    return Result.success();
+  }
+}
+```
+
+</section>
+
+</div>
 
 `doWork()`를 통해 반환된 `Result` 내용은 WorkManager 서비스에 작업이 성공했는지 여부를 알려주고, 실패한 경우 작업을 다시 시도할지 여부를 알려준다.
 
@@ -250,47 +277,55 @@ WorkManager가 실행할 작업을 만들려면 `Worker` 클래스를 확장하�
 
 작업을 어떻게 예약하든 항상 `WorkRequest`를 사용한다. `Worker`가 작업 단위를 정의한다면, `WorkRequest`(및 하위 클래스)는 실행 방법과 시기를 정의한다. 간단한 경우에는 아래와 같이 `OneTimeWorkRequest`를 사용할 수 있다.
 
-<Tabs>
-  <TabItem value="Kotlin" label="Kotlin" default>
-    ```kt
-    val uploadWorkRequest: WorkRequest =
-      OneTimeWorkRequestBuilder<UploadWorker>()
-          .build()
-    ```
+<div class="code-tabs">
 
-  </TabItem>
-  <TabItem value="Java" label="Java">
-    ```java
-    WorkRequest uploadWorkRequest =
-      new OneTimeWorkRequest.Builder(UploadWorker.class)
-          .build();
-    ```
+<section class="code-panel" aria-label="Kotlin">
 
-  </TabItem>
-</Tabs>
+```kt
+val uploadWorkRequest: WorkRequest =
+  OneTimeWorkRequestBuilder<UploadWorker>()
+      .build()
+```
+
+</section>
+<section class="code-panel" aria-label="Java">
+
+```java
+WorkRequest uploadWorkRequest =
+  new OneTimeWorkRequest.Builder(UploadWorker.class)
+      .build();
+```
+
+</section>
+
+</div>
 
 #### 시스템에 WorkRequest 전달
 
 마지막으로, `WorkRequest`를 `WorkManager`로 `enqueue()`를 사용하여 제출해야 한다.
 
-<Tabs>
-  <TabItem value="Kotlin" label="Kotlin" default>
-    ```kt
-    WorkManager
-      .getInstance(myContext)
-      .enqueue(uploadWorkRequest)
-    ```
+<div class="code-tabs">
 
-  </TabItem>
-  <TabItem value="Java" label="Java">
-    ```java
-    WorkManager
-      .getInstance(myContext)
-      .enqueue(uploadWorkRequest);
-    ```
+<section class="code-panel" aria-label="Kotlin">
 
-  </TabItem>
-</Tabs>
+```kt
+WorkManager
+  .getInstance(myContext)
+  .enqueue(uploadWorkRequest)
+```
+
+</section>
+<section class="code-panel" aria-label="Java">
+
+```java
+WorkManager
+  .getInstance(myContext)
+  .enqueue(uploadWorkRequest);
+```
+
+</section>
+
+</div>
 
 워커가 실행되는 정확한 시간은 사용자가 정의한 `WorkRequest` 및 시스템 최적화에 사용되는 제약 조건에 따라 달라진다. WorkManager는 이러한 제약 조건하에서 최상의 동작을 제공하도록 설계되었다.
 

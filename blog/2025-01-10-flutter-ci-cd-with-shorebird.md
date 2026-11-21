@@ -12,13 +12,18 @@ date: 2025-01-10T12:36
 
 Flutter에서 State를 생성할 때, 방법으로 Bloc에서 추천하는 Equatable을 사용해왔다. 하지만 개발 편의성과 copy, toString override, json 변환 등 여러 기본 기능을 활용하여 개발 속도를 단축하고자 Freezed를 도입하게 되었다. 이번 내용은 Flutter freezed의 기본 활용법을 정리한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [Shorebird란?](#shorebird란)
 2. [이슈 정리](#이슈-정리)
 3. 사용 방법
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 

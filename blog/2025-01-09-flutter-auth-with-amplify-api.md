@@ -14,12 +14,17 @@ date: 2025-01-09T09:53
 
 아래 내용은 기존에 사용하려 했던 Swift, Kotlin 플러그인 생성 방식과 Amplify Backend를 구성해서 인증 로직을 처리해주는 방식, 그리고 최종적으로 사용하는 별도의 백엔드 구성 없이 Cognito에 직접 연결하여 사용하는 방식을 정리한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [Cognito란?](#cognito란)
 2. [Amplify auth cognito 적용하기](#amplify-auth-cognito-적용하기)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 

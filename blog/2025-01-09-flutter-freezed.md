@@ -12,12 +12,17 @@ date: 2025-01-09T12:36
 
 Flutter에서 State를 생성할 때, 방법으로 Bloc에서 추천하는 Equatable을 사용해왔다. 하지만 개발 편의성과 copy, toString override, json 변환 등 여러 기본 기능을 활용하여 개발 속도를 단축하고자 Freezed를 도입하게 되었다. 이번 내용은 Flutter freezed의 기본 활용법을 정리한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [Freezed란?](#freezed란)
 2. [사용 방법](#사용-방법)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -59,7 +64,10 @@ dev_dependencies:
 - [freezed](https://pub.dartlang.org/packages/freezed): Code generator
 - [freezed_annotaion](https://pub.dev/packages/freezed_annotation): `freezed`에 대한 **annotation**을 포함하는 패키지
 
-:::note invalid_annotation_target 경고 및 생성 파일에서 경고 비활성화
+<aside class="callout note">
+
+<strong>invalid_annotation_target 경고 및 생성 파일에서 경고 비활성화</strong>
+
 
 Freezed와 함께 `json_serializable`을 사용할 때, `json_serializable`과 `meta`의 최신버전을 사용한다면 `invalid_annotaion_target` 경고를 비활성해줘야할 수도 있다.
 
@@ -71,7 +79,9 @@ analyzer:
     invalid_annotaion_target: ignore
 ```
 
-:::
+
+</aside>
+
 
 ### 모델 코드 작성
 
@@ -546,7 +556,10 @@ sealed class Model with _$Model {
 }
 ```
 
-:::warning 주의
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 
 - `pubspec.yaml`에 `json_serializable`을 추가하는 것을 잊지말자!
 
@@ -557,7 +570,9 @@ dev_dependencies:
 
 - Freezed는 **factory**에 `=>`를 사용하는 경우에만 코드를 생성해준다.
 
-:::
+
+</aside>
+
 
 ### fromJSON - 여러 생성자가 있는 경우
 

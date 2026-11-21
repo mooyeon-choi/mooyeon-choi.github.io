@@ -215,7 +215,7 @@ vue create 'project name'
 npm run serve
 ```
 
-<img src="C:/Users/moo/Desktop/TIL/web/frontend/vue/images/vue_start.PNG" width="600px" />
+![Vue 개발 서버의 첫 화면](./images/vue_start.PNG)
 
 ### Project 중지
 
