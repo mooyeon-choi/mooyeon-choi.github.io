@@ -1,1 +1,0 @@
-"use strict";(Array.isArray(globalThis.webpackChunkmylog)?globalThis.webpackChunkmylog:globalThis.webpackChunkmylog=[]).push([[1903],{9531(l){l.exports=JSON.parse('{"blogBasePath":"/blog","blogTitle":"Blog","authorsListPath":"/blog/authors"}')}}]);
