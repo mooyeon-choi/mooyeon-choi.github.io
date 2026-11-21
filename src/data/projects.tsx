@@ -48,7 +48,8 @@ export type TagType =
   | 'svg'
   | 'mobile'
   | 'rust'
-  | 'typescript';
+  | 'typescript'
+  | 'threejs';
 
 // Add sites to this list
 // prettier-ignore
@@ -209,6 +210,8 @@ const Projects: Project[] = [
 export type Project = {
   title: string;
   englishName?: string;
+  alternateName?: string;
+  liveUrl?: string;
   description: string;
   preview: string;
   website: string;
@@ -222,6 +225,7 @@ export type Tag = {
 };
 
 export const Tags: {[type in TagType]: Tag} = {
+  threejs: {label: 'Three.js', image: '#586c9b'},
   svg: {label: 'SVG', image: '#935fc7'},
   mobile: {label: 'Mobile', image: '#4c927f'},
   rust: {label: 'Rust', image: '#a64a31'},

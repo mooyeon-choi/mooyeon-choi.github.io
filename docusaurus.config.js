@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+const defaultSsrTemplate = require('@docusaurus/core/lib/ssg/ssgTemplate.html').default;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -10,6 +11,8 @@ const config = {
   tagline: 'Mooyeon Choi의 프론트엔드 개발 기록과 프로젝트',
   url: 'https://mooyeon.com',
   baseUrl: '/',
+  // React 18 streaming SSR sometimes pads Korean text with NULs (react/react#31134).
+  ssrTemplate: String.raw`<% it.appHtml = it.appHtml.replace(/\0/g, ''); %>` + defaultSsrTemplate,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/log-mark.ico',
