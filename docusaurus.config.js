@@ -6,12 +6,13 @@ const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Mylog',
-  url: 'https://mooyeon-choi.github.io',
+  title: 'Mooyeon’s Log',
+  tagline: 'Mooyeon Choi의 프론트엔드 개발 기록과 프로젝트',
+  url: 'https://mooyeon.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/log-mark.ico',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -42,6 +43,8 @@ const config = {
         },
         blog: {
           showReadingTime: false,
+          // The older posts put their full table of contents before the explicit marker.
+          truncateMarker: /<!--\s*truncate\s*-->|\{\/\*\s*truncate\s*\*\/\}|^:::info 목차/m,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
@@ -57,42 +60,34 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      image: 'img/work/saegim-source.webp',
       navbar: {
-        title: 'Mylog',
-        logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.png',
-        },
+        title: 'mooyeon.com',
+        logo: {alt: '', src: 'img/log-mark.png'},
         items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: '개발 공부',
-          },
-          {to: '/blog', label: '기록', position: 'left'},
-          {to: 'showcase', label: 'Showcase', position: 'left'},
+          {to: '/blog', label: '블로그', position: 'left'},
+          {to: '/showcase', label: '프로젝트', position: 'left'},
+          {type: 'doc', docId: 'intro', label: '개발 노트', position: 'left'},
+          {to: '/aboutMe', label: '소개', position: 'left'},
+          {href: 'https://github.com/mooyeon-choi', label: 'GitHub', position: 'right'},
+        ],
+      },
+      footer: {
+        links: [
           {
             href: 'https://www.canva.com/design/DAGz-nqnzUs/hqoQlPIJGeUcR_Zt0MYSRA/view?utm_content=DAGz-nqnzUs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h675136036a',
-            label: 'Resume',
-            position: 'right',
+            label: '이력서',
           },
           {
             href: 'https://www.canva.com/design/DAG0FtTtc7Q/5bxilRwjMyASzdWmJYeuIA/watch?utm_content=DAG0FtTtc7Q&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he3cc71b0d4',
-            label: 'Portfolio',
-            position: 'right',
+            label: '포트폴리오',
           },
           {
             href: 'https://open.kakao.com/o/sEenYDXg',
-            label: 'CoffeeChat',
-            position: 'right',
-          },
-          {
-            href: 'https://github.com/mooyeon-choi',
-            label: 'GitHub',
-            position: 'right',
+            label: '커피챗',
           },
         ],
+        copyright: 'Mooyeon Choi · mooyeon.com',
       },
       prism: {
         theme: lightCodeTheme,
@@ -101,10 +96,6 @@ const config = {
       },
     }),
 
-  scripts: [
-    'https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js',
-  ],
 };
 
 module.exports = config;

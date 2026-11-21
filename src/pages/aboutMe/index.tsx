@@ -1,65 +1,34 @@
-import React, {useState, useMemo, useEffect} from 'react';
-import clsx from 'clsx';
-import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
-import {useHistory, useLocation} from '@docusaurus/router';
-
+import React from 'react';
+import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
+import styles from './styles.module.css';
 
-const TITLE = "About Me";
-
-export default function AboutMe(): JSX.Element {
-  const [stars, setStars] = useState([
-    {
-      x: 100,
-      y: 100,
-      size: 10,
-      brightness: 1,
-    },
-    {
-      x: 200,
-      y: 200,
-      size: 20,
-      brightness: 2,
-    },
-    {
-      x: 300,
-      y: 300,
-      size: 30,
-      brightness: 3,
-    },
-  ]);
-
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      const { x, y } = event.target;
-      for (const star of stars) {
-        const distance = Math.sqrt(Math.pow(star.x - x, 2) + Math.pow(star.y - y, 2));
-        star.brightness = 1 - distance / 100;
-      }
-      setStars(stars);
-    };
-    document.addEventListener("mousemove", handleMouseMove);
-    return () => document.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
+export default function AboutMe() {
   return (
-    <Layout title={TITLE}>
-      <main className="margin-vert--lg">
-        {stars.map((star) => (
-          <div
-            key={star.id}
-            style={{
-              position: "absolute",
-              width: star.size,
-              height: star.size,
-              borderRadius: star.size / 2,
-              backgroundColor: "black",
-              opacity: star.brightness,
-            }}
-          />
-        ))}
+    <Layout
+      title="소개"
+      description="프론트엔드 개발자 Mooyeon Choi와 블로그 소개"
+    >
+      <main className={styles.about}>
+        <h1>
+          Mooyeon <em>Choi.</em>
+        </h1>
+        <p className={styles.role}>Frontend Developer</p>
+        <p>
+          웹과 앱을 만드는 프론트엔드 개발자입니다. React와 Flutter로 화면을
+          만들고, 기기 안에서 AI 모델을 실행하는 방법을 실험합니다.
+        </p>
+        <p>
+          이 블로그에는 만들어 보면서 답을 찾은 질문들을 모았습니다. 영상에서
+          글자를 꺼내 다시 쓸 수 있을지, 같은 게시물도 앱과 웹에서 다르게 읽어야
+          할지 같은 질문입니다.
+        </p>
+        <div className={styles.links}>
+          <Link to="/showcase">만든 프로젝트 ↗</Link>
+          <Link to="/blog">블로그 글 ↗</Link>
+          <Link href="https://github.com/mooyeon-choi">GitHub ↗</Link>
+        </div>
       </main>
     </Layout>
-    
   );
-};
+}

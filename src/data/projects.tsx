@@ -7,6 +7,7 @@
 
 /* eslint-disable global-require */
 
+import {recentWork} from './recentWork';
 import {sortBy} from '@site/src/utils/jsUtils';
 
 /*
@@ -44,6 +45,10 @@ export type TagType =
   | 'vuejs'
   | 'canvasTutorial'
   | 'pixi'
+  | 'svg'
+  | 'mobile'
+  | 'rust'
+  | 'typescript';
 
 // Add sites to this list
 // prettier-ignore
@@ -203,8 +208,9 @@ const Projects: Project[] = [
 
 export type Project = {
   title: string;
+  englishName?: string;
   description: string;
-  preview: string | null; // null = use our serverless screenshot service
+  preview: string;
   website: string;
   source: string | null;
   tags: TagType[];
@@ -216,17 +222,21 @@ export type Tag = {
 };
 
 export const Tags: {[type in TagType]: Tag} = {
+  svg: {label: 'SVG', image: '#935fc7'},
+  mobile: {label: 'Mobile', image: '#4c927f'},
+  rust: {label: 'Rust', image: '#a64a31'},
+  typescript: {label: 'TypeScript', image: '#3178c6'},
   javascript: {
     label: 'JavaScript',
-    image: 'https://icongr.am/devicon/javascript-original.svg?size=16&color=currentColor',
+    image: '#c5a220',
   },
   react: {
     label: 'React',
-    image: 'https://icongr.am/devicon/react-original.svg?size=16&color=currentColor',
+    image: '#298ab3',
   },
   vuejs: {
     label: 'Vuejs',
-    image: 'https://icongr.am/devicon/vuejs-original.svg?size=16&color=currentColor',
+    image: '#42a177',
   },
   canvasTutorial: {
     label: 'Canvas-tutorial',
@@ -246,4 +256,4 @@ function sortProjects() {
   return result;
 }
 
-export const sortedProjects = sortProjects();
+export const sortedProjects: Project[] = [...recentWork, ...sortProjects()];
