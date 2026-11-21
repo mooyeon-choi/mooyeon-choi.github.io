@@ -2,7 +2,12 @@
   "name": "mooyeon-log",
   "private": true,
   "type": "module",
-  "packageManager": "yarn@4.9.2",
+  "devEngines": {
+    "packageManager": {
+      "name": "yarn",
+      "version": "4.9.2"
+    }
+  },
   "scripts": {
     "start": "astro dev",
     "build": "astro build",
