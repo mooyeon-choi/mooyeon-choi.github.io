@@ -21,6 +21,11 @@ export default function ShowcaseCard({project}: {project: Project}) {
       {project.description && <p>{project.description}</p>}
       <div className={styles.links}>
         <span>{project.tags.map((tag) => Tags[tag].label).join(' · ')}</span>
+        {project.liveUrl && (
+          <Link href={project.liveUrl} aria-label={project.title + ' 사이트 열기'}>
+            사이트 열기 ↗
+          </Link>
+        )}
         {project.source && (
           <Link href={project.source} aria-label={project.title + ' 소스 코드'}>
             소스 코드 ↗

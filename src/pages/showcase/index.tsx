@@ -30,7 +30,7 @@ export default function Showcase() {
   const tags = readSearchTags(search);
   const operator = readOperator(search);
   const filtered = sortedProjects.filter((project) => {
-    const names = [project.title, project.englishName]
+    const names = [project.title, project.englishName, project.alternateName]
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
