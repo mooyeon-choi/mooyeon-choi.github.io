@@ -1,0 +1,1 @@
+"use strict";(Array.isArray(globalThis.webpackChunkmylog)?globalThis.webpackChunkmylog:globalThis.webpackChunkmylog=[]).push([[8146],{9328(a){a.exports=JSON.parse('{"metadata":{"permalink":"/blog","page":1,"postsPerPage":10,"totalPages":4,"totalCount":39,"nextPage":"/blog/page/2","blogDescription":"Blog","blogTitle":"Blog"}}')}}]);

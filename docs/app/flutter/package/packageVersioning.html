@@ -5,8 +5,8 @@
 <meta name="generator" content="Docusaurus v3.10.2">
 <title data-rh="true">패키지 버전 관리 가이드 | Mooyeon’s Log</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://mooyeon.com/img/work/saegim-source.webp"><meta data-rh="true" name="twitter:image" content="https://mooyeon.com/img/work/saegim-source.webp"><meta data-rh="true" property="og:url" content="https://mooyeon.com/docs/app/flutter/package/packageVersioning"><meta data-rh="true" property="og:locale" content="ko"><meta data-rh="true" name="docusaurus_locale" content="ko"><meta data-rh="true" name="docsearch:language" content="ko"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="패키지 버전 관리 가이드 | Mooyeon’s Log"><meta data-rh="true" name="description" content="pub 패키지 관리자는 버전 관리를 하는데 도움을 준다. 이번에는 버전 관리의 역사와 pub의 버전 관리 접근 방식에 대해 간략히 알아보자."><meta data-rh="true" property="og:description" content="pub 패키지 관리자는 버전 관리를 하는데 도움을 준다. 이번에는 버전 관리의 역사와 pub의 버전 관리 접근 방식에 대해 간략히 알아보자."><link data-rh="true" rel="icon" href="/img/log-mark.ico"><link data-rh="true" rel="canonical" href="https://mooyeon.com/docs/app/flutter/package/packageVersioning"><link data-rh="true" rel="alternate" href="https://mooyeon.com/docs/app/flutter/package/packageVersioning" hreflang="ko"><link data-rh="true" rel="alternate" href="https://mooyeon.com/docs/app/flutter/package/packageVersioning" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Package","item":"https://mooyeon.com/docs/app/flutter/package/intro"},{"@type":"ListItem","position":2,"name":"패키지 버전 관리 가이드","item":"https://mooyeon.com/docs/app/flutter/package/packageVersioning"}]}</script><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Mooyeon’s Log RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Mooyeon’s Log Atom Feed"><link rel="stylesheet" href="/assets/css/styles.441061e2.css">
-<script src="/assets/js/runtime~main.fa913690.js" defer="defer"></script>
-<script src="/assets/js/main.7fa98b47.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.a9ada9a0.js" defer="defer"></script>
+<script src="/assets/js/main.e6d7cc69.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -37,14 +37,14 @@
 <li class="">이 후 순차적으로 <code>collection 2.3.7</code>에 전달된다.</li>
 <li class="">이를 사용하는 메서드에는 해당 <code>Dictionary</code> 형식 주석이 있다.</li>
 </ol>
-<p>Dart에서는 <code>collection 2.3.5</code>와 <code>collection 2.3.7</code>은 완전히 관련없는 라이브러리이다. 한 쪽에서 클래스 인스턴스를 가져와 다른 쪽의 <code>Dictionary</code> 메서드에 전달하면 두 <code>Dictionary</code>는 완전히 다른 유형이므로 일치하지 않는다.</p>
+<p>Dart에서는 <code>collection 2.3.5</code>와 <code>collection 2.3.7</code>은 완전히 관련없는 라이브러리이다. 한 쪽에서 클래스 인스턴스를 가져와 다른쪽의 <code>Dictionary</code> 메서드에 전달하면 두 <code>Dictionary</code>는 완전히 다른 유형이므로 일치하지 않는다.</p>
 <p>이러한 이유로 Dart에서는 npm 모델이 적합하지 않다고 판단하고 다른 접근 방식을 가진다.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="version-lock-사용되지-않음">Version lock (사용되지 않음)<a href="#version-lock-사용되지-않음" class="hash-link" aria-label="Version lock (사용되지 않음)에 대한 직접 링크" title="Version lock (사용되지 않음)에 대한 직접 링크" translate="no">​</a></h3>
 <p>대신, 패키지에 의존할 때 앱은 해당 패키지의 단일 사본만 사용한다. 공유 종속성이 있는 경우 이에 의존하는 모든 것이 사용할 버전에 대해 동의해야 한다. 만약 그렇지 않으면 오류가 발생한다.</p>
 <p>하지만 이러한 접근 방법으로는 문제가 해결되지 않는다. 우리는 오류가 발생하면 이를 해결할 수 있어야 한다. 이전 npm의 예에서와 같은 상황에 처했다고 가정해보자. <code>widgets</code>와 <code>templates</code>를 사용하고 싶지만 서로 다른 <code>collection</code> 버전을 사용하고 있다. 어떻게 해결해야 할까?</p>
 <p>이 접근 방식에서 제시할 수 있는 답은 둘 중 하나를 업그레이드 하는 것이다. <code>templates</code>에 맞추기 위해 <code>collection 2.3.7</code> 버전이 적용된 <code>widgets</code> 버전을 찾을 수 있을까?</p>
 <p>대부분의 경우 답은 &quot;No&quot;일 것이다. 개발하는 입장에서 생각해보자 우리는 <code>widgets</code> 코드에 새로운 변경사항을 적용한 새 버전을 출시하려 한다. 어떻게 하면 보다 많은 사람들이 문제 없이 업그레이드 하도록 할 수 있을까? <code>collection</code>의 버전을 유지한다면 모든 사람이 문제 없이 새 버전으로 업그레이드할 수 있을 것이다.</p>
-<p>우리가 종속성을 업그  레이드 한다면 <code>widgets</code>를 업그레이드 하는 모든 사람은 좋든 싫든 <code>collection</code>을 업그레이드 해야한다. 이는 때에 따라 매우 힘든일이므로 종속성 버전을 올리고자 하는 동기가 저하된다. 이를 <strong>버전 잠금</strong> 이라고 한다.</p>
+<p>우리가 종속성을 업그레이드 한다면 <code>widgets</code>를 업그레이드 하는 모든 사람은 좋든 싫든 <code>collection</code>을 업그레이드 해야한다. 이는 때에 따라 매우 힘든일이므로 종속성 버전을 올리고자 하는 동기가 저하된다. 이를 <strong>버전 잠금</strong> 이라고 한다.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="버전-제약-dart의-접근-방식">버전 제약 (Dart의 접근 방식)<a href="#버전-제약-dart의-접근-방식" class="hash-link" aria-label="버전 제약 (Dart의 접근 방식)에 대한 직접 링크" title="버전 제약 (Dart의 접근 방식)에 대한 직접 링크" translate="no">​</a></h3>
 <p>버전 잠금을 해결하기 위해 패키지가 종속성에 두는 제약을 느슨하게 한다. <code>widgets</code>및 <code>templates</code>가 모두 작업하는 버전의 <em>범위</em>를 나타낼 수 있다면 종속성을 새 버전으로 옮길 수 있는 충분한 여유가 생긴다. 범위에 겹치는 부분이 있는 한 둘다 만족하는 버전을 찾을 수 있다.</p>
 <p>이는 <a href="https://bundler.io/" target="_blank" rel="noopener noreferrer" class="">bundler</a>가 따르는 모델이며 <strong>pub</strong>의 모델이기도 하다. <code>pubspec.yaml</code>에 종속성을 추가 할 때 허용할 수 있는 버전 범위를 지정할 수 있다. <code>widgets</code>의 <code>pubspec.yaml</code>이 다음과 같다면</p>
@@ -93,13 +93,13 @@
 <p>그럼 pub에서 앱의 버전 제약을 해결하면 그 다음은 어떻게 될까? 최종 결과는 앱이 직접 또는 간접적으로 의존하는 모든 패키지의 전체 목록과 앱의 제약과 함께 작동하는 해당 패키지의 최상위 버전이다.</p>
 <p>각 패키지에 대해 pub은 해당 정보를 가져와서 콘텐츠 해시를 계산하고, 둘다 앱의 디렉토리에 있는 <code>pubspec.lock</code> 잠금 파일에 쓴다. pub이 앱의 파일을 빌드할 때, <code>dart_tool/package_config.json</code> 잠금 파일을 사용하여 각 패키지의 어떤 버전을 참조해야 하는지 알아낸다. (그리고 어떤 버전을 선택했는지 궁금하다면 잠금 파일을 열어서 확인할 수 있다.)</p>
 <p>다음으로 중요한 pub의 작업은 잠금 파일을 건드리지 않는 것이다. 앱에 대한 잠금 파일을 얻으면 pub은 사용자가 잠금 파일을 건드리라고 지시할 때까지 건들지 않는다. 이는 매우 중요하다. 의도하지 않고 앱에서 무작위 패키지의 새 버전을 자발적으로 사용하지 않는다는 의미이다. 앱이 잠기면 수동으로 잠금 파일을 업데이트하라고 지시할 때까지 잠긴 상태로 유지된다.</p>
-<p>패키지가 앱용이라면 소스 제어 시스템에 잠금 파일을 체크인하자. 이렇  게 하면 팀의 모든 구성원이 앱을 빌드할 때 모든 종속성의 정확히 동일한 버전을 사용하게 된다. 앱을 배포할 때도 이를 사용하여 프로덕션 서버에서 개발 중인 것과 정확히 동일한 패키지를 사용하고 있는지 확인할 수 있다.</p>
+<p>패키지가 앱용이라면 소스 제어 시스템에 잠금 파일을 체크인하자. 이렇게 하면 팀의 모든 구성원이 앱을 빌드할 때 모든 종속성의 정확히 동일한 버전을 사용하게 된다. 앱을 배포할 때도 이를 사용하여 프로덕션 서버에서 개발 중인 것과 정확히 동일한 패키지를 사용하고 있는지 확인할 수 있다.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="문제가-생기는-경우들">문제가 생기는 경우들<a href="#문제가-생기는-경우들" class="hash-link" aria-label="문제가 생기는 경우들에 대한 직접 링크" title="문제가 생기는 경우들에 대한 직접 링크" translate="no">​</a></h2>
 <p>물론, 모든 것은 종속성 그래프가 완벽하고 흠이 없다는 것을 전제로 한다. 버전 범위와 pub의 제약 조건 해결 및 의미론적 버전 관리를 사용하더라도 버전 충돌의 위험으로 부터 완전히 자유로울 수는 없다.</p>
 <p>다음은 문제가 발생하는 예시들이다.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="분리된-제약-조건을-가질-수-없음">분리된 제약 조건을 가질 수 없음<a href="#분리된-제약-조건을-가질-수-없음" class="hash-link" aria-label="분리된 제약 조건을 가질 수 없음에 대한 직접 링크" title="분리된 제약 조건을 가질 수 없음에 대한 직접 링크" translate="no">​</a></h3>
 <p>앱이 <code>widgets</code>와 <code>templates</code>를 사용한다고 가정해 보자. <code>widgets</code> 에서는 <code>collection &gt;=1.0.0 &lt;2.0.0</code>을 사용하고 <code>templates</code>에서는 <code>collection &gt;=3.0.0 &lt;4.0.0</code>을 사용한다면 겹치는 버전 범위가 없다.</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="릴리스된-버전이-포함되지-않은-범위를-가지는-경우">릴리스된 버전이 포함되지 않은 범위를 가지는 경우<a href="#릴리스된-버전이-포함되지-않은-범위를-가지는-경우" class="hash-link" aria-label="릴리스된 버전이 포함되지 않은 범위 를 가지는 경우에 대한 직접 링크" title="릴리스된 버전이 포함되지 않은 범위를 가지는 경우에 대한 직접 링크" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="릴리스된-버전이-포함되지-않은-범위를-가지는-경우">릴리스된 버전이 포함되지 않은 범위를 가지는 경우<a href="#릴리스된-버전이-포함되지-않은-범위를-가지는-경우" class="hash-link" aria-label="릴리스된 버전이 포함되지 않은 범위를 가지는 경우에 대한 직접 링크" title="릴리스된 버전이 포함되지 않은 범위를 가지는 경우에 대한 직접 링크" translate="no">​</a></h3>
 <p>공유 종속성에 대한 모든 제약 조건을 함께 넣은 좁은 범위가 있다고 가정해보자. 종속성의 버전이 <code>&gt;=1.2.4 &lt;1.2.6</code> 로 설정되어있다면 <code>1.2.4</code> 버전은 문제없이 동작할 것 이다. 하지만 만약 <code>1.3.0</code>을 사용한다면 범위를 벗어날 것이다.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="불안정한-그래프-구조">불안정한 그래프 구조<a href="#불안정한-그래프-구조" class="hash-link" aria-label="불안정한 그래프 구조에 대한 직접 링크" title="불안정한 그래프 구조에 대한 직접 링크" translate="no">​</a></h3>
 <p>이는 지금까지 pub의 버전 해결 프로세스에서 가장 어려운 부분이다. 이 프로세스는 종속성 그래프를 구축한 다음 모든 제약 조건을 해결하고 버전을 선택하는 것으로 설명되었다. 하지만 실제로는 그런식으로 동작하지 않는다. 버전을 선택하기 전에 전체 종속성 그래프를 어떻게 구축할 수 있을까? <code>pubspec.yaml</code> 자체로는 버전에 따라 다르다. 동일한 패키지라도 다른 버전을 불러온다면 다른 종속성 집합을 가지고 있을 수 있다.</p>
