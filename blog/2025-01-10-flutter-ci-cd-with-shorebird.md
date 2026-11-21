@@ -16,7 +16,7 @@ Flutter에서 State를 생성할 때, 방법으로 Bloc에서 추천하는 Equat
 
 1. [Shorebird란?](#shorebird란)
 2. [이슈 정리](#이슈-정리)
-3. [사용 방법](#사용-방법)
+3. 사용 방법
 
 :::
 

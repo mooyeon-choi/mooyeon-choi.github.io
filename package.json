@@ -30,7 +30,11 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.6.3",
     "@tsconfig/docusaurus": "^2.0.2",
+    "@types/react": "18.3.31",
     "typescript": "^5.3.3"
+  },
+  "resolutions": {
+    "@types/react": "18.3.31"
   },
   "browserslist": {
     "production": [

@@ -1,0 +1,31 @@
+.about {
+  width: min(680px, calc(100% - 2.5rem));
+  margin: clamp(2.5rem, 7vw, 6rem) auto;
+  word-break: keep-all;
+}
+.about h1 {
+  font: 400 clamp(4rem, 10vw, 7.5rem) / 1 var(--journal-serif);
+  letter-spacing: -0.045em;
+  margin: 0;
+}
+.about em {
+  color: var(--accent);
+}
+.role {
+  font: 0.88rem var(--journal-mono);
+  color: var(--muted);
+  margin: 0.8rem 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.about p:not(.role) {
+  font-size: 1.12rem;
+  line-height: 1.9;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  margin-top: 1.8rem;
+  font-weight: 650;
+}

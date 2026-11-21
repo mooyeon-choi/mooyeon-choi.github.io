@@ -1,91 +1,52 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-.showcaseCardImage {
-  overflow: hidden;
-  height: 170px;
-  border-bottom: 2px solid var(--ifm-color-emphasis-200);
-}
-
-.showcaseCardHeader {
+.card {
   display: flex;
-  align-items: center;
-  margin-bottom: 12px;
+  flex-direction: column;
+  min-width: 0;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1rem;
 }
-
-.showcaseCardTitle {
-  margin-bottom: 0;
-  flex: 1 1 auto;
+.cover {
+  display: block;
+  color: var(--ink);
 }
-
-.showcaseCardTitle a {
+.cover:hover {
+  color: var(--accent);
   text-decoration: none;
-  background: linear-gradient(
-      var(--ifm-color-primary),
-      var(--ifm-color-primary)
-    )
-    0% 100% / 0% 1px no-repeat;
-  transition: background-size ease-out 200ms;
 }
-
-.showcaseCardTitle a:not(:focus):hover {
-  background-size: 100% 1px;
+.cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--line);
 }
-
-.showcaseCardTitle,
-.showcaseCardHeader .svgIconFavorite {
-  margin-right: 0.25rem;
+.cover h2 {
+  font-size: 1.2rem;
+  letter-spacing: -0.035em;
+  margin: 0.9rem 0 0.35rem;
 }
-
-.showcaseCardHeader .svgIconFavorite {
-  color: var(--site-color-svg-icon-favorite);
+.cover h2 span {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
-
-.showcaseCardSrcBtn {
-  margin-left: 6px;
-  padding-left: 12px;
-  padding-right: 12px;
-  border: none;
+.card p {
+  font-size: 0.87rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.7rem;
 }
-
-.showcaseCardSrcBtn:focus-visible {
-  background-color: var(--ifm-color-secondary-dark);
-}
-
-[data-theme='dark'] .showcaseCardSrcBtn {
-  background-color: var(--ifm-color-emphasis-200) !important;
-  color: inherit;
-}
-
-[data-theme='dark'] .showcaseCardSrcBtn:hover {
-  background-color: var(--ifm-color-emphasis-300) !important;
-}
-
-.showcaseCardBody {
-  font-size: smaller;
-  line-height: 1.66;
-}
-
-.cardFooter {
+.links {
   display: flex;
-  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-top: auto;
+  padding-top: 0.65rem;
+  font-size: 0.71rem;
 }
-
-.tag {
-  font-size: 0.675rem;
-  border: 1px solid var(--ifm-color-secondary-darkest);
-  cursor: default;
-  margin-right: 6px;
-  margin-bottom: 6px !important;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.tag .textLabel {
-  margin-left: 8px;
+.links span {
+  color: var(--muted);
+  font-family: var(--journal-mono);
 }

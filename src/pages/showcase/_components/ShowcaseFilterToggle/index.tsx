@@ -6,7 +6,6 @@
  */
 
 import React, {useState, useEffect, useCallback} from 'react';
-import clsx from 'clsx';
 import {useHistory, useLocation} from '@docusaurus/router';
 
 import {prepareProjectState} from '../../index';
@@ -50,7 +49,7 @@ export default function ShowcaseFilterToggle(): JSX.Element {
         type="checkbox"
         id={id}
         className="screen-reader-only"
-        aria-label="Toggle between or and and for the tags you selected"
+        aria-label="선택한 태그를 모두 포함하는 프로젝트만 보기"
         onChange={toggleOperator}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -59,10 +58,10 @@ export default function ShowcaseFilterToggle(): JSX.Element {
         }}
         checked={operator}
       />
-      <label htmlFor={id} className={clsx(styles.checkboxLabel, 'shadow--md')}>
+      <label htmlFor={id} className={styles.checkboxLabel}>
         {/* eslint-disable @docusaurus/no-untranslated-text */}
-        <span className={styles.checkboxLabelOr}>OR</span>
-        <span className={styles.checkboxLabelAnd}>AND</span>
+        <span className={styles.checkboxLabelOr}>하나 이상</span>
+        <span className={styles.checkboxLabelAnd}>모두 포함</span>
         {/* eslint-enable @docusaurus/no-untranslated-text */}
       </label>
     </div>
