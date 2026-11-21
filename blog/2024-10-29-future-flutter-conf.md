@@ -12,7 +12,10 @@ date: 2024-10-29T12:47
 
 조금 늦었지만, 2024년 9월 28일 진행된 Flutter 컨퍼런스 Future Flutter에서 들었던 내용을 정리하고, 실제 회사에 적용해보며 겪었던 이슈들에 대한 내용을 정리한 글이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [FFI로 연결하는 고(Go)와 플러터](#ffi로-연결하는-고go와-플러터)
 2. [Flutter WebRTC](#flutter-webrtc)
@@ -23,7 +26,9 @@ date: 2024-10-29T12:47
 7. [어느날 갑자기 앱이 터졌을 때](#어느날-갑자기-앱이-터졌을-때)
 8. [Flutter Bloc을 제품 개발에 야무지게 적용하기](#flutter-bloc을-제품-개발에-야무지게-적용하기)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -190,13 +195,17 @@ final NativeLibrary _bindings = NativeLibrary(_dylib);
 - `ffigen`을 이용하면 `.h`를 읽어 자동으로 바인딩 코드를 생성해줌
 - `Go` 언어의 크로스 컴파일러를 이용해 쉽게 크로스 플랫폼 라이브러리 생성 가능
 
-:::info title="Next Step"
+<aside class="callout info">
+
+<strong>Next Step</strong>
+
 
 - IOS / macOS / Windows / Linux 등 안드로이드 외 다른 플랫폼 빌드
   - 예시는 Android / IOS / macOS 까지만 동작
 - 웹에서도 동작하도록 빌드 (힌트: WebAssembly)
 - 메모리 공유나 비동기 처리등의 고급 사용예제
-  :::
+
+</aside>
 
 ## Flutter WebRTC
 
@@ -1063,7 +1072,10 @@ Future<String?> read({
 
 Cross-Origin Resource Sharing (CORS) 란? **브라우저**가 **자신의 출처(Origin)가 아닌 다른 출처로부터 자원 로드를 허용**하도록 서버가 허가해주는 HTTP 헤더 기반의 메커니즘으로 출처가 다른 서버간의 리소스 공유를 허용하는 것이다.
 
-:::info Origin(출처)란?
+<aside class="callout info">
+
+<strong>Origin(출처)란?</strong>
+
 
 URL (Uniform Resource Location) 구조에서 **Protocol + Host + Port** 부분을 의미한다.
 
@@ -1081,7 +1093,9 @@ URL (Uniform Resource Location) 구조에서 **Protocol + Host + Port** 부분�
 
 `#flutter_web`: Fragment
 
-:::
+
+</aside>
+
 
 ##### CORS - flow of preflight request case
 
@@ -1503,7 +1517,10 @@ Error: Unsupported operation: Platform._operatingSystem
 
 ![with proxy server](./images/2024-10-29-future-flutter/flutter_web_8.png)
 
-:::note 참고 자료
+<aside class="callout note">
+
+<strong>참고 자료</strong>
+
 
 Flutter Web 을 활용해 제품 개발 환경 개선하기 with Future Flutter 2024
 
@@ -1546,7 +1563,9 @@ Flutter Web 을 활용해 제품 개발 환경 개선하기 with Future Flutter 
 [CORS, Preflight, 인증 처리 관련 삽질](https://www.popit.kr/cors-preflight-%EC%9D%B8%EC%A6%9D-%EC%B2%98%EB%A6%AC%EA%B4%80%EB%A0%A8-%EC%82%BD%EC%A7%88/)
 
 [SpringBoot에서 CORS할 때 header, preflight 이슈 해결하기](https://velog.io/@ojwman/spring-boot-cors-header-preflight)
-:::
+
+</aside>
+
 
 
 ## 어느날 갑자기 앱이 터졌을 때

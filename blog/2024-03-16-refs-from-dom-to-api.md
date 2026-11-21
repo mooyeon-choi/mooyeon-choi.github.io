@@ -16,13 +16,18 @@ date: 2024-03-16T21:51
 
 ## 소개
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 1. useRef를 통한 React DOM 접근
 2. 부모 요소에서 자식 요소로 prop로 ref 전달하기
 3. forwardRef로 ref 전달하기
 4. useImperativeHandle를 사용하는 명령형 API
 5. 명령형 API에서 useImperativeHandle 제거하기
-:::
+
+</aside>
+
 
 <!--truncate-->
 

@@ -1,54 +1,16 @@
 {
-  "name": "mylog",
-  "version": "0.0.0",
+  "name": "mooyeon-log",
   "private": true,
+  "type": "module",
+  "packageManager": "yarn@4.9.2",
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "start": "astro dev",
+    "build": "astro build",
+    "serve": "astro preview"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.6.3",
-    "@docusaurus/preset-classic": "^3.6.3",
-    "@mdx-js/react": "^3.0.1",
-    "@react-three/fiber": "^8.15.16",
-    "@types/three": "^0.161.2",
-    "clsx": "^2.1.0",
-    "prism-react-renderer": "^2.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-twitter-embed": "^4.0.4",
-    "three": "^0.161.0"
-  },
-  "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.6.3",
-    "@tsconfig/docusaurus": "^2.0.2",
-    "@types/react": "18.3.31",
-    "typescript": "^5.3.3"
-  },
-  "resolutions": {
-    "@types/react": "18.3.31"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "engines": {
-    "node": ">=16.14"
+    "astro": "5.18.2",
+    "lodash.kebabcase": "4.1.1",
+    "unist-util-visit": "^5.0.0"
   }
 }

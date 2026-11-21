@@ -10,7 +10,7 @@ sidebar_position: 1
 
 ## 웹 요청과 응답 과정
 
-[> 더보기](./web_request_and_response_process/intro.md)
+[> 더보기](/docs/web/network/web_request_and_response_process/intro)
 
 1. URL 입력 및 요청 준비
 2. DNS 조회 (Domain Name System)

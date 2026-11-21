@@ -12,13 +12,18 @@ date: 2024-11-16T12:47
 
 Flutter 환경에서 커스터마이징 가능한 움직이는 아이콘 개발과 배포를 진행하면서 찾아본 내용들을 정리하였다. 어떻게 하면 좀 더 많은 사람들이 편하게 활용할 수 있도록 작성할 수 있을 지, 어떻게 코드를 작성해야 다른 사람들이 코드를 확인하고 수정하기 더 편할지를 생각하며 성공한 여러 오픈소스 패키지들을 참고하고 관련 글을 찾아본 내용들을 정리하였다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [Flutter의 패키지 배포 환경](#flutter의-패키지-배포-환경)
 2. [Flutter 패키지 개발하기](#flutter-패키지-개발하기)
 3. [패키지 버전 관리 가이드](#패키지-버전-관리-가이드)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -26,7 +31,10 @@ Flutter 환경에서 커스터마이징 가능한 움직이는 아이콘 개발�
 
 Flutter는 다른 개발자가 Flutter 및 Dart 생태계에 기여한 공유 패키지를 사용하도록 지원한다. 이를 통해 모든 것을 처음부터 개발하지 않고도 앱을 빠르게 빌드할 수 있다.
 
-:::info 패키지와 플러그인의 차이점
+<aside class="callout info">
+
+<strong>패키지와 플러그인의 차이점</strong>
+
 
 플러그인은 패키지의 한 유형으로 전체 명칭은 *플러그인 패키지*이며 일반적으로 플러그인이라고 줄여 부른다.
 
@@ -40,7 +48,9 @@ Dart 패키지는 최소한 `pubspec.yaml` 파일을 포함하는 디렉토리�
 
 [Packages versus plugins | Decoding Flutter](https://www.youtube.com/watch/Y9WifT8aN6o)
 
-:::
+
+</aside>
+
 
 ### 패키지 사용
 
@@ -102,7 +112,10 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 이를 피하는 가장 좋은 방법은 패키지 작성자가 종속성을 지정할 때 특정 버전 대신 **범위** 버전을 설정하는 것 이다.
 
-:::info Caret syntax & Traditional syntax
+<aside class="callout info">
+
+<strong>Caret syntax &amp; Traditional syntax</strong>
+
 
 버전 범위를 설정해주는 방법은 `caret syntax`와 `traditional syntax` 방식이 있다.
 
@@ -127,7 +140,9 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 패키지의 경우 여러 사용자들이 제약없이 활용할 수 있어야하므로 `>=` 만 허용되는 것에 유의하자.
 
-:::
+
+</aside>
+
 
 종속성을 범위 버전으로 설정해주면 pub은 자동으로 문제를 해결해준다.
 
@@ -329,11 +344,16 @@ dependencies:
   collection: ^2.3.5
 ```
 
-:::note
+<aside class="callout note">
+
+<strong>참고</strong>
+
 
 이 예에서는 캐럿 구문을 사용하여 다양한 버전을 표현한다. `^2.3.5` 문자열은 "`3.0.0`을 제외한 `2.3.5`에서 `3.0.0`까지의 모든 버전 범위"를 의미한다. 자세한 내용은 [캐럿 구문](https://dart.dev/tools/pub/dependencies#caret-syntax)을 참고하자.
 
-:::
+
+</aside>
+
 
 이 작업을 하려면 우리는 약속들을 정리해 규칙을 만들어야 한다. 다행히도 이미 이전의 똑똑한 사람들이 모든 작업을 끝냈고, 이를 [의미론적 버전 관리](https://semver.org/spec/v2.0.0-rc.1.html)라 명명했다.
 

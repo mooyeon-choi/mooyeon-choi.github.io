@@ -12,12 +12,17 @@ date: 2025-07-14T20:25
 
 Tailwind CSS v3 까지 활발하게 사용되던 `eslint-plugin-tailwindcss` 패키지는 2024년 3월 [[Feature request] Support Tailwind 4](https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/325#issuecomment-2966585530)을 기점으로 Tailwind CSS 최신 버전에 대응하는 업데이트를 하지 않고있다. 이전까지 활발하게 사용되던 이 패키지가 왜 업데이트를 중단하였는지, 개발자들이 왜 새롭게 코드를 다시 작성할 수 밖에 없었는지 알아보자.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [배경](#배경)
 2. [eslint-plugin-tailwindcss 패키지](#eslint-plugin-tailwindcss-패키지)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 

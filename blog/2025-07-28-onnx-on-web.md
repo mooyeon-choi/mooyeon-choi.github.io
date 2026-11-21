@@ -6,8 +6,6 @@ tags: [web, onnx, vit]
 date: 2025-07-28T20:25
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # Onnx web runtime 구축하기 with Vite
 
@@ -15,7 +13,10 @@ import TabItem from '@theme/TabItem';
 
 Vission AI를 사용자 로컬 환경에서 실행하기 위해 WebGPU, WebGL, WASM을 통해 Web환경에서 AI Model을 실행한 방법들과 Model을 캐싱하며 버전관리를 하는 방법에 대해 작성하였다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [배경](#배경)
 2. [Get Started](#get-started)
@@ -27,7 +28,9 @@ Vission AI를 사용자 로컬 환경에서 실행하기 위해 WebGPU, WebGL, W
 8. [에러 처리 및 디버깅](#에러-처리-및-디버깅)
 9. [마무리](#마무리)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -45,28 +48,32 @@ ONNX Runtime Web을 적용하는 방법으로 [공식사이트](https://onnxrunt
 
 #### Install
 
-<Tabs>
-  <TabItem value="npm" label="npm" default>
-    ```bash
-    # install latest release version
-    npm install onnxruntime-web
+<div class="code-tabs">
 
-    # install nightly build dev version
-    npm install onnxruntime-web@dev
-    ```
+<section class="code-panel" aria-label="npm">
 
-  </TabItem>
-  <TabItem value="yarn" label="yarn">
-    ```bash
-    # install latest release version
-    yarn add onnxruntime-web
+```bash
+# install latest release version
+npm install onnxruntime-web
 
-    # install nightly build dev version
-    yarn add onnxruntime-web@dev
-    ```
+# install nightly build dev version
+npm install onnxruntime-web@dev
+```
 
-  </TabItem>
-</Tabs>
+</section>
+<section class="code-panel" aria-label="yarn">
+
+```bash
+# install latest release version
+yarn add onnxruntime-web
+
+# install nightly build dev version
+yarn add onnxruntime-web@dev
+```
+
+</section>
+
+</div>
 
 #### Import
 

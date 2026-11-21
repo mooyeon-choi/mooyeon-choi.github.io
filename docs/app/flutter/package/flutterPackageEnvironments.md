@@ -2,7 +2,10 @@
 
 Flutter는 다른 개발자가 Flutter 및 Dart 생태계에 기여한 공유 패키지를 사용하도록 지원한다. 이를 통해 모든 것을 처음부터 개발하지 않고도 앱을 빠르게 빌드할 수 있다.
 
-:::info 패키지와 플러그인의 차이점
+<aside class="callout info">
+
+<strong>패키지와 플러그인의 차이점</strong>
+
 
 플러그인은 패키지의 한 유형으로 전체 명칭은 *플러그인 패키지*이며 일반적으로 플러그인이라고 줄여 부른다.
 
@@ -16,7 +19,9 @@ Dart 패키지는 최소한 `pubspec.yaml` 파일을 포함하는 디렉토리�
 
 [Packages versus plugins | Decoding Flutter](https://www.youtube.com/watch/Y9WifT8aN6o)
 
-:::
+
+</aside>
+
 
 ## 패키지 사용
 
@@ -78,7 +83,10 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 이를 피하는 가장 좋은 방법은 패키지 작성자가 종속성을 지정할 때 특정 버전 대신 **범위** 버전을 설정하는 것 이다.
 
-:::info Caret syntax & Traditional syntax
+<aside class="callout info">
+
+<strong>Caret syntax &amp; Traditional syntax</strong>
+
 
 버전 범위를 설정해주는 방법은 `caret syntax`와 `traditional syntax` 방식이 있다.
 
@@ -103,7 +111,9 @@ pub.dev의 [Flutter Favorites](https://pub.dev/flutter/favorites) 페이지에�
 
 패키지의 경우 여러 사용자들이 제약없이 활용할 수 있어야하므로 `>=` 만 허용되는 것에 유의하자.
 
-:::
+
+</aside>
+
 
 종속성을 범위 버전으로 설정해주면 pub은 자동으로 문제를 해결해준다.
 

@@ -1,0 +1,106 @@
+---
+import Layout from '../components/Layout.astro';
+import Reader from '../components/Reader.astro';
+import Projects from '../components/Projects.astro';
+import ProjectDetail from '../components/ProjectDetail.astro';
+import Writing from '../components/Writing.astro';
+import { records, tagsByPath } from '../lib/content';
+import { routes } from '../lib/routes';
+import { games, works, experiments, experimentId } from '../lib/projects';
+import { Content as MarkdownPage } from '../lib/markdown-page.md';
+
+export function getStaticPaths() {
+  return routes.map((path) => ({ params: { path: path.slice(1) } }));
+}
+const path = '/' + Astro.params.path;
+const entry = records.find((r) => r.path === path);
+const projects = path === '/projects' || path === '/showcase';
+const about = path === '/about' || path === '/aboutMe';
+const docExample = path === '/markdown-page';
+const detail = path.startsWith('/projects/');
+const [, , id, gameId] = path.split('/');
+const exp = detail && experiments.find((p) => experimentId(p.title) === id);
+const canonical =
+  path === '/showcase' ? '/projects' : path === '/aboutMe' ? '/about' : path;
+const current =
+  projects || detail ? '/projects' : about ? '/about' : '/writing';
+const indexTitle = {
+  '/docs': '학습 노트',
+  '/blog/archive': '글 아카이브',
+  '/blog/authors': '글쓴이',
+  '/blog/tags': '태그',
+};
+const title =
+  entry?.title ||
+  (projects
+    ? '프로젝트'
+    : about
+      ? '소개'
+      : docExample
+        ? 'Markdown page example'
+        : detail
+          ? games[gameId]?.title || works[id]?.name || exp?.title
+          : indexTitle[path] ||
+            tagsByPath.get(path.replace(/\/page\/\d+$/, '')) ||
+            '기록');
+---
+
+<Layout
+  title={title}
+  canonical={canonical}
+  current={current}
+  description={entry?.description || undefined}
+  image={entry?.image}
+>
+  {
+    entry ? (
+      <Reader entry={entry} />
+    ) : projects ? (
+      <Projects />
+    ) : detail ? (
+      <ProjectDetail id={id} gameId={gameId} />
+    ) : about ? (
+      <section class="reader">
+        <div class="hero">
+          <>
+            <p class="byline">AI-native developer</p>
+            <h1>Mooyeon Choi.</h1>
+          </>
+        </div>
+        <div class="prose">
+          <>
+            <p>
+              AI와 함께 만들고, 사람이 쓰는 인터페이스를 설계합니다. React와
+              Flutter로 웹과 앱을 만들고, 기기 안에서 AI 모델을 실행하는 방법을
+              실험합니다.
+            </p>
+            <p>
+              이 블로그에는 만들어 보면서 답을 찾은 질문들을 모았습니다.
+              영상에서 글자를 꺼내 다시 쓸 수 있을지, 같은 게시물도 앱과 웹에서
+              다르게 읽어야 할지 같은 질문입니다.
+            </p>
+          </>
+        </div>
+        <div class="tag-links">
+          <>
+            <a href="/projects">프로젝트</a>
+            <a href="https://github.com/mooyeon-choi">GitHub</a>
+            <a href="https://www.canva.com/design/DAGz-nqnzUs/hqoQlPIJGeUcR_Zt0MYSRA/view">
+              이력서
+            </a>
+            <a href="https://www.canva.com/design/DAG0FtTtc7Q/5bxilRwjMyASzdWmJYeuIA/watch">
+              포트폴리오
+            </a>
+            <a href="https://open.kakao.com/o/sEenYDXg">커피챗</a>
+          </>
+        </div>
+      </section>
+    ) : docExample ? (
+      <div class="reader prose">
+        <MarkdownPage />
+      </div>
+    ) : (
+      <Writing path={path} />
+    )
+  }
+</Layout>

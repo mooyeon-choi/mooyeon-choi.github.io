@@ -6,8 +6,6 @@ tags: [React, Javascript, frontend, memo, hooks]
 date: 2024-03-18T22:26
 ---
 
-import ReactChangesTwitterPost from '@site/blog/components/2024-03-18-react-19-will-be-compiled/reactChangesTwitterPost.jsx'
-import CorrectionReactChangesTwitterPost from '@site/blog/components/2024-03-18-react-19-will-be-compiled/correctionReactChangesTwitterPost.jsx'
 
 > [Korean FE Article Team](https://kofearticle.substack.com/about?utm_source=substack&utm_medium=email) 에서 번역해주는 FrontEnd 소식을 아카이브 하였습니다.
 
@@ -22,7 +20,10 @@ import CorrectionReactChangesTwitterPost from '@site/blog/components/2024-03-18-
 
 이 글에서는 리액트 컴파일러가 나오기 전까지의 과정과 컴파일에 대한 의미를 소개하고 있습니다. 리액트 컴파일러가 나오기 전과 후의 과정들에 대해 관심을 가지고 계시다면 가볍게 읽어보시길 추천드립니다. 🙂
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. 컴파일된 리액트는 hooks의 주요 문제를 해결합니다
 2. 메모된 리액트
@@ -31,7 +32,9 @@ import CorrectionReactChangesTwitterPost from '@site/blog/components/2024-03-18-
 5. 컴파일은 스펙트럼입니다
 6. 자동 메모이제이션을 위한 컴파일
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -39,11 +42,11 @@ import CorrectionReactChangesTwitterPost from '@site/blog/components/2024-03-18-
 
 어제 리액트 팀은 [해당 블로그 게시글](https://react.dev/blog/2024/02/15/react-labs-what-we-have-been-working-on-february-2024)을 통해서 리액트를 위해 작업해 온 내용을 발표했습니다. 리액트 팀의 Andrew Clark이 변경 사항을 자세히 설명해 주었습니다.
 
-<ReactChangesTwitterPost />
+<blockquote class="twitter-tweet"><a href="https://twitter.com/i/web/status/1758229889595977824">원문 게시물 보기</a></blockquote>
 
 [정정] 이전에 컴파일될 버전은 v19가 될 것이라고 말씀드린 바 있습니다. 리액트 팀은 발표에서 컴파일된 리액트에 대해 언급했고, 저는 다른 사람들과 동일하게 이것이 v19를 의미한다고 생각했습니다. 게시글에 언급된 많은 기능이 v19에 포함될 것으로 보이지만, 컴파일되는 버전은 아마도 그 다음 버전이 될 것입니다(Andrew가 언급한 대로 올해 2024년 말 쯤).
 
-<CorrectionReactChangesTwitterPost />
+<blockquote class="twitter-tweet"><a href="https://twitter.com/i/web/status/1760433969118769654">원문 게시물 보기</a></blockquote>
 
 버전이야 어찌됐건, 이 글이 리액트가 "컴파일"된다는 것이 무엇을 의미하는지에 대해 혼란스러워하는 모든 분들에게 도움이 되기를 바랍니다. 이 주제는 많이 논의되어 왔고, 특히 리액트의 전체 스토리를 보지 못했다면 따라가기 어려울 수 있기 때문에 여기까지 오게 된 과정의 예시와 역사적 맥락을 보여드리고자 합니다.
 

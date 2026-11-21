@@ -1,0 +1,80 @@
+---
+import '../styles/site.css';
+const {
+  title,
+  description = 'AI-native developer Mooyeon Choi의 프로젝트, 개발 글과 학습 노트',
+  current = '',
+  image = '/img/work/meari-arcade.webp',
+  canonical = Astro.url.pathname,
+} = Astro.props;
+const fullTitle = title
+  ? title + ' · Mooyeon Choi'
+  : 'Mooyeon Choi · AI-native developer';
+const url = new URL(canonical, Astro.site);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" /><meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <meta name="color-scheme" content="light dark" /><title>{fullTitle}</title>
+    <meta name="description" content={description} /><link
+      rel="canonical"
+      href={url}
+    />
+    <meta property="og:title" content={fullTitle} /><meta
+      property="og:description"
+      content={description}
+    />
+    <meta property="og:url" content={url} /><meta
+      property="og:image"
+      content={new URL(image, Astro.site)}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/img/log-mark.ico" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      href="/blog/rss.xml"
+      title="Mooyeon’s Log RSS"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      href="/blog/atom.xml"
+      title="Mooyeon’s Log Atom"
+    />
+  </head>
+  <body>
+    <div id="mooyeon-site">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="mooyeon.com 홈"
+          >mooyeon<b>.</b>com</a
+        >
+        <nav aria-label="주 메뉴">
+          {
+            [
+              ['/projects', '프로젝트'],
+              ['/writing', '기록'],
+              ['/about', '소개'],
+            ].map(([href, label]) => (
+              <a
+                href={href}
+                aria-current={current === href ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            ))
+          }
+        </nav>
+      </header>
+      <main><slot /></main>
+      <footer class="site-footer">
+        <a href="/about">Mooyeon Choi</a><a href="/blog/rss.xml">RSS</a>
+      </footer>
+    </div>
+  </body>
+</html>

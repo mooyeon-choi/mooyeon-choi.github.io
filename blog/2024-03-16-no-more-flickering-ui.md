@@ -6,10 +6,6 @@ tags: [React, Javascript, frontend, useEffect, useLayoutEffect]
 date: 2024-03-16T21:51
 ---
 
-import FlickeringCodeSandBoxIframe from '@site/blog/components/2024-03-16-nomore-flickering-ui/flickeringCodeSandBoxIframe.jsx';
-import NonFlickeringCodeSandBoxIframe from '@site/blog/components/2024-03-16-nomore-flickering-ui/nonFlickeringCodeSandBoxIframe.jsx';
-import BlockingPaintingCodeSandBoxIframe from '@site/blog/components/2024-03-16-nomore-flickering-ui/blockingPaintingCodeSandBoxIframe.jsx';
-import NonBlockingPaintingCodeSandBoxIframe from '@site/blog/components/2024-03-16-nomore-flickering-ui/nonBlockingPaintingCodeSandBoxIframe.jsx';
 
 > [Korean FE Article Team](https://kofearticle.substack.com/about?utm_source=substack&utm_medium=email) 에서 번역해주는 FrontEnd 소식을 아카이브 하였습니다.
 
@@ -26,7 +22,10 @@ import NonBlockingPaintingCodeSandBoxIframe from '@site/blog/components/2024-03-
 
 자바스크립트의 관점으로 리액트에선 두 effect를 통해 어떤 방식으로 사용되는지, 쓰임새와 성능, 더불어 SSR까지 흐름으로 두 effect 훅에 대해 딥 다이브하기 좋은 글이 될 것 같습니다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. useEffect의 문제점이 뭘까요?
 2. useLayoutEffect로 수정하기
@@ -37,7 +36,9 @@ import NonBlockingPaintingCodeSandBoxIframe from '@site/blog/components/2024-03-
 
 4. Next.js의 useLayoutEffect와 기타 SSR 프레임워크들
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -45,7 +46,7 @@ DOM 측정값을 기반으로 요소를 변경하는 방법에 대해 살펴봅�
 
 [이 게시글은 비디오 형식으로도 제공됩니다.](https://youtu.be/__tm1dyMi4A)
 
-리액트의 DOM 접근에 관해 좀 더 이야기해 봅시다. 이전 글[(리액트의 Refs: DOM 접근에서 명령형 API까지)](./2024-03-16-refs-from-dom-to-api.md)에서 Ref를 사용하는 법과 Ref와 관련된 모든 것을 배웠습니다. 그러나, DOM 처리에 관한 주제로 또 다른 중요한 주제가 있습니다. 바로, 요소의 크기나 위치 같은 DOM의 실제 측정 결과를 기반으로 요소를 변경하는 것입니다.
+리액트의 DOM 접근에 관해 좀 더 이야기해 봅시다. 이전 글[(리액트의 Refs: DOM 접근에서 명령형 API까지)](/blog/refs-from-dom-to-api)에서 Ref를 사용하는 법과 Ref와 관련된 모든 것을 배웠습니다. 그러나, DOM 처리에 관한 주제로 또 다른 중요한 주제가 있습니다. 바로, 요소의 크기나 위치 같은 DOM의 실제 측정 결과를 기반으로 요소를 변경하는 것입니다.
 
 그래서, 정확히 무엇이 문제이고 왜 "일반적인" 방법으로는 충분하지 않을까요? 앞으로 코딩을 해보면서 알아보도록 하겠습니다. 이 과정에서 `useEffect` 대신에 `useLayoutEffect`를 언제, 왜 사용해야 하는지와 브라우저는 어떻게 리액트 코드를 렌더링하는지 그리고 페인팅이 무엇이고, 왜 이 모든 것들이 중요한지 및 SSR이 어떤 역할을 하는지 알아보겠습니다.
 
@@ -91,7 +92,7 @@ const Component = ({ items }) => {
 };
 ```
 
-Refs와 DOM이 어떻게 동작하는지 익숙하지 않다면 [리액트의 Refs: DOM 접근부터 명령형 API까지](./2024-03-16-refs-from-dom-to-api.md)를 참고해 주세요.
+Refs와 DOM이 어떻게 동작하는지 익숙하지 않다면 [리액트의 Refs: DOM 접근부터 명령형 API까지](/blog/refs-from-dom-to-api)를 참고해 주세요.
 
 두 번째로, `useEffect`에서 div 요소를 가져온 뒤 크기를 가져옵니다.
 
@@ -203,7 +204,7 @@ const Component = ({ items }) => {
 
 아래 코드 샌드박스에서 전체 작동 예제를 확인하세요. 크기를 조정해가면서요😊. 이상한 점을 발견하셨어도 너무 흥분하지 마세요. 여기에는 사용자 경험에 있어 한 가지 큰 결함이 있습니다.
 
-<FlickeringCodeSandBoxIframe />
+<iframe loading="lazy" class="code-demo" src="https://codesandbox.io/embed/pv93pp?view=Editor+%2B+Preview&amp;module=%2Fsrc%2Findex.tsx" title="simple-responsive-menu-example (forked)" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 특히 CPU 속도가 느려진 상태에서 새로고침을 몇 번 시도해 보세요. 불행하게도 여기엔 끔찍한 깜빡이는 동작이 있습니다. 모든 항목과 "더 보기" 버튼이 표시되는 초기 렌더링이 명확하게 보입니다. 운영에 들어가기 전 반드시 수정해야 합니다.
 
@@ -224,7 +225,7 @@ const Component = ({ items }) => {
 
 이건 더 이상 초기 깜빡임이 없는 코드입니다. 확인해 보세요.
 
-<NonFlickeringCodeSandBoxIframe />
+<iframe loading="lazy" class="code-demo" src="https://codesandbox.io/embed/f66t6d?view=Editor+%2B+Preview&amp;module=%2Fsrc%2Findex.tsx" title="simple-responsive-menu-example-fixed (forked)" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 그렇다면 이것을 사용하는 것이 안전한가요? 왜 `useEffect` 대신에 그냥 모든 곳에서 `useLayoutEffect`를 사용하지 않는 걸까요? 문서에선 `useLayoutEffect`는 [성능 저하](https://react.dev/reference/react/useLayoutEffect)를 일으킬 수 있으므로 피해야 한다고 명시적으로 나와 있습니다. 왜 그럴까요? 이는 "브라우저가 화면을 리페인팅하기 전"에 실행된다고 하는데 이는 `useEffect`가 이후에 실행된다는 의미입니다. 그러나 정확히 이게 무슨 의미일까요? 이제 간단한 드롭다운을 작성할 때도 브라우저 페인팅과 같은 저수준의 개념까지 생각해야 한다는 것을 의미할까요🤯?
 
@@ -280,7 +281,7 @@ waitSync(1000);
 
 여전히 "중간" 결과를 볼 수 없습니다. 브라우저가 그것을 정렬할 때까지 빈 화면만 바라보다가 마지막에 검은색 테두리가 생기는 것을 볼 수 있습니다. 이것이 우리가 말하는 "렌더링 차단" 또는 "페인팅 차단" 코드라고 부르는 것입니다.
 
-<BlockingPaintingCodeSandBoxIframe />
+<iframe loading="lazy" class="code-demo" src="https://codesandbox.io/embed/jky4pg?view=Editor+%2B+Preview&amp;module=%2Fsrc%2Findex.js" title="understanding-painting-sync-example (forked)" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 리액트는 단지 자바스크립트일 뿐이지만 단일 작업으로 실행되지는 않습니다. 만약 그렇다면 인터넷은 견딜 수 없을 것입니다. 그렇게 되면 우리는 모두 외부에 실행되고 직접 상호작용 해야 할 텐데, 누가 그것을 원할까요? 전체 앱을 렌더링하는 거대한 작업을 작은 작업으로 "분할"하는 방법은 콜백, 이벤트 핸들러, 프로미스 등 다양한 "비동기"적 방법을 사용하는 것입니다.
 
@@ -303,7 +304,7 @@ setTimeout(() => {
 
 그럼 모든 timeout 로직은 새로운 "작업"으로 간주할 것입니다. 따라서 브라우저는 하나의 작업을 마친 후 다음 작업을 시작하기 전에 리페인팅할 수 있습니다. 그리고 3초 동안 하얀 화면에서 명상하는 것이 아니라, 느리지만 아름답게 빨간색에서 초록색으로, 다시 돌아오는 전환을 볼 수 있게 됩니다.
 
-<NonBlockingPaintingCodeSandBoxIframe />
+<iframe loading="lazy" class="code-demo" src="https://codesandbox.io/embed/z5vlss?view=Editor+%2B+Preview&amp;module=%2Fsrc%2Findex.js" title="understanding-painting-async-example  (forked)" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 이건 리액트가 우리를 위해 하는 일입니다. 기본적으로 이 엔진은 엄청나게 복잡하고 매우 효율적인 엔진으로, 자체 코딩과 수백 개의 npm 종속성으로 구성된 거대한 덩어리를 브라우저가(이상적으로) 13ms 이내에 처리할 수 있는 가능한 가장 작은 덩이로 분할합니다.
 

@@ -1,0 +1,19 @@
+---
+import type { RecordEntry } from '../lib/content';
+const { items }: { items: RecordEntry[] } = Astro.props;
+---
+
+<div class="rows">
+  {
+    items.map((item) => (
+      <a class="row" href={item.path}>
+        <>
+          <span>{item.title}</span>
+          <span>
+            {item.post ? item.day.replaceAll('-', '.') : item.category}
+          </span>
+        </>
+      </a>
+    ))
+  }
+</div>

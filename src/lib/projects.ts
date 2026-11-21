@@ -1,0 +1,251 @@
+export const works = {
+  meari: {
+    name: '메아리',
+    kind: '브라우저 게임',
+    terms: 'MEARI JavaScript SVG',
+    image: '/img/work/meari-arcade.webp',
+    url: 'https://meari.games/',
+    location: '공식 사이트 · meari.games',
+    summary:
+      '조이스틱이나 방향키로 게임을 고르는 작은 웹 오락실입니다. 직접 만든 게임 세 편의 실제 플레이 화면을 한 대의 기체에 담았습니다.',
+  },
+  mirinae: {
+    name: '미리내',
+    kind: '3D 웹 관측소',
+    terms: 'MIRINAE mirine Three.js JavaScript',
+    image: '/img/work/mirinae-orion.webp',
+    url: 'https://mirinaesky.com/',
+    location: '공식 사이트 · mirinaesky.com',
+    summary:
+      '밤하늘에서 고른 오리온자리를 옆으로 돌려볼 수 있습니다. 실제 별 목록의 거리 추정치로 지구와 별 사이의 깊이를 그렸습니다.',
+  },
+  saegim: {
+    name: '새김',
+    kind: '모션 그래픽 편집 도구',
+    terms: 'Saegim SVG HTML',
+    image: '/img/work/saegim-source.webp',
+    url: 'https://github.com/mooyeon-choi/saegim',
+    location: '공개 저장소 · mooyeon-choi/saegim',
+    summary:
+      '영상 속 글자와 도형을 추출해 다시 편집할 수 있는 SVG로 그립니다. 8초 분량의 영상으로 원본과 재구성 결과를 비교했습니다.',
+  },
+  wootpun: {
+    name: '웃픈',
+    kind: '웹·모바일 커뮤니티',
+    terms: 'Wootpun Swift Kotlin Rust TypeScript',
+    image: '/img/work/wootpun.webp',
+    url: 'https://github.com/mooyeon-choi/wootpun',
+    location: '공개 저장소 · mooyeon-choi/wootpun',
+    summary:
+      '같은 유머 게시물을 앱에서는 위로 넘기고 웹에서는 제목을 골라 읽습니다. 웹, iOS, Android가 하나의 피드를 공유하는 프로토타입입니다.',
+  },
+};
+
+export const games = {
+  'one-milk-please': {
+    title: '우유 하나 사 와, 달걀 있으면 6개 사 와',
+    genre: 'AI 심부름 시뮬레이션',
+    summary: '심부름을 한 번만 설명하면 아이가 직접 장을 보러 갑니다.',
+    story:
+      '아이에게 무엇을 사 올지 말해 주세요. 가게까지 가는 길, 간식 앞에서의 망설임, 남은 용돈으로 살 물건까지 아이의 선택은 기기 안에서 실행되는 AI가 결정합니다.',
+    platform:
+      'AI 플레이는 로컬 AI를 지원하는 PC Chrome에서 이용할 수 있습니다.',
+    shortTitle: '우유 하나 사 와',
+    shot: '편의점 매대',
+    thumbnail: '/img/games/convenience-store.webp',
+    scene: '/img/games/one-milk-please-play.webp',
+    caption: '편의점 매대 앞에서 상품을 살펴보는 아이',
+    url: 'https://meari.games/games/one-milk-please/',
+  },
+  'three-oracles': {
+    title: '세 가지 신탁 · 이세계 용사',
+    genre: 'AI 모험 시뮬레이션',
+    summary: '이세계로 떠날 용사를 고르고, 여정을 이끌 세 마디를 남깁니다.',
+    story:
+      '어떤 직업을 갖고, 어떻게 성장하고, 마왕성에 어떻게 도전할지 세 가지 신탁으로 일러 주세요. 용사는 그 말을 해석해 마을 사람들과 대화하고 동료를 모읍니다.',
+    platform:
+      'AI 플레이는 로컬 AI를 지원하는 PC Chrome에서 이용할 수 있습니다.',
+    shortTitle: '세 가지 신탁',
+    shot: '신과의 만남',
+    thumbnail: '/img/games/meet-astra.webp',
+    scene: '/img/games/three-oracles-shrine.webp',
+    caption: '성좌의 제단에서 별의 기록자 아스트라와 마주한 용사',
+    url: 'https://meari.games/games/three-oracles/',
+  },
+  nova: {
+    title: 'NOVA',
+    genre: 'FPS 구단 운영 시뮬레이션',
+    summary: '감독이 되어 선수단을 꾸리고, 준비한 전술이 통하는지 지켜봅니다.',
+    story:
+      '선수를 훈련시키고 다음 상대에 맞춰 전술을 정하세요. 경기 중에는 맵에서 양 팀의 움직임을 따라가고, 경기가 끝나면 선수별 기록을 보고 다음 경기를 준비합니다.',
+    platform: 'PC 브라우저에서 플레이할 수 있습니다.',
+    shortTitle: 'NOVA',
+    shot: '경기 관전',
+    thumbnail: '/img/games/junction-match.webp',
+    scene: '/img/games/nova-match.webp',
+    caption: '정션 맵에서 펼쳐지는 경기와 양 팀 선수의 상태',
+    url: 'https://meari.games/games/nova/',
+  },
+};
+
+export const experiments = [
+  {
+    title: 'interactive-3d-cube',
+    description: '마우스로 움직일 수 있는 3D Cube',
+    preview: '/img/showcase/interactive-3d-cube.png',
+    website: 'https://mooyeon-choi.github.io/interactive-3d-cube/',
+    source: 'https://github.com/mooyeon-choi/interactive-3d-cube',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'aircap-wave',
+    description: '',
+    preview: '/img/showcase/aircap-wave.png',
+    website: 'https://mooyeon-choi.github.io/aircap-wave/',
+    source: 'https://github.com/mooyeon-choi/aircap-wave',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'bouncing-ball',
+    description: '화면 크기에 맞춰 통통 튀어다니는 공',
+    preview: '/img/showcase/bouncing-ball.png',
+    website: 'https://mooyeon-choi.github.io/bouncing-ball/',
+    source: 'https://github.com/mooyeon-choi/bouncing-ball',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'moving-waves',
+    description: '다양한 색상의 움직이는 파도',
+    preview: '/img/showcase/moving-waves.png',
+    website: 'https://mooyeon-choi.github.io/moving-waves/',
+    source: 'https://github.com/mooyeon-choi/moving-waves',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'rotating-polygon',
+    description: '마우스 혹은 터치로 드래그 시 회전하는 Polygon',
+    preview: '/img/showcase/rotating-polygon.png',
+    website: 'https://mooyeon-choi.github.io/rotating-polygon/',
+    source: 'https://github.com/mooyeon-choi/rotating-polygon',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'bounce-strings',
+    description: '움직이는 공에 의해 튕겨지는 줄',
+    preview: '/img/showcase/bounce-strings.png',
+    website: 'https://mooyeon-choi.github.io/bounce-strings/',
+    source: 'https://github.com/mooyeon-choi/bounce-strings',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'rotating-globe',
+    description: '구 형태로 회전하는 점들',
+    preview: '/img/showcase/rotating-globe.png',
+    website: 'https://mooyeon-choi.github.io/rotating-globe/',
+    source: 'https://github.com/mooyeon-choi/rotating-globe',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'hanging-box',
+    description: '',
+    preview: '/img/showcase/hanging-box.png',
+    website: 'https://mooyeon-choi.github.io/hanging-box/',
+    source: 'https://github.com/mooyeon-choi/hanging-box',
+    tags: ['javascript', 'canvasTutorial'],
+  },
+  {
+    title: 'kinetic-typography-1',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-1.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-1/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-1',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'kinetic-typography-2',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-2.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-2/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-2',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'kinetic-typography-3',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-3.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-3/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-3',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'kinetic-typography-4',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-4.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-4/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-4',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'kinetic-typography-6',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-6.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-6/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-6',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'kinetic-typography-7',
+    description: '',
+    preview: '/img/showcase/kinetic-typography-7.png',
+    website: 'https://mooyeon-choi.github.io/kinetic-typography-7/',
+    source: 'https://github.com/mooyeon-choi/kinetic-typography-7',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'ink-smear',
+    description: '',
+    preview: '/img/showcase/ink-smear.png',
+    website: 'https://mooyeon-choi.github.io/ink-smear/',
+    source: 'https://github.com/mooyeon-choi/ink-smear',
+    tags: ['javascript', 'pixi'],
+  },
+  {
+    title: 'react-habit-tracker',
+    description: '',
+    preview: '/img/showcase/react-habit-tracker.png',
+    website: 'https://mooyeon-choi.github.io/react-habit-tracker/',
+    source: 'https://github.com/mooyeon-choi/react-habit-tracker',
+    tags: ['react'],
+  },
+  {
+    title: 'vue-habit-tracker',
+    description: '',
+    preview: '/img/showcase/vue-habit-tracker.png',
+    website: 'https://mooyeon-choi.github.io/vue-habit-tracker/',
+    source: 'https://github.com/mooyeon-choi/vue-habit-tracker',
+    tags: ['vuejs'],
+  },
+  {
+    title: 'My to do list',
+    description: 'Trello Clone Coding',
+    preview: '/img/showcase/trello-clone-coding.png',
+    website: 'https://mooyeon-choi.github.io/trello_clone_coding/',
+    source: 'https://github.com/mooyeon-choi/trello_clone_coding',
+    tags: ['javascript', 'react'],
+  },
+];
+
+export const articles = {
+  meari: '/blog/meari-web-arcade',
+  mirinae: '/blog/mirinae-constellations',
+  saegim: '/blog/saegim-motion-to-svg',
+  wootpun: '/blog/wootpun-reader',
+};
+export const technologies = {
+  meari: ['javascript', 'svg'],
+  mirinae: ['javascript', 'threejs'],
+  saegim: ['svg'],
+  wootpun: ['typescript', 'mobile', 'rust'],
+};
+export const experimentId = (title: string) =>
+  title.toLowerCase().replaceAll(' ', '-');

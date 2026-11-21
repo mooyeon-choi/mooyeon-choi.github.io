@@ -1,0 +1,158 @@
+---
+import {
+  works,
+  games,
+  articles,
+  experiments,
+  experimentId,
+} from '../lib/projects';
+const { id, gameId } = Astro.props;
+const work = works[id];
+const game = games[gameId];
+const experiment = experiments.find((p) => experimentId(p.title) === id);
+---
+
+{
+  game ? (
+    <>
+      <a class="back game-back" href="/projects/meari">
+        ← 메아리 게임 목록
+      </a>
+      <article class="game-detail">
+        <div class="game-info">
+          <>
+            <p class="small">{game.genre}</p>
+            <h1>{game.title}</h1>
+            <p>{game.story}</p>
+            <p class="game-platform">{game.platform}</p>
+            <a class="play-link" href={game.url}>
+              게임 플레이 ↗
+            </a>
+          </>
+        </div>
+        <figure>
+          <>
+            <img src={game.scene} alt={game.caption} />
+            <figcaption>{game.caption}</figcaption>
+          </>
+        </figure>
+      </article>
+    </>
+  ) : work ? (
+    <section data-screen="project">
+      <a class="back" href="/projects">
+        ← 프로젝트 목록
+      </a>
+      <div class="detail">
+        <>
+          <img
+            class="cover"
+            src={work.image}
+            alt={work.name + ' 프로젝트 화면'}
+          />
+          <div>
+            <>
+              <span class="small">{work.kind}</span>
+              <h1>{work.name}</h1>
+              <p>{work.summary}</p>
+              <a class="play-link" href={work.url}>
+                {work.location} ↗
+              </a>
+              <a class="location" href={articles[id]}>
+                개발기 읽기 →
+              </a>
+            </>
+          </div>
+        </>
+      </div>
+      {id === 'meari' && (
+        <section id="ms-arcade">
+          <h2>수록 게임</h2>
+          <ul class="game-shelf">
+            {Object.entries(games).map(([key, g]) => (
+              <li>
+                <a class="game-card" href={'/projects/meari/' + key}>
+                  <img src={g.thumbnail} alt="" />
+                  <div>
+                    <span class="small">{g.genre}</span>
+                    <h3>{g.title}</h3>
+                    <p>{g.summary}</p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {id === 'saegim' && (
+        <section class="compare">
+          <h2>영상 원본과 SVG</h2>
+          <div class="compare-images">
+            <img src="/img/work/saegim-svg.webp" alt="SVG로 재구성한 장면" />
+            <img
+              class="original"
+              src="/img/work/saegim-source.webp"
+              alt="영상 원본"
+            />
+          </div>
+          <label>
+            원본 표시 비율
+            <input type="range" min="0" max="100" value="50" />
+          </label>
+        </section>
+      )}
+      {id === 'mirinae' && (
+        <figure class="extra-scene">
+          <img
+            src="/img/work/mirinae-depth.webp"
+            alt="옆에서 본 오리온자리 별들의 깊이"
+          />
+          <figcaption>옆에서 본 오리온자리</figcaption>
+        </figure>
+      )}
+    </section>
+  ) : (
+    experiment && (
+      <section>
+        <>
+          <a class="back" href="/projects">
+            ← 프로젝트 목록
+          </a>
+          <div class="detail">
+            <>
+              <img
+                class="cover"
+                src={experiment.preview}
+                alt={experiment.title}
+              />
+              <div>
+                <>
+                  <p class="small">{experiment.tags.join(' · ')}</p>
+                  <h1>{experiment.title}</h1>
+                  <p>{experiment.description}</p>
+                  <a class="play-link" href={experiment.website}>
+                    프로젝트 열기 ↗
+                  </a>
+                  <a class="location" href={experiment.source}>
+                    소스 보기 ↗
+                  </a>
+                </>
+              </div>
+            </>
+          </div>
+        </>
+      </section>
+    )
+  )
+}
+<script>
+  const comparison = document.querySelector<HTMLElement>('.compare');
+  comparison
+    ?.querySelector('input')
+    ?.addEventListener('input', (e) =>
+      comparison.style.setProperty(
+        '--cut',
+        (e.target as HTMLInputElement).value + '%',
+      ),
+    );
+</script>

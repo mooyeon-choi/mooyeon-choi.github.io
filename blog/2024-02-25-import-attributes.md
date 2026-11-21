@@ -14,7 +14,10 @@ date: 2024-02-25T20:01
 
 V8 v12.3부터 새롭게 지원되는 import 속성(attributes)에 대해 설명하는 글입니다. import 속성이 왜 필요하게 되었는지, v9.1 부터 사용된 import 어설션(assertions)과는 어떻게 다른지 이 글을 통해 살펴보실 수 있습니다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 - 이전 버전
 - Import 속성
@@ -23,7 +26,9 @@ V8 v12.3부터 새롭게 지원되는 import 속성(attributes)에 대해 설명
 - assert의 사용 중단 및 최종 제거
 - Import 속성 지원
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 

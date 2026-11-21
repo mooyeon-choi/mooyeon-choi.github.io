@@ -4,9 +4,14 @@
 
 Flutter 앱의 모든 테스트 파일은 `test` 디렉터리에 있습니다(통합 테스트 제외).
 
-::: tip 참고
+<aside class="callout tip">
+
+<strong>참고</strong>
+
 이 안내에서는 명령줄을 사용하여 테스트를 실행합니다. 그러나 VS Code 및 Android 스튜디오에서 제공하는 옵션을 사용하여 애플리케이션의 단위 및 위젯 테스트를 실행할 수도 있습니다.
-:::
+
+</aside>
+
 
 ## `test/widget_test.dart` 삭제
 
@@ -71,13 +76,18 @@ $ flutter test test/models/favorites_test.dart
 
 전체 테스트 파일은 [`test/models/favorites_test.dart`](https://github.com/flutter/codelabs/blob/main/testing_codelab/step_05/test/models/favorites_test.dart)에서 확인할 수 있습니다.
 
-::: tip 도움말
+<aside class="callout tip">
+
+<strong>도움말</strong>
+
 다음을 실행하면 `test` 디렉터리의 모든 테스트를 한 번에 실행할 수 있습니다.
 
 ```bash
 $ flutter test
 ```
 
-:::
+
+</aside>
+
 
 단위 테스트에 관한 자세한 내용은 [단위 테스트 소개](https://flutter.dev/docs/cookbook/testing/unit/introduction)를 참고하세요.

@@ -12,10 +12,14 @@ date: 2024-12-07T07:54
 
 선언형, 명령형
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [선언형 프로그래밍](#선언형-프로그래밍)
-   :::
+
+</aside>
 
 <!--truncate-->
 

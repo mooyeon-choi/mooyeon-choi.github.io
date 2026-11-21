@@ -1,11 +1,16 @@
 # Navigator
 
-:::info
+<aside class="callout info">
+
+<strong>참고</strong>
+
 
 이 문서는 Flutter 화면 API가 동작하는 방식 인 `Navigator Router`에 대해 정리한 내용이다.
 Navigator 2.0 이 새롭게 Release 될 때 작성된 [Medium Blog - Learning flutters new navigation and routing system](https://medium.com/flutter/learning-flutters-new-navigation-and-routing-system-7c9068155ade) 글과 `Codemagic` 기술 블로그에 작성 된 [Understanding Flutter Navigator 2.0](https://blog.codemagic.io/flutter-navigator2/#:~:text=Flutter%20offers%20an%20imperative%20API%20%28Navigator%201.0%29%20and,allows%20you%20to%20control%20the%20navigation%20stack%20completely.) 를 번역 및 정리한 내용이다.
 
-:::
+
+</aside>
+
 
 ## 소개
 

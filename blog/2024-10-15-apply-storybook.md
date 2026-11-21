@@ -12,7 +12,10 @@ date: 2024-10-15T12:47
 
 UI Component를 문서화하여 보기 쉽게 정리하고 각 컴포넌트별로 변경사항을 따로 확인하도록 하여 디자이너와 좀 더 빠르고 명확하게 커뮤니케이션 하기 위해 회사 FrontEnd에 Storybook을 도입하였다. 이번 내용은 Storybook의 적용 방법을 간단히 작성하고 아직 해결되지 않은 문제를 정리한 내용이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [Storybook이란?](#storybook이란)
 2. [기존 프로젝트에 Storybook 설치하기](#기존-프로젝트에-storybook-설치하기)
@@ -21,7 +24,9 @@ UI Component를 문서화하여 보기 쉽게 정리하고 각 컴포넌트별�
 5. [Mocking data](#mocking-data)
 6. [아직 해결되지 않은 문제들](#아직-해결되지-않은-문제들)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 
@@ -311,7 +316,10 @@ Next.js로 개발을 하면 Context Provider나 API Data 등 Component 외부에
 
 이러한 데이터를 UI 테스트 환경에서는 가져올 수 없으므로 Mocking을 통해 대체해주어야 한다.
 
-:::info
+<aside class="callout info">
+
+<strong>참고</strong>
+
 
 [출처: 모킹(Moking) 이란? - 개발자맛 치즈볼 블로그](https://cheeseb.github.io/testing/react-testing-mocking/)
 
@@ -330,7 +338,9 @@ Next.js로 개발을 하면 Context Provider나 API Data 등 Component 외부에
 - 테스트 실행 속도가 떨어지고, 이는 프로젝트 규모가 커져서 한번에 실행할 테스트 케이스가 많아지면 더 큰 이슈가 될 수 있음
   - CI/CD 파이프라인의 일부로 테스트가 자동화되어 자주 실행되어야 한다면 더 큰 문제가 됨
 
-:::
+
+</aside>
+
 
 ### Context Provider Mocking
 

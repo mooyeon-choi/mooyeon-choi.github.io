@@ -14,12 +14,17 @@ date: 2024-12-16T09:12
 
 이 글은 [Flutter’s recommended architecture: why not BLoC? - Eduardo Pires, Medium Blog](https://empires.medium.com/flutters-recommended-architecture-why-not-bloc-6cccc1d078d3)의 글을 의역하며 내가 이해한 내용을 정리한 글이다.
 
-:::info 목차
+<aside class="callout info">
+
+<strong>목차</strong>
+
 
 1. [기본 사항 이해](#기본-사항-이해)
 2. [정리](#정리)
 
-:::
+
+</aside>
+
 
 <!--truncate-->
 

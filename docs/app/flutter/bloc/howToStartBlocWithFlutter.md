@@ -26,9 +26,14 @@ dependencies:
 
 다음으로 Bloc을 설치합니다.
 
-:::warning 주의
+<aside class="callout warning">
+
+<strong>주의</strong>
+
 `pubspec.yaml` 파일과 동일한 위치의 디렉터리에서 실행해야합니다.
-:::
+
+</aside>
+
 
 - `pub get` or `flutter pub get`
 
