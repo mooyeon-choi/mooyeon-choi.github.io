@@ -1,16 +1,19 @@
 ---
 import '../styles/site.css';
+const homeImage = '/img/mooyeon-home.png';
+const homeImageAlt = 'Mooyeon Choi의 블로그 홈. 메아리, 미리내, 새김, 웃픈 프로젝트와 중앙 포스터가 보인다.';
 const {
   title,
   description = 'AI-native developer Mooyeon Choi의 프로젝트, 개발 글과 학습 노트',
   current = '',
-  image = '/img/work/meari-arcade.webp',
+  image = homeImage,
   canonical = Astro.url.pathname,
 } = Astro.props;
 const fullTitle = title
   ? title + ' · Mooyeon Choi'
   : 'Mooyeon Choi · AI-native developer';
 const url = new URL(canonical, Astro.site);
+const imageUrl = new URL(image, Astro.site);
 ---
 
 <!doctype html>
@@ -29,11 +32,21 @@ const url = new URL(canonical, Astro.site);
       property="og:description"
       content={description}
     />
-    <meta property="og:url" content={url} /><meta
-      property="og:image"
-      content={new URL(image, Astro.site)}
-    />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={imageUrl} />
+    {
+      image === homeImage && (
+        <>
+          <meta property="og:image:type" content="image/png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={homeImageAlt} />
+          <meta name="twitter:image:alt" content={homeImageAlt} />
+        </>
+      )
+    }
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={imageUrl} />
     <link rel="icon" href="/img/log-mark.ico" />
     <link
       rel="alternate"
